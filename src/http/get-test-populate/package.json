@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@architect/functions": "3.12.3",
+    "faker": "4.1.0"
+  }
+}

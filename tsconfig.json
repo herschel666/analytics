@@ -1,0 +1,25 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "rootDir": ".",
+    "target": "es2018",
+    "lib": ["es2020", "dom"],
+    "jsx": "react",
+    "jsxFactory": "h",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "inlineSourceMap": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "inlineSources": true,
+    "pretty": true,
+    "removeComments": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./lib/types"]
+  },
+  "include": ["./lib"]
+}

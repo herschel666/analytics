@@ -1,0 +1,25 @@
+.bar-chart {
+  padding-bottom: 50%;
+}
+
+.bar-chart__caption {
+  caption-side: top;
+}
+
+.bar-chart__body {
+  top: 2rem;
+}
+
+.bar-chart__column-wrap {
+  width: 7.142857143%; /* 100 / 14 */
+}
+
+.bar-chart__column {
+  width: 80%;
+  margin: 0 10%;
+}
+
+.bar-chart__column-caption {
+  bottom: 1rem;
+  font-size: 0.5rem;
+}
