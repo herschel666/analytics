@@ -5,8 +5,6 @@ import { addSite } from '../../shared/ddb';
 import { pageIndex } from '../../pages/page-index';
 
 interface Params {
-  site?: string;
-  date?: string;
   debug?: string;
 }
 
@@ -18,7 +16,7 @@ interface Payload {
 }
 
 export const handler = async (req: Req) => {
-  const { site, date, debug: debugParam } = req.queryStringParameters || {};
+  const { debug: debugParam } = req.queryStringParameters || {};
   const debug = debugParam === 'true' && process.env.NODE_ENV === 'testing';
   const { site_url } = arc.http.helpers.bodyParser<Req, Payload>(req);
   const siteUrl = site_url && String(site_url);
@@ -30,5 +28,5 @@ export const handler = async (req: Req) => {
     await addSite(doc.analytics, hostnameToSite(hostname));
   }
 
-  return await pageIndex(debug, site, date);
+  return await pageIndex(debug);
 };
