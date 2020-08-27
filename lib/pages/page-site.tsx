@@ -4,14 +4,16 @@ import arc from '@architect/functions';
 
 import { getPageViewsBySite } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
-import { siteNameToHostname } from '../shared/util';
+import { siteNameToHostname, daysAgo } from '../shared/util';
 import { page } from './page';
 import type { AggregatedPageView } from '../components/bar-chart/bar-chart';
 import { BarChart } from '../components/bar-chart/bar-chart';
 
 interface Props {
-  hostname: string;
+  site: string;
   pageViews: AggregatedPageView[];
+  from?: string;
+  to?: string;
 }
 
 interface Response {
@@ -34,21 +36,53 @@ const getAggregatedPageViews = (pageViews: PageView[]) =>
     []
   );
 
-const SitePage: HC<Props> = ({ hostname, pageViews }) => (
+const SitePage: HC<Props> = ({ site, pageViews, from = '', to = '' }) => (
   <div>
-    <h1>{hostname}</h1>
+    <h1>{siteNameToHostname(site)}</h1>
+    <a href="/">Back</a>
+    <form method="get" action={`/site/${site}?from=${from}&to=${to}`}>
+      <fieldset>
+        <legend>Set time range</legend>
+        <label for="from">From</label>
+        <input
+          type="date"
+          name="from"
+          id="from"
+          value={from}
+          step="1"
+          max={daysAgo(0)}
+          placeholder="YYYY-MM-DD"
+          data-format="YYYY-mm-dd"
+        />
+        <label for="to">To</label>
+        <input
+          type="date"
+          name="to"
+          id="to"
+          value={to}
+          step="1"
+          max={daysAgo(0)}
+          placeholder="YYYY-MM-DD"
+          data-format="YYYY-mm-dd"
+        />
+        <button>Update</button>
+      </fieldset>
+    </form>
     {Boolean(pageViews.length) && (
       <div>
-        <a href="/">Back</a>
-        <BarChart pageViews={pageViews} hostname={hostname} />
+        <BarChart pageViews={pageViews} hostname={siteNameToHostname(site)} />
       </div>
     )}
   </div>
 );
 
-export const pageSite = async (site: string): Promise<Response> => {
+export const pageSite = async (
+  site: string,
+  from?: string,
+  to?: string
+): Promise<Response> => {
   const doc = await arc.tables();
-  const pageViews = await getPageViewsBySite(doc.analytics, site);
+  const pageViews = await getPageViewsBySite(doc.analytics, site, from, to);
 
   const aggregatedPageViews = getAggregatedPageViews(pageViews);
 
@@ -61,8 +95,10 @@ export const pageSite = async (site: string): Promise<Response> => {
     statusCode: 200,
     body: page(
       <SitePage
-        hostname={siteNameToHostname(site)}
+        site={site}
         pageViews={aggregatedPageViews}
+        from={from}
+        to={to}
       />
     ),
   };

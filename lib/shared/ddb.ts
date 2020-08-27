@@ -6,8 +6,14 @@ export interface PageView {
   pathname: string;
 }
 
-const forteenDaysAgo = () =>
-  new Date(Date.now() - 14 * 24 * 3600 * 1000).toISOString().split('T').shift();
+const increaseByOneDay = (date: string): string => {
+  const [dayString, month, year] = date.split('-').reverse();
+  const [second, first = '0'] = String(Number(dayString) + 1)
+    .split('')
+    .reverse();
+  const day = `${first}${second}`;
+  return `${year}-${month}-${day}`;
+};
 
 export const getTable = async (doc: ArcTableClient): Promise<string> => {
   const result = await doc.scan({});
@@ -42,22 +48,24 @@ export const getSites = async (doc: ArcTableClient): Promise<string[]> => {
 
 export const getPageViewsBySite = async (
   doc: ArcTableClient,
-  hostname: string
+  hostname: string,
+  from: string,
+  to: string
 ): Promise<PageView[]> => {
-  const date = forteenDaysAgo();
   const { Items: items = [] } = await doc.query({
-    KeyConditionExpression: `PK = :hostname AND SK >= :forteen_days_ago`,
+    KeyConditionExpression: `PK = :hostname AND SK BETWEEN :from AND :to`,
     ProjectionExpression: '#page_views, #date, #pathname',
     ExpressionAttributeValues: {
       ':hostname': hostname,
-      ':forteen_days_ago': date,
+      ':from': from,
+      ':to': increaseByOneDay(to),
     },
     ExpressionAttributeNames: {
       '#page_views': 'PageViews',
       '#date': 'Date',
       '#pathname': 'Pathname',
     },
-    ScanIndexForward: false,
+    ScanIndexForward: true,
   });
   return items.map(({ PageViews, Date: date, Pathname: pathname }) => ({
     pageViews: Number(PageViews),

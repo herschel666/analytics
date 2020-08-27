@@ -13,7 +13,7 @@ const insertCSS = (): string => {
 export const page = (body: string, title = 'ek|analytics'): string =>
   /* html */ `
 <!doctype html>
-<html lang="en">
+<html lang="en-EN">
   <head>
     <meta charset="utf-8">
     <title>${title}</title>
@@ -22,6 +22,31 @@ export const page = (body: string, title = 'ek|analytics'): string =>
   </head>
   <body>
     ${body}
+    <script>
+      const noInputDateSupport =
+        Object.assign(document.createElement('input'), {
+          type: 'date',
+          value: '_',
+        }).value === '_';
+      if (
+        noInputDateSupport &&
+        document.querySelectorAll('input[type="date"').length
+      ) {
+        const load = (src) =>
+          new Promise((resolve) =>
+            document.head.appendChild(
+              Object.assign(document.createElement('script'), {
+                src,
+                onload: resolve,
+              })
+            )
+          );
+        [
+          'https://unpkg.com/better-dom@^4/dist/better-dom.min.js',
+          'https://cdnjs.cloudflare.com/ajax/libs/better-dateinput-polyfill/3.3.0/better-dateinput-polyfill.min.js',
+        ].reduce((p, src) => p.then(() => load(src)), Promise.resolve());
+      }
+    </script>
   </body>
 </html>
 `.trim();
