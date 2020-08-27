@@ -5,11 +5,13 @@ import * as faker from 'faker';
 import { hostnameToSite } from '../../shared/util';
 import { addSite, addPageView } from '../../shared/ddb';
 
+const DAYS = 40;
+
 const sites = Array.from({ length: 3 }, () => faker.internet.domainName()).map(
   hostnameToSite
 );
-const dates = Array.from({ length: 14 }, (_, i: number) =>
-  new Date(Date.now() - (14 - i) * 24 * 3600 * 1000).getTime()
+const dates = Array.from({ length: DAYS }, (_, i: number) =>
+  new Date(Date.now() - (DAYS - i) * 24 * 3600 * 1000).getTime()
 );
 
 const getPathname = () =>
@@ -28,7 +30,7 @@ const createPageViewsForSite = (
       acc.concat(
         pathnames
           .map((pathname) =>
-            Array.from({ length: faker.random.number(10) }, () =>
+            Array.from({ length: faker.random.number(5) }, () =>
               addPageView(tableClient, site, pathname, date)
             )
           )
