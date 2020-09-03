@@ -23,7 +23,15 @@ declare module '@architect/functions' {
     [table: string]: ArcTableClient;
   }
 
+  interface Session {
+    write: (data: Record<string, string>) => Promise<string>;
+    read: <R = Record<string, string>, T = Record<string, string>>(
+      req: R
+    ) => Promise<T>;
+  }
+
   interface Http {
+    session: Session;
     helpers: {
       static(filename: string): string;
       url(pathname: string): string;
@@ -35,6 +43,7 @@ declare module '@architect/functions' {
       ): T;
     };
   }
+
   interface Arc {
     http: Http;
     tables(): Promise<Data>;

@@ -5,6 +5,7 @@ import { addPageView } from '../../shared/ddb';
 const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 interface Params {
+  // TODO: switch from slug to scambled site/owner-pair...
   site?: string;
   resource?: string;
 }
@@ -18,13 +19,16 @@ interface Req {
 
 export const handler = async (req: Req) => {
   const { site, resource } = req.queryStringParameters || {};
+  // TODO: replace static 'test-user' with dynamic one...
+  const owner = 'test-user';
 
   if (site && resource) {
     const { pathname, search } = new URL(resource, 'http://example.com');
     const doc = await arc.tables();
 
     try {
-      await addPageView(doc.analytics, site, `${pathname}${search}`);
+      // TODO: replace static 'test-user' with dynamic one...
+      await addPageView(doc.analytics, site, owner, `${pathname}${search}`);
     } catch (err) {
       console.log(err);
     }

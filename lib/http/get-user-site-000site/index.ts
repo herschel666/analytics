@@ -1,3 +1,5 @@
+import arc from '@architect/functions';
+
 import { pageSite } from '../../pages/page-site';
 import { daysAgo } from '../../shared/util';
 
@@ -48,7 +50,8 @@ export const handler = async (req: Req): Res => {
     isValidDate(fromDate) ? fromDate : undefined,
     isValidDate(toDate) ? toDate : undefined
   );
+  const { owner } = await arc.http.session.read<Req, { owner: string }>(req);
   // TODO: store interval by site in session
 
-  return await pageSite(site, from, to);
+  return await pageSite(site, owner, from, to);
 };

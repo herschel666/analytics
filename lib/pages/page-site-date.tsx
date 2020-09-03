@@ -37,7 +37,7 @@ const IndexPage: HC<Props> = ({ hostname, date, pageViews }) => (
     </h1>
     {Boolean(pageViews.length) && (
       <div>
-        <a href={`/site/${hostnameToSite(hostname)}`}>Back</a>
+        <a href={`/user/site/${hostnameToSite(hostname)}`}>Back</a>
         <table border="1" cellPadding="8">
           <caption>Page Views for {date}</caption>
           <thead>
@@ -64,12 +64,14 @@ const IndexPage: HC<Props> = ({ hostname, date, pageViews }) => (
 
 export const pageSiteDate = async (
   site: string,
+  owner: string,
   date: string
 ): Promise<Response> => {
   const doc = await arc.tables();
   const pageViewsPerDate = await getPageViewsBySiteAndDate(
     doc.analytics,
     site,
+    owner,
     date
   );
 

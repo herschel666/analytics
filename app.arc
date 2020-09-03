@@ -7,10 +7,11 @@ bucket ek-geloets-installationen-ftw
 
 @http
 get /
-get /site/:site
-get /site/:site/date/:date
+get /user
+get /user/site/:site
+get /user/site/:site/date/:date
 get /cctv.gif
-post /
+post /user
 
 get /test/some-page
 get /test/other-page
