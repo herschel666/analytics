@@ -1,4 +1,4 @@
-import arc from '@architect/functions';
+import * as arc from '@architect/functions';
 import type { ArcTableClient } from '@architect/functions';
 import * as faker from 'faker';
 

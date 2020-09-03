@@ -1,4 +1,4 @@
-import arc from '@architect/functions';
+import * as arc from '@architect/functions';
 
 import { pageIndex } from '../../pages/page-index';
 
@@ -8,6 +8,7 @@ interface Params {
 
 interface Req {
   queryStringParameters: Params | null;
+  headers: Record<string, string>;
 }
 
 export const handler = async (req: Req) => {

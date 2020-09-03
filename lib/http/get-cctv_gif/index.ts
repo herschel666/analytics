@@ -1,4 +1,4 @@
-import arc from '@architect/functions';
+import * as arc from '@architect/functions';
 
 import { addPageView } from '../../shared/ddb';
 

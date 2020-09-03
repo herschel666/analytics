@@ -1,4 +1,4 @@
-import arc from '@architect/functions';
+import * as arc from '@architect/functions';
 
 import { pageSiteDate } from '../../pages/page-site-date';
 
@@ -9,6 +9,7 @@ interface PathParams {
 
 interface Req {
   pathParameters: PathParams;
+  headers: Record<string, string>;
 }
 
 export const handler = async (req: Req) => {

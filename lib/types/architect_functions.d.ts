@@ -23,9 +23,13 @@ declare module '@architect/functions' {
     [table: string]: ArcTableClient;
   }
 
+  interface BaseRequest {
+    headers: Record<string, string>;
+  }
+
   interface Session {
     write: (data: Record<string, string>) => Promise<string>;
-    read: <R = Record<string, string>, T = Record<string, string>>(
+    read: <R extends BaseRequest, T = Record<string, string>>(
       req: R
     ) => Promise<T>;
   }
@@ -44,12 +48,6 @@ declare module '@architect/functions' {
     };
   }
 
-  interface Arc {
-    http: Http;
-    tables(): Promise<Data>;
-  }
-
-  const arc: Arc;
-
-  export default arc;
+  export const http: Http;
+  export const tables: () => Promise<Data>;
 }
