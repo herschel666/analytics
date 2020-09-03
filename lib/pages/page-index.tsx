@@ -1,6 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-import arc from '@architect/functions';
+import * as arc from '@architect/functions';
 
 import { getTable, getSites } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';

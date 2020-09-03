@@ -1,4 +1,4 @@
-import arc from '@architect/functions';
+import * as arc from '@architect/functions';
 
 import { pageSite } from '../../pages/page-site';
 import { daysAgo } from '../../shared/util';
@@ -15,6 +15,7 @@ interface Params {
 interface Req {
   pathParameters: PathParams;
   queryStringParameters: Params | null;
+  headers: Record<string, string>;
 }
 
 type Res = ReturnType<typeof pageSite>;

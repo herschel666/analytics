@@ -1,4 +1,4 @@
-import arc from '@architect/functions';
+import * as arc from '@architect/functions';
 
 import { hostnameToSite } from '../../shared/util';
 import { addSite } from '../../shared/ddb';
@@ -10,6 +10,7 @@ interface Params {
 
 interface Req {
   queryStringParameters: Params | null;
+  headers: Record<string, string>;
 }
 interface Payload {
   site_url?: unknown;

@@ -1,6 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-import arc from '@architect/functions';
+import * as arc from '@architect/functions';
 
 import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
