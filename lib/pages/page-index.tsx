@@ -24,7 +24,7 @@ interface Response {
 const IndexPage: HC<Props> = ({ sites, table, debug }) => (
   <div>
     <h1>ek|analytics</h1>
-    <form method="post" action={`/${debug ? '?debug=true' : ''}`}>
+    <form method="post" action={`/user/${debug ? '?debug=true' : ''}`}>
       <fieldset>
         <legend>Add a new site…</legend>
         <div>
@@ -45,7 +45,7 @@ const IndexPage: HC<Props> = ({ sites, table, debug }) => (
         <ul>
           {sites.map((site) => (
             <li>
-              <a href={`/site/${site}`}>{siteNameToHostname(site)}</a>
+              <a href={`/user/site/${site}`}>{siteNameToHostname(site)}</a>
             </li>
           ))}
         </ul>
@@ -61,9 +61,15 @@ const IndexPage: HC<Props> = ({ sites, table, debug }) => (
   </div>
 );
 
-export const pageIndex = async (debug: boolean): Promise<Response> => {
+export const pageIndex = async (
+  owner: string,
+  debug: boolean
+): Promise<Response> => {
   const doc = await arc.tables();
-  const promises: DDBPromise = [Promise.resolve(''), getSites(doc.analytics)];
+  const promises: DDBPromise = [
+    Promise.resolve(''),
+    getSites(doc.analytics, owner),
+  ];
 
   if (debug) {
     promises[0] = getTable(doc.analytics);

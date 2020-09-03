@@ -31,7 +31,8 @@ const createPageViewsForSite = (
         pathnames
           .map((pathname) =>
             Array.from({ length: faker.random.number(5) }, () =>
-              addPageView(tableClient, site, pathname, date)
+              // TODO: replace static 'test-user' with dynamic one...
+              addPageView(tableClient, site, 'test-user', pathname, date)
             )
           )
           .flat()
@@ -52,7 +53,8 @@ export const handler = async () => {
     sites.reduce(
       (acc, site) =>
         acc.concat([
-          addSite(doc.analytics, site),
+          // TODO: replace static 'test-user' with dynamic one...
+          addSite(doc.analytics, site, 'test-user'),
           ...dates
             .map((date) =>
               createPageViewsForSite(doc.analytics, sitesPathnames, date)

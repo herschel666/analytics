@@ -39,8 +39,8 @@ const getAggregatedPageViews = (pageViews: PageView[]) =>
 const SitePage: HC<Props> = ({ site, pageViews, from = '', to = '' }) => (
   <div>
     <h1>{siteNameToHostname(site)}</h1>
-    <a href="/">Back</a>
-    <form method="get" action={`/site/${site}?from=${from}&to=${to}`}>
+    <a href={`/user/`}>Back</a>
+    <form method="get" action={`/user/site/${site}?from=${from}&to=${to}`}>
       <fieldset>
         <legend>Set time range</legend>
         <label for="from">From</label>
@@ -78,11 +78,18 @@ const SitePage: HC<Props> = ({ site, pageViews, from = '', to = '' }) => (
 
 export const pageSite = async (
   site: string,
+  owner: string,
   from?: string,
   to?: string
 ): Promise<Response> => {
   const doc = await arc.tables();
-  const pageViews = await getPageViewsBySite(doc.analytics, site, from, to);
+  const pageViews = await getPageViewsBySite(
+    doc.analytics,
+    site,
+    owner,
+    from,
+    to
+  );
 
   const aggregatedPageViews = getAggregatedPageViews(pageViews);
 

@@ -66,7 +66,9 @@ export const BarChart: HC<Props> = ({ pageViews, hostname }) => {
           >
             <styled.BarCaption class="bar-chart__column-caption" scope="row">
               <a
-                href={`/site/${hostnameToSite(hostname)}/date/${pageViewDate}`}
+                href={`/user/site/${hostnameToSite(
+                  hostname
+                )}/date/${pageViewDate}`}
               >
                 {formatDate(pageViewDate)}
               </a>

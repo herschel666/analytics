@@ -1,16 +1,21 @@
-import { pageIndex } from '../../pages/page-index';
+import arc from '@architect/functions';
 
-interface Params {
-  debug?: string;
+interface Response {
+  statusCode: number;
+  headers: Record<string, string>;
 }
 
-interface Req {
-  queryStringParameters: Params | null;
-}
+export const handler = async (): Promise<Response> => {
+  // TODO: replace static 'test-user' with dynamic one...
+  const owner = 'test-user';
+  const cookie = await arc.http.session.write({ owner });
 
-export const handler = async (req: Req) => {
-  const { debug: debugParam } = req.queryStringParameters || {};
-  const debug = debugParam === 'true' && process.env.NODE_ENV === 'testing';
-
-  return await pageIndex(debug);
+  // TODO: implement authentication...
+  return {
+    statusCode: 301,
+    headers: {
+      'set-cookie': cookie,
+      location: arc.http.helpers.url('/user/'),
+    },
+  };
 };

@@ -16,6 +16,7 @@ interface Payload {
 }
 
 export const handler = async (req: Req) => {
+  const { owner } = await arc.http.session.read<Req, { owner: string }>(req);
   const { debug: debugParam } = req.queryStringParameters || {};
   const debug = debugParam === 'true' && process.env.NODE_ENV === 'testing';
   const { site_url } = arc.http.helpers.bodyParser<Req, Payload>(req);
@@ -25,8 +26,8 @@ export const handler = async (req: Req) => {
     const { hostname } = new URL(siteUrl);
     const doc = await arc.tables();
 
-    await addSite(doc.analytics, hostnameToSite(hostname));
+    await addSite(doc.analytics, hostnameToSite(hostname), owner);
   }
 
-  return await pageIndex(debug);
+  return await pageIndex(owner, debug);
 };

@@ -23,24 +23,30 @@ export const getTable = async (doc: ArcTableClient): Promise<string> => {
 
 export const addSite = async (
   doc: ArcTableClient,
-  hostname: string
+  hostname: string,
+  owner: string
 ): Promise<void> => {
   try {
     await doc.put({
       PK: 'site',
-      SK: hostname,
+      SK: `${owner}#${hostname}`,
       Site: hostname,
+      Owner: owner,
     });
   } catch (err) {
     console.log(err);
   }
 };
 
-export const getSites = async (doc: ArcTableClient): Promise<string[]> => {
+export const getSites = async (
+  doc: ArcTableClient,
+  owner: string
+): Promise<string[]> => {
   const { Items: items = [] } = await doc.query({
-    KeyConditionExpression: 'PK = :site',
+    KeyConditionExpression: 'PK = :site AND begins_with(SK, :owner)',
     ExpressionAttributeValues: {
       ':site': 'site',
+      ':owner': owner,
     },
   });
   return items.map(({ Site: site }) => site);
@@ -49,14 +55,15 @@ export const getSites = async (doc: ArcTableClient): Promise<string[]> => {
 export const getPageViewsBySite = async (
   doc: ArcTableClient,
   hostname: string,
+  owner: string,
   from: string,
   to: string
 ): Promise<PageView[]> => {
   const { Items: items = [] } = await doc.query({
-    KeyConditionExpression: `PK = :hostname AND SK BETWEEN :from AND :to`,
+    KeyConditionExpression: `PK = :PK AND SK BETWEEN :from AND :to`,
     ProjectionExpression: '#page_views, #date, #pathname',
     ExpressionAttributeValues: {
-      ':hostname': hostname,
+      ':PK': `${owner}#${hostname}`,
       ':from': from,
       ':to': increaseByOneDay(to),
     },
@@ -77,13 +84,14 @@ export const getPageViewsBySite = async (
 export const getPageViewsBySiteAndDate = async (
   doc: ArcTableClient,
   hostname: string,
+  owner: string,
   date: string
 ): Promise<PageView[]> => {
   const { Items: items = [] } = await doc.query({
-    KeyConditionExpression: `PK = :hostname AND begins_with(SK, :date)`,
+    KeyConditionExpression: `PK = :PK AND begins_with(SK, :date)`,
     ProjectionExpression: '#page_views, #date, #pathname',
     ExpressionAttributeValues: {
-      ':hostname': hostname,
+      ':PK': `${owner}#${hostname}`,
       ':date': date,
     },
     ExpressionAttributeNames: {
@@ -103,6 +111,7 @@ export const getPageViewsBySiteAndDate = async (
 export const addPageView = async (
   doc: ArcTableClient,
   hostname: string,
+  owner: string,
   resource: string,
   date: number = Date.now()
 ): Promise<void> => {
@@ -111,7 +120,7 @@ export const addPageView = async (
   try {
     await doc.update({
       Key: {
-        PK: hostname,
+        PK: `${owner}#${hostname}`,
         SK: `${day}#${resource}`,
       },
       UpdateExpression:
