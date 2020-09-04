@@ -1,17 +1,14 @@
 import * as arc from '@architect/functions';
 
-import type { Response } from '../../types/analytics';
+import type { Request, Response } from '../../types/analytics';
 import { pageSiteDate } from '../../pages/page-site-date';
 
-interface PathParams {
+interface Params {
   site: string;
   date: string;
 }
 
-interface Req {
-  pathParameters: PathParams;
-  headers: Record<string, string>;
-}
+type Req = Request<Params>;
 
 export const handler = async (req: Req): Promise<Response> => {
   const { site, date } = req.pathParameters;

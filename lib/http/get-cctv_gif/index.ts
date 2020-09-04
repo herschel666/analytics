@@ -1,22 +1,21 @@
 import * as arc from '@architect/functions';
 
-import type { Response } from '../../types/analytics';
+import type { Request, Response } from '../../types/analytics';
 import { addPageView } from '../../shared/ddb';
 
 const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-interface Params {
+interface Query {
   // TODO: switch from slug to scambled site/owner-pair...
   site?: string;
   resource?: string;
 }
 
-interface Req {
-  queryStringParameters: Params | null;
-  headers: {
-    'User-Agent': string;
-  };
+interface Headers {
+  'User-Agent': string;
 }
+
+type Req = Request<void, Query, Headers>;
 
 export const handler = async (req: Req): Promise<Response> => {
   const { site, resource } = req.queryStringParameters || {};

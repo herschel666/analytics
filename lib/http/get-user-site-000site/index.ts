@@ -1,23 +1,19 @@
 import * as arc from '@architect/functions';
 
-import type { Response } from '../../types/analytics';
+import type { Request, Response } from '../../types/analytics';
 import { pageSite } from '../../pages/page-site';
 import { daysAgo } from '../../shared/util';
 
-interface PathParams {
+interface Params {
   site: string;
 }
 
-interface Params {
+interface Query {
   from?: string;
   to?: string;
 }
 
-interface Req {
-  pathParameters: PathParams;
-  queryStringParameters: Params | null;
-  headers: Record<string, string>;
-}
+type Req = Request<Params, Query>;
 
 const isValidDate = (date: string): boolean => {
   try {

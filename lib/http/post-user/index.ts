@@ -1,18 +1,16 @@
 import * as arc from '@architect/functions';
 
-import type { Response } from '../../types/analytics';
+import type { Request, Response } from '../../types/analytics';
 import { hostnameToSite } from '../../shared/util';
 import { addSite } from '../../shared/ddb';
 import { pageIndex } from '../../pages/page-index';
 
-interface Params {
+interface Query {
   debug?: string;
 }
 
-interface Req {
-  queryStringParameters: Params | null;
-  headers: Record<string, string>;
-}
+type Req = Request<void, Query>;
+
 interface Payload {
   site_url?: unknown;
 }
