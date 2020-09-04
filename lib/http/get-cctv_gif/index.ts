@@ -1,5 +1,6 @@
 import * as arc from '@architect/functions';
 
+import type { Response } from '../../types/analytics';
 import { addPageView } from '../../shared/ddb';
 
 const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -17,7 +18,7 @@ interface Req {
   };
 }
 
-export const handler = async (req: Req) => {
+export const handler = async (req: Req): Promise<Response> => {
   const { site, resource } = req.queryStringParameters || {};
   // TODO: replace static 'test-user' with dynamic one...
   const owner = 'test-user';

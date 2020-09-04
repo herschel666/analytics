@@ -1,9 +1,6 @@
 import * as arc from '@architect/functions';
 
-interface Response {
-  statusCode: number;
-  headers: Record<string, string>;
-}
+import type { Response } from '../../types/analytics';
 
 export const handler = async (): Promise<Response> => {
   // TODO: replace static 'test-user' with dynamic one...

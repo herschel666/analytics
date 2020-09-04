@@ -2,6 +2,7 @@ import h from 'vhtml';
 import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
 
+import type { Response } from '../types/analytics';
 import { getTable, getSites } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';
 import { page } from './page';
@@ -13,12 +14,6 @@ interface Props {
   sites: string[];
   table: string;
   debug: boolean;
-}
-
-interface Response {
-  headers: Record<string, string>;
-  statusCode: number;
-  body: string;
 }
 
 const IndexPage: HC<Props> = ({ sites, table, debug }) => (
