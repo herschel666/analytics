@@ -1,5 +1,6 @@
 import * as arc from '@architect/functions';
 
+import type { Response } from '../../types/analytics';
 import { pageSite } from '../../pages/page-site';
 import { daysAgo } from '../../shared/util';
 
@@ -17,8 +18,6 @@ interface Req {
   queryStringParameters: Params | null;
   headers: Record<string, string>;
 }
-
-type Res = ReturnType<typeof pageSite>;
 
 const isValidDate = (date: string): boolean => {
   try {
@@ -44,7 +43,7 @@ const sortInterval = (
   }
 };
 
-export const handler = async (req: Req): Res => {
+export const handler = async (req: Req): Promise<Response> => {
   const { site } = req.pathParameters;
   const { from: fromDate, to: toDate } = req.queryStringParameters || {};
   const [from, to] = sortInterval(

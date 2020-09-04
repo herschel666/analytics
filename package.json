@@ -9,7 +9,7 @@
     "watch:arc": "arc sandbox",
     "start": "concurrently -k --raw --kill-others-on-fail -n \"ts,arc\" \"npm run watch:ts\" \"npm run watch:arc\"",
     "build": "ts-node lib/compile -p",
-    "lint": "eslint --fix ./lib/**/*.{ts,tsx}",
+    "lint": "eslint --fix .",
     "type-check": "tsc --noEmit",
     "test": "npm-run-all lint type-check"
   },

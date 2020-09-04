@@ -2,6 +2,7 @@ import h from 'vhtml';
 import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
 
+import type { Response } from '../types/analytics';
 import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { hostnameToSite, siteNameToHostname } from '../shared/util';
@@ -11,12 +12,6 @@ interface Props {
   hostname: string;
   date: string;
   pageViews: PageView[];
-}
-
-interface Response {
-  headers: Record<string, string>;
-  statusCode: number;
-  body: string;
 }
 
 const sortPageViewsPerDate = (a: PageView, b: PageView) => {

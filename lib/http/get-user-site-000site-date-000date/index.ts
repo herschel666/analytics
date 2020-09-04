@@ -1,5 +1,6 @@
 import * as arc from '@architect/functions';
 
+import type { Response } from '../../types/analytics';
 import { pageSiteDate } from '../../pages/page-site-date';
 
 interface PathParams {
@@ -12,7 +13,7 @@ interface Req {
   headers: Record<string, string>;
 }
 
-export const handler = async (req: Req) => {
+export const handler = async (req: Req): Promise<Response> => {
   const { site, date } = req.pathParameters;
   const { owner } = await arc.http.session.read<Req, { owner: string }>(req);
 

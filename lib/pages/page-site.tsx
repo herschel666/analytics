@@ -2,6 +2,7 @@ import h from 'vhtml';
 import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
 
+import type { Response } from '../types/analytics';
 import { getPageViewsBySite } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { siteNameToHostname, daysAgo } from '../shared/util';
@@ -14,12 +15,6 @@ interface Props {
   pageViews: AggregatedPageView[];
   from?: string;
   to?: string;
-}
-
-interface Response {
-  headers: Record<string, string>;
-  statusCode: number;
-  body: string;
 }
 
 const getAggregatedPageViews = (pageViews: PageView[]) =>

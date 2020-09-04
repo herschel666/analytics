@@ -1,6 +1,8 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 
+import type { Response } from '../../types/analytics';
+
 interface Req {
   resource: string;
   queryStringParameters: Record<string, string> | null;
@@ -16,7 +18,7 @@ export const OtherPage: HC<{ resource: string }> = ({ resource }) => (
   </div>
 );
 
-export const handler = async (req: Req) => {
+export const handler = async (req: Req): Promise<Response> => {
   const pathname = encodeURIComponent(req.resource);
   const search = new URLSearchParams(
     req.queryStringParameters || {}
