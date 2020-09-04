@@ -1,12 +1,7 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 
-import type { Response } from '../../types/analytics';
-
-interface Req {
-  resource: string;
-  queryStringParameters: Record<string, string> | null;
-}
+import type { Request, Response } from '../../types/analytics';
 
 export const OtherPage: HC<{ resource: string }> = ({ resource }) => (
   <div>
@@ -18,7 +13,7 @@ export const OtherPage: HC<{ resource: string }> = ({ resource }) => (
   </div>
 );
 
-export const handler = async (req: Req): Promise<Response> => {
+export const handler = async (req: Request): Promise<Response> => {
   const pathname = encodeURIComponent(req.resource);
   const search = new URLSearchParams(
     req.queryStringParameters || {}

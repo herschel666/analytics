@@ -1,16 +1,13 @@
 import * as arc from '@architect/functions';
 
-import type { Response } from '../../types/analytics';
+import type { Request, Response } from '../../types/analytics';
 import { pageIndex } from '../../pages/page-index';
 
-interface Params {
+interface Query {
   debug?: string;
 }
 
-interface Req {
-  queryStringParameters: Params | null;
-  headers: Record<string, string>;
-}
+type Req = Request<void, Query>;
 
 export const handler = async (req: Req): Promise<Response> => {
   const { debug: debugParam } = req.queryStringParameters || {};
