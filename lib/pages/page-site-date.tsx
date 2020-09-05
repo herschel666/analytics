@@ -1,7 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
 import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
@@ -61,7 +60,7 @@ export const pageSiteDate = async (
   site: string,
   owner: string,
   date: string
-): Promise<AGWResult> => {
+): Promise<string> => {
   const doc = await arc.tables();
   const pageViewsPerDate = await getPageViewsBySiteAndDate(
     doc.analytics,
@@ -70,19 +69,11 @@ export const pageSiteDate = async (
     date
   );
 
-  return {
-    headers: {
-      'content-type': 'text/html; charset=utf8',
-      'cache-control':
-        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-    },
-    statusCode: 200,
-    body: page(
-      <IndexPage
-        hostname={siteNameToHostname(site)}
-        date={date}
-        pageViews={pageViewsPerDate.sort(sortPageViewsPerDate)}
-      />
-    ),
-  };
+  return page(
+    <IndexPage
+      hostname={siteNameToHostname(site)}
+      date={date}
+      pageViews={pageViewsPerDate.sort(sortPageViewsPerDate)}
+    />
+  );
 };

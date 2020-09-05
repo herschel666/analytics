@@ -8,6 +8,15 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { debug: debugParam } = req.queryStringParameters || {};
   const debug = debugParam === 'true' && process.env.NODE_ENV === 'testing';
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
+  const body = await pageIndex(owner, debug);
 
-  return await pageIndex(owner, debug);
+  return {
+    headers: {
+      'content-type': 'text/html; charset=utf8',
+      'cache-control':
+        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
+    },
+    statusCode: 200,
+    body,
+  };
 };
