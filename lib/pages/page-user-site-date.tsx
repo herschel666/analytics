@@ -24,7 +24,7 @@ const sortPageViewsPerDate = (a: PageView, b: PageView) => {
   }
 };
 
-const IndexPage: HC<Props> = ({ hostname, date, pageViews }) => (
+const UserSiteDatePage: HC<Props> = ({ hostname, date, pageViews }) => (
   <div>
     <h1>
       {hostname} — {date}
@@ -56,7 +56,7 @@ const IndexPage: HC<Props> = ({ hostname, date, pageViews }) => (
   </div>
 );
 
-export const pageSiteDate = async (
+export const pageUserSiteDate = async (
   site: string,
   owner: string,
   date: string
@@ -70,7 +70,7 @@ export const pageSiteDate = async (
   );
 
   return page(
-    <IndexPage
+    <UserSiteDatePage
       hostname={siteNameToHostname(site)}
       date={date}
       pageViews={pageViewsPerDate.sort(sortPageViewsPerDate)}

@@ -2,7 +2,7 @@ import * as arc from '@architect/functions';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 
-import { pageSite } from '../../pages/page-site';
+import { pageUserSite } from '../../pages/page-user-site';
 import { daysAgo } from '../../shared/util';
 
 const isValidDate = (date: string): boolean => {
@@ -38,7 +38,7 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
     isValidDate(toDate) ? toDate : undefined
   );
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
-  const body = await pageSite(site, owner, from, to);
+  const body = await pageUserSite(site, owner, from, to);
 
   return {
     headers: {
