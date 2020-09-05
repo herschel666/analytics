@@ -4,7 +4,7 @@ import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 
 import { hostnameToSite } from '../../shared/util';
 import { addSite } from '../../shared/ddb';
-import { pageIndex } from '../../pages/page-index';
+import { pageUser } from '../../pages/page-user';
 
 interface Payload {
   site_url?: unknown;
@@ -24,7 +24,7 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
     await addSite(doc.analytics, hostnameToSite(hostname), owner);
   }
 
-  const body = await pageIndex(owner, debug);
+  const body = await pageUser(owner, debug);
 
   return {
     headers: {

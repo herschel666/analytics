@@ -15,7 +15,7 @@ interface Props {
   debug: boolean;
 }
 
-const IndexPage: HC<Props> = ({ sites, table, debug }) => (
+const UserPage: HC<Props> = ({ sites, table, debug }) => (
   <div>
     <h1>ek|analytics</h1>
     <form method="post" action={`/user/${debug ? '?debug=true' : ''}`}>
@@ -55,7 +55,7 @@ const IndexPage: HC<Props> = ({ sites, table, debug }) => (
   </div>
 );
 
-export const pageIndex = async (
+export const pageUser = async (
   owner: string,
   debug: boolean
 ): Promise<string> => {
@@ -71,5 +71,5 @@ export const pageIndex = async (
 
   const [table, sites] = (await Promise.all(promises)) as DDBResults;
 
-  return page(<IndexPage sites={sites} table={table} debug={debug} />);
+  return page(<UserPage sites={sites} table={table} debug={debug} />);
 };

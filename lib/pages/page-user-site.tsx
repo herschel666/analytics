@@ -30,7 +30,7 @@ const getAggregatedPageViews = (pageViews: PageView[]) =>
     []
   );
 
-const SitePage: HC<Props> = ({ site, pageViews, from = '', to = '' }) => (
+const UserSitePage: HC<Props> = ({ site, pageViews, from = '', to = '' }) => (
   <div>
     <h1>{siteNameToHostname(site)}</h1>
     <a href={`/user/`}>Back</a>
@@ -70,7 +70,7 @@ const SitePage: HC<Props> = ({ site, pageViews, from = '', to = '' }) => (
   </div>
 );
 
-export const pageSite = async (
+export const pageUserSite = async (
   site: string,
   owner: string,
   from?: string,
@@ -88,6 +88,11 @@ export const pageSite = async (
   const aggregatedPageViews = getAggregatedPageViews(pageViews);
 
   return page(
-    <SitePage site={site} pageViews={aggregatedPageViews} from={from} to={to} />
+    <UserSitePage
+      site={site}
+      pageViews={aggregatedPageViews}
+      from={from}
+      to={to}
+    />
   );
 };

@@ -2,12 +2,12 @@ import * as arc from '@architect/functions';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 
-import { pageSiteDate } from '../../pages/page-site-date';
+import { pageUserSiteDate } from '../../pages/page-user-site-date';
 
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { site, date } = req.pathParameters;
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
-  const body = await pageSiteDate(site, owner, date);
+  const body = await pageUserSiteDate(site, owner, date);
 
   return {
     headers: {
