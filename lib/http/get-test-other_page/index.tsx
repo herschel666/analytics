@@ -1,7 +1,7 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-
-import type { Request, Response } from '../../types/analytics';
+import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 
 export const OtherPage: HC<{ resource: string }> = ({ resource }) => (
   <div>
@@ -13,7 +13,7 @@ export const OtherPage: HC<{ resource: string }> = ({ resource }) => (
   </div>
 );
 
-export const handler = async (req: Request): Promise<Response> => {
+export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const pathname = encodeURIComponent(req.resource);
   const search = new URLSearchParams(
     req.queryStringParameters || {}

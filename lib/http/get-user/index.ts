@@ -1,18 +1,13 @@
 import * as arc from '@architect/functions';
+import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 
-import type { Request, Response } from '../../types/analytics';
 import { pageIndex } from '../../pages/page-index';
 
-interface Query {
-  debug?: string;
-}
-
-type Req = Request<void, Query>;
-
-export const handler = async (req: Req): Promise<Response> => {
+export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { debug: debugParam } = req.queryStringParameters || {};
   const debug = debugParam === 'true' && process.env.NODE_ENV === 'testing';
-  const { owner } = await arc.http.session.read<Req, { owner: string }>(req);
+  const { owner } = await arc.http.session.read<{ owner: string }>(req);
 
   return await pageIndex(owner, debug);
 };

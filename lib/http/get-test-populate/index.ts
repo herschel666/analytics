@@ -1,8 +1,8 @@
 import * as arc from '@architect/functions';
 import type { ArcTableClient } from '@architect/functions';
 import * as faker from 'faker';
+import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
-import type { Response } from '../../types/analytics';
 import { hostnameToSite } from '../../shared/util';
 import { addSite, addPageView } from '../../shared/ddb';
 
@@ -41,7 +41,7 @@ const createPageViewsForSite = (
     []
   );
 
-export const handler = async (): Promise<Response> => {
+export const handler = async (): Promise<AGWResult> => {
   const doc = await arc.tables();
   const sitesPathnames: [string, string[]][] = sites.map((site) => [
     site,

@@ -1,8 +1,8 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
+import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
-import type { Response } from '../types/analytics';
 import { getPageViewsBySite } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { siteNameToHostname, daysAgo } from '../shared/util';
@@ -76,7 +76,7 @@ export const pageSite = async (
   owner: string,
   from?: string,
   to?: string
-): Promise<Response> => {
+): Promise<AGWResult> => {
   const doc = await arc.tables();
   const pageViews = await getPageViewsBySite(
     doc.analytics,
