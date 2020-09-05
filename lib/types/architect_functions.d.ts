@@ -39,8 +39,32 @@ declare module '@architect/functions' {
     read: <T = Obj>(req: OrigAPIGatewayEvent) => Promise<T>;
   }
 
+  interface Locals {
+    locals?: Record<string, string>;
+  }
+
+  export interface AsyncHandlerEvent extends OrigAPIGatewayEvent {
+    session: Record<string, string>;
+  }
+
+  export type SubsequentAsyncHandlerEvent = AsyncHandlerEvent & Locals;
+
+  export type AsyncHandlerResult = Promise<
+    (AsyncHandlerEvent & Locals) | APIGatewayResult | void
+  >;
+
+  type FirstAsyncHandler = (event: AsyncHandlerEvent) => AsyncHandlerResult;
+  type SubsequentAsyncHandler = (
+    event: SubsequentAsyncHandlerEvent
+  ) => AsyncHandlerResult;
+  type Async = (
+    handler: FirstAsyncHandler,
+    ...handlers: SubsequentAsyncHandler[]
+  ) => Promise<APIGatewayResult>;
+
   interface Http {
     session: Session;
+    async: Async;
     helpers: {
       static(filename: string): string;
       url(pathname: string): string;
