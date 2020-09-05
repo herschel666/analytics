@@ -1,7 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
 import { getPageViewsBySite } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
@@ -76,7 +75,7 @@ export const pageSite = async (
   owner: string,
   from?: string,
   to?: string
-): Promise<AGWResult> => {
+): Promise<string> => {
   const doc = await arc.tables();
   const pageViews = await getPageViewsBySite(
     doc.analytics,
@@ -88,20 +87,7 @@ export const pageSite = async (
 
   const aggregatedPageViews = getAggregatedPageViews(pageViews);
 
-  return {
-    headers: {
-      'content-type': 'text/html; charset=utf8',
-      'cache-control':
-        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-    },
-    statusCode: 200,
-    body: page(
-      <SitePage
-        site={site}
-        pageViews={aggregatedPageViews}
-        from={from}
-        to={to}
-      />
-    ),
-  };
+  return page(
+    <SitePage site={site} pageViews={aggregatedPageViews} from={from} to={to} />
+  );
 };

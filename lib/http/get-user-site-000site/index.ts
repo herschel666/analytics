@@ -32,12 +32,21 @@ const sortInterval = (
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { site } = req.pathParameters;
   const { from: fromDate, to: toDate } = req.queryStringParameters || {};
+  // TODO: store interval by site in session
   const [from, to] = sortInterval(
     isValidDate(fromDate) ? fromDate : undefined,
     isValidDate(toDate) ? toDate : undefined
   );
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
-  // TODO: store interval by site in session
+  const body = await pageSite(site, owner, from, to);
 
-  return await pageSite(site, owner, from, to);
+  return {
+    headers: {
+      'content-type': 'text/html; charset=utf8',
+      'cache-control':
+        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
+    },
+    statusCode: 200,
+    body,
+  };
 };

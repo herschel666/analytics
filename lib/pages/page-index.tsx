@@ -1,7 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
 import { getTable, getSites } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';
@@ -59,7 +58,7 @@ const IndexPage: HC<Props> = ({ sites, table, debug }) => (
 export const pageIndex = async (
   owner: string,
   debug: boolean
-): Promise<AGWResult> => {
+): Promise<string> => {
   const doc = await arc.tables();
   const promises: DDBPromise = [
     Promise.resolve(''),
@@ -72,13 +71,5 @@ export const pageIndex = async (
 
   const [table, sites] = (await Promise.all(promises)) as DDBResults;
 
-  return {
-    headers: {
-      'content-type': 'text/html; charset=utf8',
-      'cache-control':
-        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-    },
-    statusCode: 200,
-    body: page(<IndexPage sites={sites} table={table} debug={debug} />),
-  };
+  return page(<IndexPage sites={sites} table={table} debug={debug} />);
 };
