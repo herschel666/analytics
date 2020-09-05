@@ -1,7 +1,10 @@
 import * as arc from '@architect/functions';
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
-import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
+import type {
+  SubsequentAsyncHandlerEvent as AGWEvent,
+  APIGatewayResult as AGWResult,
+} from '@architect/functions';
 
+import { withOwner } from '../../shared/with-owner';
 import { hostnameToSite } from '../../shared/util';
 import { addSite } from '../../shared/ddb';
 import { pageUser } from '../../pages/page-user';
@@ -10,7 +13,7 @@ interface Payload {
   site_url?: unknown;
 }
 
-export const handler = async (req: AGWEvent): Promise<AGWResult> => {
+const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
   const { debug: debugParam } = req.queryStringParameters || {};
   const debug = debugParam === 'true' && process.env.NODE_ENV === 'testing';
@@ -36,3 +39,5 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
     body,
   };
 };
+
+export const handler = arc.http.async(withOwner, servePageUser);

@@ -1,7 +1,10 @@
 import * as arc from '@architect/functions';
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
-import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
+import type {
+  SubsequentAsyncHandlerEvent as AGWEvent,
+  APIGatewayResult as AGWResult,
+} from '@architect/functions';
 
+import { withOwner } from '../../shared/with-owner';
 import { pageUserSite } from '../../pages/page-user-site';
 import { daysAgo } from '../../shared/util';
 
@@ -29,7 +32,7 @@ const sortInterval = (
   }
 };
 
-export const handler = async (req: AGWEvent): Promise<AGWResult> => {
+const servePageUserSite = async (req: AGWEvent): Promise<AGWResult> => {
   const { site } = req.pathParameters;
   const { from: fromDate, to: toDate } = req.queryStringParameters || {};
   // TODO: store interval by site in session
@@ -50,3 +53,5 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
     body,
   };
 };
+
+export const handler = arc.http.async(withOwner, servePageUserSite);
