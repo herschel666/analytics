@@ -1,23 +1,12 @@
 import * as arc from '@architect/functions';
+import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 
-import type { Request, Response } from '../../types/analytics';
 import { addPageView } from '../../shared/ddb';
 
 const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-interface Query {
-  // TODO: switch from slug to scambled site/owner-pair...
-  site?: string;
-  resource?: string;
-}
-
-interface Headers {
-  'User-Agent': string;
-}
-
-type Req = Request<void, Query, Headers>;
-
-export const handler = async (req: Req): Promise<Response> => {
+export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { site, resource } = req.queryStringParameters || {};
   // TODO: replace static 'test-user' with dynamic one...
   const owner = 'test-user';

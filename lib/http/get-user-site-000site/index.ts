@@ -1,19 +1,9 @@
 import * as arc from '@architect/functions';
+import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 
-import type { Request, Response } from '../../types/analytics';
 import { pageSite } from '../../pages/page-site';
 import { daysAgo } from '../../shared/util';
-
-interface Params {
-  site: string;
-}
-
-interface Query {
-  from?: string;
-  to?: string;
-}
-
-type Req = Request<Params, Query>;
 
 const isValidDate = (date: string): boolean => {
   try {
@@ -39,14 +29,14 @@ const sortInterval = (
   }
 };
 
-export const handler = async (req: Req): Promise<Response> => {
+export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { site } = req.pathParameters;
   const { from: fromDate, to: toDate } = req.queryStringParameters || {};
   const [from, to] = sortInterval(
     isValidDate(fromDate) ? fromDate : undefined,
     isValidDate(toDate) ? toDate : undefined
   );
-  const { owner } = await arc.http.session.read<Req, { owner: string }>(req);
+  const { owner } = await arc.http.session.read<{ owner: string }>(req);
   // TODO: store interval by site in session
 
   return await pageSite(site, owner, from, to);

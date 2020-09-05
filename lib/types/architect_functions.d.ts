@@ -1,5 +1,9 @@
 declare module '@architect/functions' {
   import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
+  import type {
+    APIGatewayEvent as OrigAPIGatewayEvent,
+    APIGatewayProxyResult,
+  } from 'aws-lambda';
 
   export interface ArcTableClient {
     get(
@@ -23,15 +27,16 @@ declare module '@architect/functions' {
     [table: string]: ArcTableClient;
   }
 
-  interface BaseRequest {
-    headers: Record<string, string>;
+  type Obj = Record<string, string>;
+  type AGWResult = Omit<APIGatewayProxyResult, 'body'>;
+
+  export interface APIGatewayResult extends AGWResult {
+    body?: string;
   }
 
   interface Session {
-    write: (data: Record<string, string>) => Promise<string>;
-    read: <R extends BaseRequest, T = Record<string, string>>(
-      req: R
-    ) => Promise<T>;
+    write: (data: Obj) => Promise<string>;
+    read: <T = Obj>(req: OrigAPIGatewayEvent) => Promise<T>;
   }
 
   interface Http {
@@ -39,12 +44,7 @@ declare module '@architect/functions' {
     helpers: {
       static(filename: string): string;
       url(pathname: string): string;
-      bodyParser<
-        R = Record<string, unknown> & { body: string | null },
-        T = Record<string, unknown>
-      >(
-        req: R
-      ): T;
+      bodyParser<T = Record<string, unknown>>(req: OrigAPIGatewayEvent): T;
     };
   }
 
