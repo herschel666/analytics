@@ -1,9 +1,23 @@
 import type { ArcTableClient } from '@architect/functions';
 
+import { btoa, atob } from './util';
+
+interface StartKey {
+  ExclusiveStartKey: {
+    PK: string;
+    SK: string;
+  };
+}
+
 export interface PageView {
   pageViews: number;
   date: string;
   pathname: string;
+}
+
+export interface PageViewsBySite {
+  views: PageView[];
+  cursor?: string;
 }
 
 const increaseByOneDay = (date: string): string => {
@@ -13,6 +27,25 @@ const increaseByOneDay = (date: string): string => {
     .reverse();
   const day = `${first}${second}`;
   return `${year}-${month}-${day}`;
+};
+
+const getExclusiveStartKey = (
+  primaryKey: string,
+  cursor?: string
+): StartKey | void => {
+  const [startKey] = [cursor].filter(Boolean).map((c) => {
+    try {
+      return {
+        ExclusiveStartKey: {
+          PK: primaryKey,
+          SK: atob(c),
+        },
+      };
+    } catch {
+      return undefined;
+    }
+  });
+  return startKey;
 };
 
 export const getTable = async (doc: ArcTableClient): Promise<string> => {
@@ -57,13 +90,19 @@ export const getPageViewsBySite = async (
   hostname: string,
   owner: string,
   from: string,
-  to: string
-): Promise<PageView[]> => {
-  const { Items: items = [] } = await doc.query({
+  to: string,
+  cursor?: string
+): Promise<PageViewsBySite> => {
+  const primaryKey = `${owner}#${hostname}`;
+  const exclusiveStartKey = getExclusiveStartKey(primaryKey, cursor);
+  const {
+    Items: items = [],
+    LastEvaluatedKey: lastEvaluatedKey,
+  } = await doc.query({
     KeyConditionExpression: `PK = :PK AND SK BETWEEN :from AND :to`,
     ProjectionExpression: '#page_views, #date, #pathname',
     ExpressionAttributeValues: {
-      ':PK': `${owner}#${hostname}`,
+      ':PK': primaryKey,
       ':from': from,
       ':to': increaseByOneDay(to),
     },
@@ -72,13 +111,20 @@ export const getPageViewsBySite = async (
       '#date': 'Date',
       '#pathname': 'Pathname',
     },
-    ScanIndexForward: true,
+    ScanIndexForward: false,
+    ...exclusiveStartKey,
   });
-  return items.map(({ PageViews, Date: date, Pathname: pathname }) => ({
+  const newCursor =
+    typeof lastEvaluatedKey === 'object' && lastEvaluatedKey !== null
+      ? btoa(lastEvaluatedKey.SK)
+      : undefined;
+  const views = items.map(({ PageViews, Date: date, Pathname: pathname }) => ({
     pageViews: Number(PageViews),
     date,
     pathname,
   }));
+
+  return { views, cursor: newCursor };
 };
 
 export const getPageViewsBySiteAndDate = async (

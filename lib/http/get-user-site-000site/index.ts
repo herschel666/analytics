@@ -34,14 +34,19 @@ const sortInterval = (
 
 const servePageUserSite = async (req: AGWEvent): Promise<AGWResult> => {
   const { site } = req.pathParameters;
-  const { from: fromDate, to: toDate } = req.queryStringParameters || {};
+  const { from: fromDate, to: toDate, cursor: cursorParam } =
+    req.queryStringParameters || {};
   // TODO: store interval by site in session
   const [from, to] = sortInterval(
     isValidDate(fromDate) ? fromDate : undefined,
     isValidDate(toDate) ? toDate : undefined
   );
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
-  const body = await pageUserSite(site, owner, from, to);
+  const cursor =
+    typeof cursorParam === 'string' && cursorParam.length
+      ? cursorParam
+      : undefined;
+  const body = await pageUserSite(site, owner, from, to, cursor);
 
   return {
     headers: {

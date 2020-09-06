@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer';
+
 export const siteNameToHostname = (site: string): string =>
   site.split('_').join('.');
 
@@ -9,3 +11,9 @@ export const daysAgo = (days: number): string =>
     .toISOString()
     .split('T')
     .shift();
+
+export const btoa = (str: string): string =>
+  Buffer.from(str).toString('base64');
+
+export const atob = (str: string): string =>
+  Buffer.from(str, 'base64').toString('utf8');
