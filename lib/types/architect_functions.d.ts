@@ -23,7 +23,9 @@ declare module '@architect/functions' {
     ): Promise<DocumentClient.UpdateItemOutput>;
   }
 
-  interface Data {
+  export interface Data {
+    _doc: DocumentClient;
+    _name(name: string): string;
     [table: string]: ArcTableClient;
   }
 

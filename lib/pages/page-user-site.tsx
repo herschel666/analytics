@@ -11,6 +11,7 @@ import { BarChart } from '../components/bar-chart/bar-chart';
 
 interface Props {
   site: string;
+  owner: string;
   pageViews: AggregatedPageView[];
   from?: string;
   to?: string;
@@ -112,6 +113,7 @@ export const pageUserSite = async (
   return page(
     <UserSitePage
       site={site}
+      owner={owner}
       pageViews={aggregatedPageViews}
       from={from}
       to={to}

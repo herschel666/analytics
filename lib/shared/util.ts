@@ -17,3 +17,6 @@ export const btoa = (str: string): string =>
 
 export const atob = (str: string): string =>
   Buffer.from(str, 'base64').toString('utf8');
+
+export const firstCharToLower = (s: string): string =>
+  s.replace(/^([A-Z])/, (x) => x.toLowerCase());
