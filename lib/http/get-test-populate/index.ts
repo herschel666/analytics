@@ -21,6 +21,15 @@ const getPathname = () =>
     .reverse()
     .join('/');
 
+const getReferrer = (): string | undefined => {
+  const amount = faker.random.number(5);
+  if (amount === 0) {
+    return undefined;
+  }
+  const pathname = faker.lorem.words(amount).split(' ').join('/');
+  return new URL(pathname, faker.internet.url()).toString();
+};
+
 const createPageViewsForSite = (
   tableClient: ArcTableClient,
   sitesPathnames: [string, string[]][],
@@ -33,7 +42,14 @@ const createPageViewsForSite = (
           .map((pathname) =>
             Array.from({ length: faker.random.number(5) }, () =>
               // TODO: replace static 'test-user' with dynamic one...
-              addPageView(tableClient, site, 'test-user', pathname, date)
+              addPageView(
+                tableClient,
+                site,
+                'test-user',
+                pathname,
+                getReferrer(),
+                date
+              )
             )
           )
           .flat()

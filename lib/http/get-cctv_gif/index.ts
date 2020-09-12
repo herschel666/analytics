@@ -2,22 +2,34 @@ import * as arc from '@architect/functions';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 
+import { decrypt } from '../../shared/crypto';
+import { hostnameToSite } from '../../shared/util';
 import { addPageView } from '../../shared/ddb';
 
 const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
-  const { site, resource } = req.queryStringParameters || {};
-  // TODO: replace static 'test-user' with dynamic one...
-  const owner = 'test-user';
+  const { id, resource, referrer: maybeReferrer = '' } =
+    req.queryStringParameters || {};
+  const [owner, hostname] = decrypt(id).split('#');
+  const site = hostnameToSite(hostname);
+  const referrer =
+    maybeReferrer.length === 0
+      ? undefined
+      : decodeURIComponent(maybeReferrer.trim());
 
   if (site && resource) {
     const { pathname, search } = new URL(resource, 'http://example.com');
     const doc = await arc.tables();
 
     try {
-      // TODO: replace static 'test-user' with dynamic one...
-      await addPageView(doc.analytics, site, owner, `${pathname}${search}`);
+      await addPageView(
+        doc.analytics,
+        site,
+        owner,
+        `${pathname}${search}`,
+        referrer
+      );
     } catch (err) {
       console.log(err);
     }

@@ -9,6 +9,7 @@ bucket ek-geloets-installationen-ftw
 get /
 get /user
 get /user/site/:site
+get /user/site/:site/settings
 get /user/site/:site/date/:date
 get /cctv.gif
 post /user
@@ -21,3 +22,8 @@ get /test/populate
 analytics
   PK *String
   SK **String
+
+@indexes
+analytics
+  GSI1PK *String
+  GSI1SK **String
