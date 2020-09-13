@@ -5,9 +5,10 @@
   "private": true,
   "scripts": {
     "postinstall": "arc hydrate",
+    "ddb": "java -Djava.library.path=./.db/DynamoDBLocal_lib -jar ./.db/DynamoDBLocal.jar -sharedDb -inMemory -port 4444",
     "watch:ts": "ts-node lib/compile --watch --verbose",
-    "watch:arc": "arc sandbox",
-    "start": "concurrently -k --raw --kill-others-on-fail -n \"ts,arc\" \"npm run watch:ts\" \"npm run watch:arc\"",
+    "watch:arc": "ARC_TABLES_PORT=4444 ARC_DB_EXTERNAL=true arc sandbox",
+    "start": "concurrently -k --raw --kill-others-on-fail -n \"ddb,ts,arc\" \"npm run ddb\" \"npm run watch:ts\" \"npm run watch:arc\"",
     "build": "ts-node lib/compile -p",
     "lint": "eslint --fix .",
     "type-check": "tsc --noEmit",
