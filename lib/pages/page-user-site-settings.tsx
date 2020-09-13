@@ -3,7 +3,7 @@ import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
 
 import { getSite } from '../shared/ddb';
-import { hostnameToSite, siteNameToHostname } from '../shared/util';
+import { siteNameToHostname } from '../shared/util';
 import { page } from './page';
 
 interface Props {
@@ -18,7 +18,7 @@ const UserSiteDatePage: HC<Props> = ({ id, hostname }) => (
   <div>
     <h1>{hostname} — Settings</h1>
     <div>
-      <a href={`/user/site/${hostnameToSite(hostname)}`}>Back</a>
+      <a href="/user">Back</a>
       <div>
         <label for="tracking-code">Tracking code</label>
         <textarea id="tracking-code" class="w-full">{`

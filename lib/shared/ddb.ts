@@ -1,4 +1,5 @@
-import type { ArcTableClient } from '@architect/functions';
+import type { ArcTableClient, Data } from '@architect/functions';
+import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import { btoa, atob, firstCharToLower } from './util';
 import { encrypt } from './crypto';
@@ -28,17 +29,31 @@ export interface PageViewsBySite {
   cursor?: string;
 }
 
-const resultToSiteEntry = (result: Record<string, string>): SiteEntry | never =>
-  ['CreatedAt', 'Site', 'Owner', 'Hash'].reduce(
-    (acc: Partial<SiteEntry>, key) => {
-      if (typeof result[key] !== 'string' || result[key].length === 0) {
-        throw new Error(`Missing key "${key}" in result.`);
-      }
-      acc[firstCharToLower(key)] = result[key];
-      return acc;
-    },
-    {}
-  ) as SiteEntry;
+export interface ReferrerHostEntry {
+  count: number;
+  hostname: string;
+  month: string;
+}
+
+export interface ReferrerEntry {
+  count: number;
+  pathname: string;
+  month: string;
+}
+
+const resultToEntry = <
+  T extends Record<string extends keyof T ? string : never, string | number>
+>(
+  keys: string[],
+  result: Record<string, string | number>
+): T | never =>
+  keys.reduce((acc: Partial<T>, key) => {
+    if (typeof result[key] === 'undefined') {
+      throw new Error(`Missing key "${key}" in result.`);
+    }
+    acc[firstCharToLower(key)] = result[key];
+    return acc;
+  }, {}) as T;
 
 const increaseByOneDay = (date: string): string => {
   const [dayString, month, year] = date.split('-').reverse();
@@ -126,7 +141,10 @@ export const getSite = async (
       PK: key,
       SK: key,
     });
-    return resultToSiteEntry(result);
+    return resultToEntry<SiteEntry>(
+      ['CreatedAt', 'Site', 'Owner', 'Hash'],
+      result
+    );
   } catch (err) {
     console.log(err);
   }
@@ -203,8 +221,77 @@ export const getPageViewsBySiteAndDate = async (
   }));
 };
 
-export const addPageView = async (
+export const getReferrersBySite = async (
   doc: ArcTableClient,
+  site: string,
+  owner: string
+): Promise<ReferrerHostEntry[]> => {
+  const ownerSite = `${owner}#${site}`;
+  const [yyyy, mm, , month = `${yyyy}-${mm}`] = new Date()
+    .toISOString()
+    .split('T')
+    .shift()
+    .split('-');
+
+  try {
+    const { Items: items = [] } = await doc.query({
+      KeyConditionExpression: 'PK = :PK AND begins_with(SK, :SK)',
+      ProjectionExpression: '#count, #hostname',
+      ExpressionAttributeValues: {
+        ':PK': `SITE#${ownerSite}`,
+        ':SK': `REFERRER_HOST#${ownerSite}#${month}`,
+      },
+      ExpressionAttributeNames: {
+        '#count': 'Count',
+        '#hostname': 'Hostname',
+      },
+      ScanIndexForward: false,
+    });
+    return items.map((item) =>
+      resultToEntry<ReferrerHostEntry>(['Count', 'Hostname'], item)
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getReferrersBySiteAndHost = async (
+  doc: ArcTableClient,
+  site: string,
+  owner: string,
+  host: string
+): Promise<ReferrerEntry[]> => {
+  const ownerSite = `${owner}#${site}`;
+  const [yyyy, mm, , month = `${yyyy}-${mm}`] = new Date()
+    .toISOString()
+    .split('T')
+    .shift()
+    .split('-');
+
+  try {
+    const { Items: items = [] } = await doc.query({
+      KeyConditionExpression: 'PK = :PK AND begins_with(SK, :SK)',
+      ProjectionExpression: '#count, #pathname',
+      ExpressionAttributeValues: {
+        ':PK': `SITE#${ownerSite}`,
+        ':SK': `REFERRER#${ownerSite}#${month}#${host}`,
+      },
+      ExpressionAttributeNames: {
+        '#count': 'Count',
+        '#pathname': 'Pathname',
+      },
+      ScanIndexForward: false,
+    });
+    return items.map((item) =>
+      resultToEntry<ReferrerEntry>(['Count', 'Pathname'], item)
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const addPageView = async (
+  data: Data,
   site: string,
   owner: string,
   resource: string,
@@ -213,12 +300,9 @@ export const addPageView = async (
 ): Promise<void> => {
   const ownerSite = `${owner}#${site}`;
   const day = new Date(date).toISOString().split('T').shift();
-
-  // TODO: save referrer
-  Boolean(referrer) && console.log('Referrer', referrer);
-
-  try {
-    await doc.update({
+  const pageView: DocumentClient.TransactWriteItem = {
+    Update: {
+      TableName: data._name('analytics'),
       Key: {
         PK: `SITE#${ownerSite}`,
         SK: `PAGEVIEW#${ownerSite}#${day}#${resource}`,
@@ -236,8 +320,67 @@ export const addPageView = async (
         '#date': 'Date',
         '#pathname': 'Pathname',
       },
-      ReturnValues: 'NONE',
-    });
+    },
+  };
+  const transactItems = [pageView];
+
+  if (referrer) {
+    const [yyyy, mm, , month = `${yyyy}-${mm}`] = day.split('-');
+    const { hostname, pathname, search } = new URL(referrer);
+    const referrerHostItem: DocumentClient.TransactWriteItem = {
+      Update: {
+        TableName: data._name('analytics'),
+        Key: {
+          PK: `SITE#${ownerSite}`,
+          SK: `REFERRER_HOST#${ownerSite}#${month}#${hostname}`,
+        },
+        UpdateExpression:
+          'SET #count = if_not_exists(#count, :zero) + :incr, #hostname = :hostname, #month = :month',
+        ExpressionAttributeValues: {
+          ':zero': 0,
+          ':incr': 1,
+          ':hostname': hostname,
+          ':month': month,
+        },
+        ExpressionAttributeNames: {
+          '#count': 'Count',
+          '#hostname': 'Hostname',
+          '#month': 'Month',
+        },
+      },
+    };
+    const referrerItem: DocumentClient.TransactWriteItem = {
+      Update: {
+        TableName: data._name('analytics'),
+        Key: {
+          PK: `SITE#${ownerSite}`,
+          SK: `REFERRER#${ownerSite}#${month}#${hostname}#${pathname}${search}`,
+        },
+        UpdateExpression:
+          'SET #count = if_not_exists(#count, :zero) + :incr, #pathname = :pathname, #hostname = :hostname, #month = :month',
+        ExpressionAttributeValues: {
+          ':zero': 0,
+          ':incr': 1,
+          ':hostname': hostname,
+          ':pathname': `${pathname}${search}`,
+          ':month': month,
+        },
+        ExpressionAttributeNames: {
+          '#count': 'Count',
+          '#hostname': 'Hostname',
+          '#pathname': 'Pathname',
+          '#month': 'Month',
+        },
+      },
+    };
+    transactItems.push(referrerHostItem, referrerItem);
+  }
+  try {
+    await data._doc
+      .transactWrite({
+        TransactItems: transactItems,
+      })
+      .promise();
   } catch (err) {
     console.log(err);
   }

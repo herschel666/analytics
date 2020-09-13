@@ -1,5 +1,5 @@
 import * as arc from '@architect/functions';
-import type { ArcTableClient } from '@architect/functions';
+import type { Data } from '@architect/functions';
 import * as faker from 'faker';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
@@ -14,6 +14,7 @@ const sites = Array.from({ length: 3 }, () => faker.internet.domainName()).map(
 const dates = Array.from({ length: DAYS }, (_, i: number) =>
   new Date(Date.now() - (DAYS - i) * 24 * 3600 * 1000).getTime()
 );
+const referrers = Array.from({ length: 12 }, () => faker.internet.url());
 
 const getPathname = () =>
   Array.from({ length: faker.random.number(2) + 1 }, () => faker.lorem.slug())
@@ -22,16 +23,19 @@ const getPathname = () =>
     .join('/');
 
 const getReferrer = (): string | undefined => {
-  const amount = faker.random.number(5);
-  if (amount === 0) {
+  const i = faker.random.number(referrers.length);
+  if (i === 0) {
     return undefined;
   }
-  const pathname = faker.lorem.words(amount).split(' ').join('/');
-  return new URL(pathname, faker.internet.url()).toString();
+  const pathname = faker.lorem
+    .words(faker.random.number(3))
+    .split(' ')
+    .join('/');
+  return new URL(pathname, referrers[i - 1]).toString();
 };
 
 const createPageViewsForSite = (
-  tableClient: ArcTableClient,
+  doc: Data,
   sitesPathnames: [string, string[]][],
   date: number
 ): Promise<void>[] =>
@@ -42,14 +46,7 @@ const createPageViewsForSite = (
           .map((pathname) =>
             Array.from({ length: faker.random.number(5) }, () =>
               // TODO: replace static 'test-user' with dynamic one...
-              addPageView(
-                tableClient,
-                site,
-                'test-user',
-                pathname,
-                getReferrer(),
-                date
-              )
+              addPageView(doc, site, 'test-user', pathname, getReferrer(), date)
             )
           )
           .flat()
@@ -73,9 +70,7 @@ export const handler = async (): Promise<AGWResult> => {
           // TODO: replace static 'test-user' with dynamic one...
           addSite(doc.analytics, site, 'test-user'),
           ...dates
-            .map((date) =>
-              createPageViewsForSite(doc.analytics, sitesPathnames, date)
-            )
+            .map((date) => createPageViewsForSite(doc, sitesPathnames, date))
             .flat(),
         ]),
       [] as Promise<void>[]

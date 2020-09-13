@@ -23,13 +23,7 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
     const doc = await arc.tables();
 
     try {
-      await addPageView(
-        doc.analytics,
-        site,
-        owner,
-        `${pathname}${search}`,
-        referrer
-      );
+      await addPageView(doc, site, owner, `${pathname}${search}`, referrer);
     } catch (err) {
       console.log(err);
     }

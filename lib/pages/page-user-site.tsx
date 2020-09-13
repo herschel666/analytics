@@ -51,7 +51,7 @@ const UserSitePage: HC<Props> = ({
   return (
     <div>
       <h1>{siteNameToHostname(site)}</h1>
-      <a href={`/user/`}>Back</a>
+      <a href="/user">Back</a>
       <form method="get" action={pagePath}>
         <fieldset>
           <legend>Set time range</legend>
