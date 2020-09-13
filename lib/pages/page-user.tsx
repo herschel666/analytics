@@ -39,11 +39,19 @@ const UserPage: HC<Props> = ({ sites, table, debug }) => (
         <ul>
           {sites.map((site) => (
             <li>
-              <a href={`/user/site/${site}`}>{siteNameToHostname(site)}</a>(
+              <strong>{siteNameToHostname(site)}</strong>
+              &nbsp;
+              <small>
+                <a href={`/user/site/${site}`}>Page Views</a>
+              </small>
+              &nbsp;&bull;&nbsp;
+              <small>
+                <a href={`/user/site/${site}/referrers`}>Referrers</a>
+              </small>
+              &nbsp;&bull;&nbsp;
               <small>
                 <a href={`/user/site/${site}/settings`}>Settings</a>
               </small>
-              )
             </li>
           ))}
         </ul>
