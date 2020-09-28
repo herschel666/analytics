@@ -24,7 +24,7 @@
     "@types/parcel-bundler": "1.12.1",
     "@typescript-eslint/eslint-plugin": "4.3.0",
     "@typescript-eslint/parser": "4.3.0",
-    "aws-sdk": "2.761.0",
+    "aws-sdk": "2.762.0",
     "concurrently": "5.3.0",
     "eslint": "7.10.0",
     "eslint-config-prettier": "6.12.0",
