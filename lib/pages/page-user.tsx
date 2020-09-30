@@ -3,22 +3,34 @@ import type { HC } from 'vhtml';
 import * as arc from '@architect/functions';
 
 import { getTable, getSites } from '../shared/ddb';
+import type { TableItem } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';
 import { page } from './page';
 
-type DDBPromise = [Promise<string>, Promise<string[]>];
-type DDBResults = [string, string[]];
+type DDBPromise = [Promise<TableItem[]>, Promise<string[]>];
+type DDBResults = [TableItem[], string[]];
 
 interface Props {
   sites: string[];
-  table: string;
-  debug: boolean;
+  table: TableItem[];
+  debug: string[] | undefined;
 }
+
+const filterTable = (table: TableItem[], keys: string[]) => {
+  const result = table.filter((item) => {
+    const [key] = item.SK.split('#');
+    return keys.includes(key);
+  });
+  return JSON.stringify(result, null, 2);
+};
 
 const UserPage: HC<Props> = ({ sites, table, debug }) => (
   <div>
     <h1>ek|analytics</h1>
-    <form method="post" action={`/user/${debug ? '?debug=true' : ''}`}>
+    <form
+      method="post"
+      action={`/user/${debug ? `?debug=${debug.join(',')}` : ''}`}
+    >
       <fieldset>
         <legend>Add a new site…</legend>
         <div>
@@ -61,7 +73,7 @@ const UserPage: HC<Props> = ({ sites, table, debug }) => (
     {debug && (
       <details>
         <summary>DDB Dump</summary>
-        <pre>{table}</pre>
+        <pre>{filterTable(table, debug)}</pre>
       </details>
     )}
   </div>
@@ -69,11 +81,11 @@ const UserPage: HC<Props> = ({ sites, table, debug }) => (
 
 export const pageUser = async (
   owner: string,
-  debug: boolean
+  debug: Props['debug']
 ): Promise<string> => {
   const doc = await arc.tables();
   const promises: DDBPromise = [
-    Promise.resolve(''),
+    Promise.resolve([]),
     getSites(doc.analytics, owner),
   ];
 

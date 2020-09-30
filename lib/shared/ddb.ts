@@ -42,6 +42,18 @@ export interface ReferrerEntry {
   month: string;
 }
 
+export interface TableItem extends DocumentClient.AttributeMap {
+  PK: string;
+  SK: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isTableItem = (item: any): item is TableItem =>
+  typeof item === 'object' &&
+  item !== null &&
+  typeof item.PK === 'string' &&
+  typeof item.SK === 'string';
+
 const resultToEntry = <
   T extends Record<string extends keyof T ? string : never, string | number>
 >(
@@ -84,10 +96,10 @@ const getExclusiveStartKey = (
   return startKey;
 };
 
-export const getTable = async (doc: ArcTableClient): Promise<string> => {
+export const getTable = async (doc: ArcTableClient): Promise<TableItem[]> => {
   const result = await doc.scan({});
 
-  return JSON.stringify(result.Items, null, 2);
+  return result.Items.filter((item) => isTableItem(item)) as TableItem[];
 };
 
 export const addSite = async (

@@ -9,7 +9,10 @@ import { pageUser } from '../../pages/page-user';
 
 const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
   const { debug: debugParam } = req.queryStringParameters || {};
-  const debug = debugParam === 'true' && process.env.NODE_ENV === 'testing';
+  const debug =
+    typeof debugParam === 'string' && process.env.NODE_ENV === 'testing'
+      ? debugParam.split(',')
+      : undefined;
   const { owner } = req.session;
   const body = await pageUser(owner, debug);
 

@@ -16,7 +16,10 @@ interface Payload {
 const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
   const { debug: debugParam } = req.queryStringParameters || {};
-  const debug = debugParam === 'true' && process.env.NODE_ENV === 'testing';
+  const debug =
+    typeof debugParam === 'string' && process.env.NODE_ENV === 'testing'
+      ? debugParam.split(',')
+      : undefined;
   const { site_url } = arc.http.helpers.bodyParser<Payload>(req);
   const siteUrl = site_url && String(site_url);
 
