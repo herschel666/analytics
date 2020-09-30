@@ -1,12 +1,15 @@
 import * as arc from '@architect/functions';
 import type { Data } from '@architect/functions';
 import * as faker from 'faker';
+import UAParser from 'ua-parser-js';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
-import { hostnameToSite } from '../../shared/util';
+import { hostnameToSite, getUserAgent } from '../../shared/util';
 import { addSite, addPageView } from '../../shared/ddb';
 
 const DAYS = 40;
+
+const parser = new UAParser();
 
 const sites = Array.from({ length: 3 }, () => faker.internet.domainName()).map(
   hostnameToSite
@@ -46,7 +49,15 @@ const createPageViewsForSite = (
           .map((pathname) =>
             Array.from({ length: faker.random.number(5) }, () =>
               // TODO: replace static 'test-user' with dynamic one...
-              addPageView(doc, site, 'test-user', pathname, getReferrer(), date)
+              addPageView(
+                doc,
+                site,
+                'test-user',
+                pathname,
+                getUserAgent(parser, faker.internet.userAgent()),
+                getReferrer(),
+                date
+              )
             )
           )
           .flat()
