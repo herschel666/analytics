@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer';
+import type { UAParser } from 'ua-parser-js';
 
 export const siteNameToHostname = (site: string): string =>
   site.split('_').join('.');
@@ -20,3 +21,36 @@ export const atob = (str: string): string =>
 
 export const firstCharToLower = (s: string): string =>
   s.replace(/^([A-Z])/, (x) => x.toLowerCase());
+
+export interface UserAgent {
+  browserName: string;
+  browserVersion: string;
+  osName: string;
+  osVersion: string;
+  device: string;
+}
+
+const sanitizeBrowserVersion = (browserVersion: string): string =>
+  browserVersion.split('.').shift();
+
+const sanitizeOsVersion = (osVersion: string): string =>
+  osVersion.split('.').slice(0, 2).filter(Boolean).join('.');
+
+export const getUserAgent = (
+  parser: typeof UAParser['prototype'],
+  uaString: string
+): UserAgent => {
+  const {
+    browser: { name: browserName, version: browserVersion },
+    os: { name: osName, version: osVersion },
+    device: { type: device = 'unknown' },
+  } = parser.setUA(uaString).getResult();
+
+  return {
+    browserVersion: sanitizeBrowserVersion(browserVersion),
+    osVersion: sanitizeOsVersion(osVersion),
+    browserName,
+    osName,
+    device,
+  };
+};

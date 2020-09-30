@@ -1,12 +1,15 @@
 import * as arc from '@architect/functions';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
+import UAParser from 'ua-parser-js';
 
 import { decrypt } from '../../shared/crypto';
-import { hostnameToSite } from '../../shared/util';
+import { hostnameToSite, getUserAgent } from '../../shared/util';
 import { addPageView } from '../../shared/ddb';
 
 const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+const parser = new UAParser();
 
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { id, resource, referrer: maybeReferrer = '' } =
@@ -20,10 +23,18 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
 
   if (site && resource) {
     const { pathname, search } = new URL(resource, 'http://example.com');
+    const userAgent = getUserAgent(parser, req.headers['user-agent']);
     const doc = await arc.tables();
 
     try {
-      await addPageView(doc, site, owner, `${pathname}${search}`, referrer);
+      await addPageView(
+        doc,
+        site,
+        owner,
+        `${pathname}${search}`,
+        userAgent,
+        referrer
+      );
     } catch (err) {
       console.log(err);
     }
