@@ -2,6 +2,7 @@ import type { ArcTableClient, Data } from '@architect/functions';
 import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 import { btoa, atob, firstCharToLower } from './util';
+import type { UserAgent } from './util';
 import { encrypt } from './crypto';
 
 interface StartKey {
@@ -295,11 +296,20 @@ export const addPageView = async (
   site: string,
   owner: string,
   resource: string,
+  userAgent: UserAgent,
   referrer: string | undefined,
   date: number = Date.now()
 ): Promise<void> => {
   const ownerSite = `${owner}#${site}`;
   const day = new Date(date).toISOString().split('T').shift();
+  const [yyyy, mm, , month = `${yyyy}-${mm}`] = day.split('-');
+  const {
+    browserName,
+    browserVersion,
+    osName,
+    osVersion,
+    device: deviceType,
+  } = userAgent;
   const pageView: DocumentClient.TransactWriteItem = {
     Update: {
       TableName: data._name('analytics'),
@@ -322,7 +332,83 @@ export const addPageView = async (
       },
     },
   };
-  const transactItems = [pageView];
+  const browser = {
+    Update: {
+      TableName: data._name('analytics'),
+      Key: {
+        PK: `SITE#${ownerSite}`,
+        SK: `UA#${ownerSite}#${month}#${browserName}#${browserVersion}`,
+      },
+      UpdateExpression:
+        'SET #count = if_not_exists(#count, :zero) + :incr, #date = :date, #type = :type, #browser_name = :browser_name, #browser_version = :browser_version',
+      ExpressionAttributeValues: {
+        ':zero': 0,
+        ':incr': 1,
+        ':date': month,
+        ':type': 'BROWSER',
+        ':browser_name': browserName,
+        ':browser_version': browserVersion,
+      },
+      ExpressionAttributeNames: {
+        '#count': 'Count',
+        '#date': 'Date',
+        '#type': 'Type',
+        '#browser_name': 'BrowserName',
+        '#browser_version': 'BrowserVersion',
+      },
+    },
+  };
+  const os = {
+    Update: {
+      TableName: data._name('analytics'),
+      Key: {
+        PK: `SITE#${ownerSite}`,
+        SK: `UA#${ownerSite}#${month}#${osName}#${osVersion}`,
+      },
+      UpdateExpression:
+        'SET #count = if_not_exists(#count, :zero) + :incr, #date = :date, #type = :type, #os_name = :os_name, #os_version = :os_version',
+      ExpressionAttributeValues: {
+        ':zero': 0,
+        ':incr': 1,
+        ':date': month,
+        ':type': 'OS',
+        ':os_name': osName,
+        ':os_version': osVersion,
+      },
+      ExpressionAttributeNames: {
+        '#count': 'Count',
+        '#date': 'Date',
+        '#type': 'Type',
+        '#os_name': 'OsName',
+        '#os_version': 'OsVersion',
+      },
+    },
+  };
+  const device = {
+    Update: {
+      TableName: data._name('analytics'),
+      Key: {
+        PK: `SITE#${ownerSite}`,
+        SK: `UA#${ownerSite}#${month}#${deviceType}`,
+      },
+      UpdateExpression:
+        'SET #count = if_not_exists(#count, :zero) + :incr, #date = :date, #type = :type, #device = :device',
+      ExpressionAttributeValues: {
+        ':zero': 0,
+        ':incr': 1,
+        ':date': month,
+        ':type': 'DEVICE',
+        ':device': deviceType,
+      },
+      ExpressionAttributeNames: {
+        '#count': 'Count',
+        '#date': 'Date',
+        '#type': 'Type',
+        '#device': 'Device',
+      },
+    },
+  };
+  const transactItems = [pageView, browser, os, device];
 
   if (referrer) {
     const [yyyy, mm, , month = `${yyyy}-${mm}`] = day.split('-');
