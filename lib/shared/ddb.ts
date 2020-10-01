@@ -47,6 +47,29 @@ export interface TableItem extends DocumentClient.AttributeMap {
   SK: string;
 }
 
+export interface UABrowser {
+  name: string;
+  version: string;
+  count: number;
+}
+
+export interface UAOs {
+  name: string;
+  version: string;
+  count: number;
+}
+
+export interface UADevice {
+  type: string;
+  count: number;
+}
+
+export interface UserAgentEntries {
+  browsers: UABrowser[];
+  os: UAOs[];
+  devices: UADevice[];
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isTableItem = (item: any): item is TableItem =>
   typeof item === 'object' &&
@@ -298,6 +321,65 @@ export const getReferrersBySiteAndHost = async (
     return items.map((item) =>
       resultToEntry<ReferrerEntry>(['Count', 'Pathname'], item)
     );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getUserAgentEntriesBySiteAndDate = async (
+  doc: ArcTableClient,
+  site: string,
+  owner: string,
+  date: string
+): Promise<UserAgentEntries> => {
+  const ownerSite = `${owner}#${site}`;
+
+  try {
+    const { Items: items = [] } = await doc.query({
+      KeyConditionExpression: 'PK = :PK AND begins_with(SK, :SK)',
+      ProjectionExpression:
+        '#count, #type, #browser_name, #os_name, #browser_version, #os_version, #device',
+      ExpressionAttributeValues: {
+        ':PK': `SITE#${ownerSite}`,
+        ':SK': `UA#${ownerSite}#${date}`,
+      },
+      ExpressionAttributeNames: {
+        '#count': 'Count',
+        '#type': 'Type',
+        '#browser_name': 'BrowserName',
+        '#browser_version': 'BrowserVersion',
+        '#os_name': 'OsName',
+        '#os_version': 'OsVersion',
+        '#device': 'Device',
+      },
+      ScanIndexForward: false,
+    });
+    const browsers = items
+      .filter(({ Type: type }) => type === 'BROWSER')
+      .map(({ BrowserName: name, BrowserVersion: version, Count: count }) => ({
+        name,
+        version,
+        count,
+      })) as UABrowser[];
+    const os = items
+      .filter(({ Type: type }) => type === 'OS')
+      .map(({ OsName: name, OsVersion: version, Count: count }) => ({
+        name,
+        version,
+        count,
+      })) as UAOs[];
+    const devices = items
+      .filter(({ Type: type }) => type === 'DEVICE')
+      .map(({ Device: type, Count: count }) => ({
+        type,
+        count,
+      })) as UADevice[];
+
+    return {
+      browsers,
+      os,
+      devices,
+    };
   } catch (err) {
     console.log(err);
   }

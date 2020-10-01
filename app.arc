@@ -12,6 +12,8 @@ get /user/site/:site
 get /user/site/:site/settings
 get /user/site/:site/referrers
 get /user/site/:site/referrers/:host
+get /user/site/:site/devices
+get /user/site/:site/devices/:date
 get /user/site/:site/date/:date
 get /cctv.gif
 post /user

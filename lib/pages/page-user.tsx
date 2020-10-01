@@ -62,6 +62,10 @@ const UserPage: HC<Props> = ({ sites, table, debug }) => (
               </small>
               &nbsp;&bull;&nbsp;
               <small>
+                <a href={`/user/site/${site}/devices`}>Devices</a>
+              </small>
+              &nbsp;&bull;&nbsp;
+              <small>
                 <a href={`/user/site/${site}/settings`}>Settings</a>
               </small>
             </li>
