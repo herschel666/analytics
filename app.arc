@@ -5,6 +5,9 @@ analytics
 region eu-central-1
 bucket ek-geloets-installationen-ftw
 
+@static
+folder dist
+
 @http
 get /
 get /user

@@ -18,3 +18,4 @@ yarn-error.log*
 .arc-env
 src/**/*.js
 src/**/*.css
+dist
