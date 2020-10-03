@@ -6,18 +6,20 @@ import { getPageViewsBySite } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { siteNameToHostname, daysAgo } from '../shared/util';
 import { page } from './page';
-import type { AggregatedPageView } from '../components/bar-chart/bar-chart';
-import { BarChart } from '../components/bar-chart/bar-chart';
+import { LineChart } from '../components/line-chart/line-chart';
 
 interface Props {
   site: string;
   owner: string;
-  pageViews: AggregatedPageView[];
+  dates: string[];
+  hits: number[];
   from?: string;
   to?: string;
   prev?: string;
   hasNext?: boolean;
 }
+
+type AggregatedPageView = Pick<PageView, 'date' | 'pageViews'>;
 
 const getAggregatedPageViews = (pageViews: PageView[]) =>
   pageViews
@@ -34,9 +36,29 @@ const getAggregatedPageViews = (pageViews: PageView[]) =>
       new Date(a).getTime() > new Date(b).getTime() ? 1 : -1
     );
 
+const formatDate = (date: string): string => {
+  const [year, month, day] = date.split('-');
+  const abbreviations = {
+    '01': 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+  };
+  return `${day}.${abbreviations[month]}${year}`;
+};
+
 const UserSitePage: HC<Props> = ({
   site,
-  pageViews,
+  dates,
+  hits,
   from = '',
   to = '',
   prev,
@@ -80,10 +102,8 @@ const UserSitePage: HC<Props> = ({
           <button>Update</button>
         </fieldset>
       </form>
-      {Boolean(pageViews.length) && (
-        <div>
-          <BarChart pageViews={pageViews} hostname={siteNameToHostname(site)} />
-        </div>
+      {Boolean(dates.length && hits.length) && (
+        <LineChart dates={JSON.stringify(dates)} hits={JSON.stringify(hits)} />
       )}
       {Boolean(prev) && <a href={`${pagePath}?${prevSearch}`}>Previous page</a>}
       {hasNext && <a href="javascript:history.back()">Next page</a>}
@@ -107,14 +127,16 @@ export const pageUserSite = async (
     to,
     cursor
   );
-
   const aggregatedPageViews = getAggregatedPageViews(pageViews);
+  const dates = aggregatedPageViews.map(({ date }) => formatDate(date));
+  const hits = aggregatedPageViews.map(({ pageViews }) => pageViews);
 
   return page(
     <UserSitePage
       site={site}
       owner={owner}
-      pageViews={aggregatedPageViews}
+      dates={dates}
+      hits={hits}
       from={from}
       to={to}
       prev={newCursor}
