@@ -20,7 +20,7 @@ const sortInterval = (
   fromDate: string | undefined,
   toDate: string | undefined
 ): [string | undefined, string | undefined] => {
-  const from = isValidDate(fromDate) ? fromDate : daysAgo(14);
+  const from = isValidDate(fromDate) ? fromDate : daysAgo(7);
   const to = isValidDate(toDate) ? toDate : daysAgo(0);
   const fromNumber = Number(from.split('-').join(''));
   const toNumber = Number(to.split('-').join(''));
