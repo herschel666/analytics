@@ -36,10 +36,7 @@ const sanitizeBrowserVersion = (browserVersion: string): string =>
 const sanitizeOsVersion = (osVersion: string): string =>
   osVersion.split('.').slice(0, 2).filter(Boolean).join('.');
 
-export const getUserAgent = (
-  parser: typeof UAParser['prototype'],
-  uaString: string
-): UserAgent => {
+export const getUserAgent = (parser: UAParser, uaString = ''): UserAgent => {
   const {
     browser: { name: browserName, version: browserVersion },
     os: { name: osName, version: osVersion },
