@@ -1,7 +1,7 @@
 import * as arc from '@architect/functions';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 
 import { decrypt } from '../../shared/crypto';
 import { hostnameToSite, getUserAgent } from '../../shared/util';
