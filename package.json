@@ -23,7 +23,7 @@
     "@types/faker": "5.1.2",
     "@types/node": "14.11.2",
     "@types/parcel-bundler": "1.12.1",
-    "@types/ua-parser-js": "0.7.32",
+    "@types/ua-parser-js": "0.7.33",
     "@typescript-eslint/eslint-plugin": "4.3.0",
     "@typescript-eslint/parser": "4.3.0",
     "aws-sdk": "2.766.0",
