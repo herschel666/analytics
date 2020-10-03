@@ -11,6 +11,12 @@ const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 const parser = new UAParser();
 
+const getUserAgentString = (headers: AGWEvent['headers']): string | undefined =>
+  (
+    Object.entries(headers).find(([k]) => k.toLowerCase() === 'user-agent') ||
+    []
+  ).pop();
+
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { id, resource, referrer: maybeReferrer = '' } =
     req.queryStringParameters || {};
@@ -23,7 +29,7 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
 
   if (site && resource) {
     const { pathname, search } = new URL(resource, 'http://example.com');
-    const userAgent = getUserAgent(parser, req.headers['user-agent']);
+    const userAgent = getUserAgent(parser, getUserAgentString(req.headers));
     const doc = await arc.tables();
 
     try {
