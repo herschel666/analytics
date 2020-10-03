@@ -10,7 +10,8 @@
     "watch:arc": "ARC_TABLES_PORT=4444 ARC_DB_EXTERNAL=true arc sandbox",
     "start": "concurrently -k --raw --kill-others-on-fail -n \"ddb,ts,arc\" \"npm run ddb\" \"npm run watch:ts\" \"npm run watch:arc\"",
     "build": "ts-node lib/compile -p",
-    "lint": "eslint --fix .",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
     "type-check": "tsc --noEmit",
     "test": "npm-run-all lint type-check"
   },
