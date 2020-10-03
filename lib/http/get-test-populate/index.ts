@@ -1,7 +1,7 @@
 import * as arc from '@architect/functions';
 import type { Data } from '@architect/functions';
 import * as faker from 'faker';
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
 import { hostnameToSite, getUserAgent } from '../../shared/util';
