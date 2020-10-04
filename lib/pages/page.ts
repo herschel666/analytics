@@ -6,11 +6,11 @@ export const page = (body: string, title = 'ek|analytics'): string =>
     <meta charset="utf-8">
     <title>${title}</title>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-    <link href="/_static/main.css" rel="stylesheet">
+    <link href="/_static/styles/main.css" rel="stylesheet">
   </head>
   <body>
     ${body}
-    <script src="/_static/index.js"></script>
+    <script src="/_static/scripts/index.js"></script>
   </body>
 </html>
 `.trim();

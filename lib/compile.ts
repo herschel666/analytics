@@ -1,15 +1,13 @@
 import * as path from 'path';
 import { sync as globby } from 'globby';
-import Bundler from 'parcel-bundler';
-import type { ParcelOptions, ParcelBundle } from 'parcel-bundler';
-
-type FileOpts = [string, string, ParcelOptions?];
-type Files = Record<string, FileOpts>;
+import webpack from 'webpack';
+import type { Configuration } from 'webpack';
+import ForkTSCheckerPlugin from 'fork-ts-checker-webpack-plugin';
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const HTTP_DIR = path.join(__dirname, 'http');
-const CLIENT_DIR = path.join(__dirname, 'client');
-const CACHE_DIR = path.join(ROOT_DIR, '.cache');
+const LIB_DIR = path.join(ROOT_DIR, 'lib');
+const SRC_DIR = path.join(ROOT_DIR, 'src');
+const HTTP_DIR = path.join(LIB_DIR, 'http');
 
 const prod = Boolean(
   process.argv.find((flag) => flag === '-p' || flag === '--production')
@@ -17,105 +15,103 @@ const prod = Boolean(
 const watch =
   Boolean(process.argv.find((flag) => flag === '-w' || flag === '--watch')) &&
   !prod;
-const verbose = Boolean(
-  process.argv.find((flag) => flag === '-v' || flag === '--verbose')
-);
 const nodeEnv = prod ? 'production' : 'development';
 
-const baseOptions: ParcelOptions = {
-  cacheDir: CACHE_DIR,
-  minify: prod,
-  scopeHoist: true,
-  hmr: false,
-  watch,
-};
+const files = globby(path.join(HTTP_DIR, '**/index.{ts,tsx}'));
 
-const serverFiles = globby(path.join(HTTP_DIR, '**/index.{ts,tsx}')).reduce(
-  (acc: Files, file: string) => {
-    const opts: FileOpts = [
-      '/lib/',
-      '/src/',
-      {
-        target: 'node',
-      },
-    ];
-    return { ...acc, [file]: opts };
+const baseConfig: Configuration = {
+  cache: true,
+  mode: nodeEnv,
+  target: 'node',
+  devtool: prod ? false : 'inline-source-map',
+  context: LIB_DIR,
+  output: {
+    libraryTarget: 'commonjs2',
+    filename: 'index.js',
+    path: SRC_DIR,
   },
-  {}
-);
-const browserScriptsOpts: FileOpts = [
-  '/lib/client/scripts',
-  '/dist',
-  { target: 'browser' },
-];
-const browserStylesOpts: FileOpts = [
-  '/lib/client/styles',
-  '/dist',
-  { target: 'browser' },
-];
-const files = {
-  ...serverFiles,
-  [path.join(CLIENT_DIR, 'scripts', 'index.ts')]: browserScriptsOpts,
-  [path.join(CLIENT_DIR, 'styles', 'main.css')]: browserStylesOpts,
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        include: LIB_DIR,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: watch,
+            },
+          },
+        ],
+      },
+    ],
+  },
+  externals: {
+    'aws-sdk': 'commonjs2 aws-sdk',
+    '@architect/functions': 'commonjs2 @architect/functions',
+    'ua-parser-js': 'commonjs2 ua-parser-js',
+    faker: 'commonjs2 faker',
+    vhtml: 'commonjs2 vhtml',
+  },
+  optimization: {
+    sideEffects: false,
+    nodeEnv,
+  },
 };
 
-if (verbose) {
-  console.log('Found files to compile...');
-  console.log(Object.keys(files));
-}
-
-const getFileName = (file: string): string | never => {
-  const [name, ext] = path.basename(file).split('.');
-  switch (ext) {
-    case 'ts':
-    case 'tsx':
-      return `${name}.js`;
-    case 'css':
-      return `${name}.${ext}`;
-    default:
-      console.log(file);
-      throw new Error(`Invalid file file with extension "${ext}".`);
-  }
+const watchOptions = {
+  ignored: [
+    '.cache/**',
+    '.db/**',
+    '.github/**',
+    'dist/**',
+    'src/**',
+    'node_modules/**',
+  ],
+};
+const forkCheckerOptions = {
+  async: watch,
+  typescript: {
+    context: ROOT_DIR,
+    configFile: path.join(ROOT_DIR, 'tsconfig.json'),
+  },
 };
 
-const bundle = (
-  file: string,
-  from: string,
-  to: string,
-  opts: ParcelOptions = {}
-): Promise<ParcelBundle> => {
-  const outDir = path.dirname(file).replace(from, to);
-  const outFile = getFileName(file);
-  const options: ParcelOptions = {
-    ...baseOptions,
-    ...opts,
-    outDir,
-    outFile,
-  };
-  const bundler = new Bundler(file, options);
-
-  bundler.on('buildEnd', () => {
-    if (!watch) {
-      console.log('Successfully bundled thingies.');
-    }
+for (const file of files) {
+  const name = path.basename(path.dirname(file));
+  const entry = `./${file.split('/lib/').pop()}`;
+  const outputPath = path.resolve(SRC_DIR, path.dirname(entry));
+  const compiler = webpack({
+    ...baseConfig,
+    plugins: prod ? [] : [new ForkTSCheckerPlugin(forkCheckerOptions)],
+    output: {
+      ...baseConfig.output,
+      path: outputPath,
+    },
+    entry,
+    name,
   });
-  bundler.on('buildError', (error) => {
-    console.log('Yikes...');
-    console.log(error);
-  });
-  return bundler.bundle();
-};
 
-process.env.NODE_ENV = nodeEnv;
-
-(async () => {
-  for (const [file, [from, to, opts = {}]] of Object.entries(files)) {
-    try {
-      await bundle(file, from, to, opts);
-    } catch {
-      if (!watch) {
-        process.exit(1);
+  if (watch) {
+    compiler.watch(watchOptions, (err, stats) => {
+      switch (true) {
+        case Boolean(err):
+          console.log(err);
+          break;
+        case stats.hasErrors() || stats.hasWarnings():
+          console.log(stats.toString('minimal'));
       }
-    }
+    });
+  } else {
+    compiler.run((err, stats) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(stats.toString('minimal'));
+    });
   }
-})();
+}
