@@ -6,9 +6,11 @@ import { getReferrersBySite } from '../shared/ddb';
 import type { ReferrerHostEntry } from '../shared/ddb';
 import { siteNameToHostname, hostnameToSite } from '../shared/util';
 import { page } from './page';
+import { Layout } from '../components/layout/layout';
+import { TabNav, TabItem } from '../components/tab-nav/tab-nav';
 
 interface Props {
-  hostname: string;
+  site: string;
   referrers: ReferrerHostEntry[];
 }
 
@@ -22,36 +24,39 @@ const countDescending = (
 const detailUrl = (site: string, referrer: string): string =>
   `/user/site/${hostnameToSite(site)}/referrers/${hostnameToSite(referrer)}`;
 
-const UserSiteReferrersPage: HC<Props> = ({ hostname, referrers }) => (
-  <div>
-    <h1>{hostname} — Referrers</h1>
-    <a href="/user">Back</a>
-    {Boolean(referrers.length) && (
-      <table>
-        <thead>
-          <tr>
-            <td>#</td>
-            <th>Hostname</th>
-            <th>Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {referrers.map(({ count, hostname: referrerHostname }, i) => (
+const UserSiteReferrersPage: HC<Props> = ({ site, referrers }) => {
+  const hostname = siteNameToHostname(site);
+
+  return (
+    <Layout text={hostname}>
+      <TabNav site={site} current={TabItem.Referrers} />
+      {Boolean(referrers.length) && (
+        <table class="table mt-4">
+          <thead>
             <tr>
-              <td>{++i}</td>
-              <td>
-                <a href={detailUrl(hostname, referrerHostname)}>
-                  {referrerHostname}
-                </a>
-              </td>
-              <td>{count}</td>
+              <th scope="col">#</th>
+              <th scope="col">Hostname</th>
+              <th scope="col">Count</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    )}
-  </div>
-);
+          </thead>
+          <tbody>
+            {referrers.map(({ count, hostname: referrerHostname }, i) => (
+              <tr>
+                <td class="text-secondary">{++i}</td>
+                <td>
+                  <a href={detailUrl(hostname, referrerHostname)}>
+                    {referrerHostname}
+                  </a>
+                </td>
+                <td>{count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </Layout>
+  );
+};
 
 export const pageUserSiteReferrers = async (
   site: string,
@@ -63,7 +68,7 @@ export const pageUserSiteReferrers = async (
   return page(
     <UserSiteReferrersPage
       referrers={referrers.sort(countDescending)}
-      hostname={siteNameToHostname(site)}
+      site={site}
     />
   );
 };

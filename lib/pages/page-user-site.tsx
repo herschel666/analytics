@@ -4,8 +4,10 @@ import * as arc from '@architect/functions';
 
 import { getPageViewsBySite } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
-import { siteNameToHostname, daysAgo } from '../shared/util';
+import { siteNameToHostname, daysAgo, niceMonth } from '../shared/util';
 import { page } from './page';
+import { Layout } from '../components/layout/layout';
+import { TabNav, TabItem } from '../components/tab-nav/tab-nav';
 import { LineChart } from '../components/line-chart/line-chart';
 
 interface Props {
@@ -38,21 +40,7 @@ const getAggregatedPageViews = (pageViews: PageView[]) =>
 
 const formatDate = (date: string): string => {
   const [year, month, day] = date.split('-');
-  const abbreviations = {
-    '01': 'Jan',
-    '02': 'Feb',
-    '03': 'Mar',
-    '04': 'Apr',
-    '05': 'May',
-    '06': 'Jun',
-    '07': 'Jul',
-    '08': 'Aug',
-    '09': 'Sep',
-    '10': 'Oct',
-    '11': 'Nov',
-    '12': 'Dec',
-  };
-  return `${day}.${abbreviations[month]}${year}`;
+  return `${day}. ${niceMonth(month)} ${year}`;
 };
 
 const UserSitePage: HC<Props> = ({
@@ -71,43 +59,64 @@ const UserSitePage: HC<Props> = ({
   const pagePath = `/user/site/${site}`;
 
   return (
-    <div>
-      <h1>{siteNameToHostname(site)}</h1>
-      <a href="/user">Back</a>
-      <form method="get" action={pagePath}>
+    <Layout text={siteNameToHostname(site)}>
+      <TabNav site={site} current={TabItem.PageViews} />
+      <form method="get" action={pagePath} class="my-4">
         <fieldset>
-          <legend>Set time range</legend>
-          <label for="from">From</label>
-          <input
-            type="date"
-            name="from"
-            id="from"
-            value={from}
-            step="1"
-            max={daysAgo(0)}
-            placeholder="YYYY-MM-DD"
-            data-format="YYYY-mm-dd"
-          />
-          <label for="to">To</label>
-          <input
-            type="date"
-            name="to"
-            id="to"
-            value={to}
-            step="1"
-            max={daysAgo(0)}
-            placeholder="YYYY-MM-DD"
-            data-format="YYYY-mm-dd"
-          />
-          <button>Update</button>
+          <h5>Set time range</h5>
+          <div class="row">
+            <div class="col">
+              <label for="from" class="visually-hidden">
+                Start date of time range
+              </label>
+              <input
+                type="date"
+                name="from"
+                id="from"
+                value={from}
+                step="1"
+                max={daysAgo(0)}
+                placeholder="YYYY-MM-DD"
+                data-format="YYYY-mm-dd"
+                class="form-control"
+              />
+            </div>
+            <div class="col">
+              <label for="to" class="visually-hidden">
+                End date of time range
+              </label>
+              <input
+                type="date"
+                name="to"
+                id="to"
+                value={to}
+                step="1"
+                max={daysAgo(0)}
+                placeholder="YYYY-MM-DD"
+                data-format="YYYY-mm-dd"
+                class="form-control"
+              />
+            </div>
+            <div class="col">
+              <button type="submit" class="btn btn-primary">
+                Update
+              </button>
+            </div>
+          </div>
         </fieldset>
       </form>
       {Boolean(dates.length && hits.length) && (
-        <LineChart dates={JSON.stringify(dates)} hits={JSON.stringify(hits)} />
+        <LineChart
+          site={site}
+          from={from}
+          to={to}
+          dates={JSON.stringify(dates)}
+          hits={JSON.stringify(hits)}
+        />
       )}
       {Boolean(prev) && <a href={`${pagePath}?${prevSearch}`}>Previous page</a>}
       {hasNext && <a href="javascript:history.back()">Next page</a>}
-    </div>
+    </Layout>
   );
 };
 

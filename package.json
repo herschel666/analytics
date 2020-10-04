@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "postinstall": "arc hydrate",
-    "ddb": "java -Djava.library.path=./.db/DynamoDBLocal_lib -jar ./.db/DynamoDBLocal.jar -sharedDb -inMemory -port 4444",
+    "ddb": "java -Djava.library.path=./.db/DynamoDBLocal_lib -jar ./.db/DynamoDBLocal.jar -sharedDb -dbPath ./.db -port 4444",
+    "ddb:inmemory": "npm run ddb -- -inMemory",
     "watch:browser": "parcel watch --no-hmr lib/client/scripts/index.ts lib/client/styles/main.css",
     "watch:node": "ts-node lib/compile --watch",
     "watch:arc": "ARC_TABLES_PORT=4444 ARC_DB_EXTERNAL=true arc sandbox",
@@ -23,6 +24,7 @@
     "@architect/architect": "6.6.6",
     "@architect/functions": "3.13.3",
     "@types/aws-lambda": "8.10.63",
+    "@types/chart.js": "2.9.24",
     "@types/faker": "5.1.2",
     "@types/node": "14.11.2",
     "@types/parcel-bundler": "1.12.1",

@@ -6,11 +6,14 @@ import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { hostnameToSite, siteNameToHostname } from '../shared/util';
 import { page } from './page';
+import { Layout } from '../components/layout/layout';
 
 interface Props {
   hostname: string;
   date: string;
   pageViews: PageView[];
+  from?: string;
+  to?: string;
 }
 
 const sortPageViewsPerDate = (a: PageView, b: PageView) => {
@@ -24,21 +27,37 @@ const sortPageViewsPerDate = (a: PageView, b: PageView) => {
   }
 };
 
-const UserSiteDatePage: HC<Props> = ({ hostname, date, pageViews }) => (
-  <div>
-    <h1>
-      {hostname} — {date}
-    </h1>
+const getRange = (from?: string, to?: string): string => {
+  if (!from || !to) {
+    return '';
+  }
+  return `?from=${from}&to=${to}`;
+};
+
+const UserSiteDatePage: HC<Props> = ({
+  hostname,
+  date,
+  pageViews,
+  from,
+  to,
+}) => (
+  <Layout text={hostname}>
     {Boolean(pageViews.length) && (
       <div>
-        <a href={`/user/site/${hostnameToSite(hostname)}`}>Back</a>
-        <table border="1" cellPadding="8">
-          <caption>Page Views for {date}</caption>
+        <div class="my-4">
+          <a
+            href={`/user/site/${hostnameToSite(hostname)}${getRange(from, to)}`}
+          >
+            Back to overview
+          </a>
+        </div>
+        <h2 class="mb-4">Page Views for {date}</h2>
+        <table class="table">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Pathname</th>
-              <th>Page Views</th>
+              <th scope="col">#</th>
+              <th scope="col">Pathname</th>
+              <th scope="col">Page Views</th>
             </tr>
           </thead>
           <tbody>
@@ -53,13 +72,15 @@ const UserSiteDatePage: HC<Props> = ({ hostname, date, pageViews }) => (
         </table>
       </div>
     )}
-  </div>
+  </Layout>
 );
 
 export const pageUserSiteDate = async (
   site: string,
   owner: string,
-  date: string
+  date: string,
+  from?: string,
+  to?: string
 ): Promise<string> => {
   const doc = await arc.tables();
   const pageViewsPerDate = await getPageViewsBySiteAndDate(
@@ -74,6 +95,8 @@ export const pageUserSiteDate = async (
       hostname={siteNameToHostname(site)}
       date={date}
       pageViews={pageViewsPerDate.sort(sortPageViewsPerDate)}
+      from={from}
+      to={to}
     />
   );
 };
