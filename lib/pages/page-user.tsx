@@ -4,8 +4,8 @@ import * as arc from '@architect/functions';
 
 import { getTable, getSites } from '../shared/ddb';
 import type { TableItem } from '../shared/ddb';
-import { siteNameToHostname } from '../shared/util';
 import { page } from './page';
+import { Layout } from '../components/layout/layout';
 
 type DDBPromise = [Promise<TableItem[]>, Promise<string[]>];
 type DDBResults = [TableItem[], string[]];
@@ -25,62 +25,42 @@ const filterTable = (table: TableItem[], keys: string[]) => {
 };
 
 const UserPage: HC<Props> = ({ sites, table, debug }) => (
-  <div>
-    <h1>ek|analytics</h1>
+  <Layout sites={sites}>
     <form
+      class="w-50 m-auto"
       method="post"
       action={`/user/${debug ? `?debug=${debug.join(',')}` : ''}`}
     >
       <fieldset>
-        <legend>Add a new site…</legend>
-        <div>
-          <label for="site_url">Site URL</label>
-          <input
-            type="url"
-            id="site_url"
-            name="site_url"
-            placeholder="Your site's URL…"
-          />
+        <label for="site_url" class="form-label">
+          Add a new site…
+        </label>
+        <div class="row">
+          <div class="col col-sm-9">
+            <input
+              type="url"
+              id="site_url"
+              name="site_url"
+              class="form-control"
+              placeholder="Your site's URL…"
+            />
+          </div>
+          <div class="col col-sm-3 text-right">
+            <button class="btn btn-primary">Submit</button>
+          </div>
         </div>
-        <button>Submit</button>
       </fieldset>
     </form>
-    {Boolean(sites.length) && (
+    {debug && (
       <div>
         <hr />
-        <ul>
-          {sites.map((site) => (
-            <li>
-              <strong>{siteNameToHostname(site)}</strong>
-              &nbsp;
-              <small>
-                <a href={`/user/site/${site}`}>Page Views</a>
-              </small>
-              &nbsp;&bull;&nbsp;
-              <small>
-                <a href={`/user/site/${site}/referrers`}>Referrers</a>
-              </small>
-              &nbsp;&bull;&nbsp;
-              <small>
-                <a href={`/user/site/${site}/devices`}>Devices</a>
-              </small>
-              &nbsp;&bull;&nbsp;
-              <small>
-                <a href={`/user/site/${site}/settings`}>Settings</a>
-              </small>
-            </li>
-          ))}
-        </ul>
+        <details>
+          <summary>DDB Dump</summary>
+          <pre>{filterTable(table, debug)}</pre>
+        </details>
       </div>
     )}
-    <hr />
-    {debug && (
-      <details>
-        <summary>DDB Dump</summary>
-        <pre>{filterTable(table, debug)}</pre>
-      </details>
-    )}
-  </div>
+  </Layout>
 );
 
 export const pageUser = async (

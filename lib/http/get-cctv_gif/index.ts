@@ -33,6 +33,7 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
     const doc = await arc.tables();
 
     try {
+      // TODO: do this in deferred event
       await addPageView(
         doc,
         site,

@@ -11,16 +11,18 @@ import type {
 } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';
 import { page } from './page';
+import { Layout } from '../components/layout/layout';
+import { TabNav, TabItem } from '../components/tab-nav/tab-nav';
+import { MonthNavigation } from '../components/month-navigation/month-navigation';
+import { PieChart } from '../components/pie-chart/pie-chart';
 
 interface Props {
   hostname: string;
   site: string;
   devices: UserAgentEntries;
-  date: string;
-  months: string[];
+  currentYear: number;
+  currentMonth: number;
 }
-
-const padLeft = (i: number): string => `0${i}`.slice(-2);
 
 const countDescending = <T extends { count: number }>(
   { count: a }: T,
@@ -29,116 +31,130 @@ const countDescending = <T extends { count: number }>(
   return a > b ? -1 : 1;
 };
 
-const getLastYearsMonths = (lastYear: number): string[] => {
-  const months = Array.from({ length: 12 }, (_: undefined, i: number) =>
-    padLeft(i + 1)
-  );
-  return months.map((month) => `${lastYear}-${month}`);
-};
-
-const getThisYearsMonths = (date: string): string[] => {
-  const [year, monthString] = date.split('-');
-  const previousMonths = Array.from(
-    { length: Number(monthString) },
-    (_: undefined, i: number) => padLeft(i + 1)
-  );
-  return previousMonths.map((month) => `${year}-${month}`);
-};
+const getAggregatedData = (
+  data: (UABrowser | UAOs | UADevice)[]
+): Record<string, number> =>
+  data.reduce((acc, { name, count }) => {
+    acc[name] = typeof acc[name] === 'number' ? acc[name] : 0;
+    acc[name] += count;
+    return acc;
+  }, {});
 
 const UserSiteDevicesDatePage: HC<Props> = ({
   hostname,
   site,
   devices,
-  date,
-  months,
-}) => (
-  <div>
-    <h1>
-      {hostname} — Devices for {date}
-    </h1>
-    <a href="/user">Back</a>
-    <ul>
-      {months.map((month) => (
-        <li>
-          <a href={`/user/site/${site}/devices/${month}`}>{month}</a>
-        </li>
-      ))}
-    </ul>
-    {devices.browsers.length > 0 && (
-      <table>
-        <caption>Browsers</caption>
-        <thead>
-          <tr>
-            <td>#</td>
-            <th>Name</th>
-            <th>Version</th>
-            <th>Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {devices.browsers
-            .sort((a, b) => countDescending<UABrowser>(a, b))
-            .map(({ name, version, count }, i) => (
-              <tr>
-                <td>{++i}</td>
-                <td>{name}</td>
-                <td>{version}</td>
-                <td>{count}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    )}
-    {devices.os.length > 0 && (
-      <table>
-        <caption>OS</caption>
-        <thead>
-          <tr>
-            <td>#</td>
-            <th>Name</th>
-            <th>Version</th>
-            <th>Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {devices.os
-            .sort((a, b) => countDescending<UAOs>(a, b))
-            .map(({ name, version, count }, i) => (
-              <tr>
-                <td>{++i}</td>
-                <td>{name}</td>
-                <td>{version}</td>
-                <td>{count}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    )}
-    {devices.devices.length > 0 && (
-      <table>
-        <caption>Devices</caption>
-        <thead>
-          <tr>
-            <td>#</td>
-            <th>Type</th>
-            <th>Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {devices.devices
-            .sort((a, b) => countDescending<UADevice>(a, b))
-            .map(({ type, count }, i) => (
-              <tr>
-                <td>{++i}</td>
-                <td>{type}</td>
-                <td>{count}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    )}
-  </div>
-);
+  currentYear,
+  currentMonth,
+}) => {
+  const aggregatedBrowserData = getAggregatedData(devices.browsers);
+  const aggregatedOsData = getAggregatedData(devices.os);
+  const aggregatedDeviceData = getAggregatedData(devices.devices);
+
+  return (
+    <Layout text={hostname}>
+      <TabNav site={site} current={TabItem.Devices} />
+      <MonthNavigation
+        site={site}
+        currentYear={currentYear}
+        currentMonth={currentMonth}
+      />
+      <div class="row">
+        {devices.browsers.length > 0 && (
+          <div class="col">
+            <h5>Browsers</h5>
+            <PieChart
+              numbers={Object.values(aggregatedBrowserData)}
+              labels={Object.keys(aggregatedBrowserData)}
+            />
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Version</th>
+                  <th scope="col">Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                {devices.browsers
+                  .sort((a, b) => countDescending<UABrowser>(a, b))
+                  .map(({ name, version, count }, i) => (
+                    <tr>
+                      <td class="text-secondary">{++i}</td>
+                      <td>{name}</td>
+                      <td>{version}</td>
+                      <td>{count}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {devices.os.length > 0 && (
+          <div class="col">
+            <h5>OS</h5>
+            <PieChart
+              numbers={Object.values(aggregatedOsData)}
+              labels={Object.keys(aggregatedOsData)}
+            />
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Version</th>
+                  <th scope="col">Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                {devices.os
+                  .sort((a, b) => countDescending<UAOs>(a, b))
+                  .map(({ name, version, count }, i) => (
+                    <tr>
+                      <td class="text-secondary">{++i}</td>
+                      <td>{name}</td>
+                      <td>{version}</td>
+                      <td>{count}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {devices.devices.length > 0 && (
+          <div class="col">
+            <h5>Devices</h5>
+            <PieChart
+              numbers={Object.values(aggregatedDeviceData)}
+              labels={Object.keys(aggregatedDeviceData)}
+            />
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                {devices.devices
+                  .sort((a, b) => countDescending<UADevice>(a, b))
+                  .map(({ name, count }, i) => (
+                    <tr>
+                      <td class="text-secondary">{++i}</td>
+                      <td>{name}</td>
+                      <td>{count}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </Layout>
+  );
+};
 
 export const pageUserSiteDevicesDate = async (
   site: string,
@@ -152,25 +168,15 @@ export const pageUserSiteDevicesDate = async (
     owner,
     date
   );
-  const currentDate = new Date()
-    .toISOString()
-    .split('T')
-    .shift()
-    .split('-')
-    .slice(0, 2)
-    .join('-');
-  const lastYearsMonths = getLastYearsMonths(
-    Number(currentDate.split('-').shift()) - 1
-  );
-  const months = [...lastYearsMonths, ...getThisYearsMonths(currentDate)];
+  const [currentYear, currentMonth] = date.split('-');
 
   return page(
     <UserSiteDevicesDatePage
       devices={devices}
       hostname={siteNameToHostname(site)}
       site={site}
-      date={date}
-      months={months}
+      currentYear={Number(currentYear)}
+      currentMonth={Number(currentMonth)}
     />
   );
 };

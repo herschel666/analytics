@@ -4,11 +4,13 @@ import * as arc from '@architect/functions';
 
 import { getReferrersBySiteAndHost } from '../shared/ddb';
 import type { ReferrerEntry } from '../shared/ddb';
-import { hostnameToSite, siteNameToHostname } from '../shared/util';
+import { siteNameToHostname } from '../shared/util';
 import { page } from './page';
+import { Layout } from '../components/layout/layout';
+import { TabNav, TabItem } from '../components/tab-nav/tab-nav';
 
 interface Props {
-  hostname: string;
+  site: string;
   referrerHostname: string;
   referrers: ReferrerEntry[];
 }
@@ -21,28 +23,28 @@ const countDescending = (
 };
 
 const UserSiteReferrersHostPage: HC<Props> = ({
-  hostname,
+  site,
   referrerHostname,
   referrers,
 }) => (
-  <div>
-    <h1>
-      {hostname} — Referrers for {referrerHostname}
-    </h1>
-    <a href={`/user/site/${hostnameToSite(hostname)}/referrers`}>Back</a>
+  <Layout text={siteNameToHostname(site)}>
+    <TabNav site={site} current={TabItem.Referrers} />
+    <h2 class="my-4">
+      Referrers for <strong class="text-secondary">{referrerHostname}</strong>
+    </h2>
     {Boolean(referrers.length) && (
-      <table>
+      <table class="table">
         <thead>
           <tr>
-            <td>#</td>
-            <th>Pathname</th>
-            <th>Count</th>
+            <th scope="col">#</th>
+            <th scope="col">Pathname</th>
+            <th scope="col">Count</th>
           </tr>
         </thead>
         <tbody>
           {referrers.map(({ count, pathname }, i) => (
             <tr>
-              <td>{++i}</td>
+              <td class="text-secondary">{++i}</td>
               <td>{pathname}</td>
               <td>{count}</td>
             </tr>
@@ -50,7 +52,7 @@ const UserSiteReferrersHostPage: HC<Props> = ({
         </tbody>
       </table>
     )}
-  </div>
+  </Layout>
 );
 
 export const pageUserSiteReferrersHost = async (
@@ -69,7 +71,7 @@ export const pageUserSiteReferrersHost = async (
   return page(
     <UserSiteReferrersHostPage
       referrers={referrers.sort(countDescending)}
-      hostname={siteNameToHostname(site)}
+      site={site}
       referrerHostname={host}
     />
   );

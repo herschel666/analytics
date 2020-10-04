@@ -60,7 +60,7 @@ export interface UAOs {
 }
 
 export interface UADevice {
-  type: string;
+  name: string;
   count: number;
 }
 
@@ -370,8 +370,8 @@ export const getUserAgentEntriesBySiteAndDate = async (
       })) as UAOs[];
     const devices = items
       .filter(({ Type: type }) => type === 'DEVICE')
-      .map(({ Device: type, Count: count }) => ({
-        type,
+      .map(({ Device: name, Count: count }) => ({
+        name,
         count,
       })) as UADevice[];
 
