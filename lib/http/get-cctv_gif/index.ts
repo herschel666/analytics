@@ -39,7 +39,7 @@ export const handler = async (req: AGWEvent): Promise<AGWResult> => {
       ? undefined
       : decodeURIComponent(maybeReferrer.trim());
 
-  if (site && resource) {
+  if (owner && site && resource) {
     const { pathname, search } = new URL(resource, 'http://example.com');
     const userAgent = getUserAgent(parser, getUserAgentString(req.headers));
     const doc = await arc.tables();
