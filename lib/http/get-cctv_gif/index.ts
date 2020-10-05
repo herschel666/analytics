@@ -11,6 +11,18 @@ const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 const parser = new UAParser();
 
+const getOwnerAndHostnameFromId = (id?: string): string[] => {
+  if (!id) {
+    return [];
+  }
+  try {
+    return decrypt(id).split('#');
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
 const getUserAgentString = (headers: AGWEvent['headers']): string | undefined =>
   (
     Object.entries(headers).find(([k]) => k.toLowerCase() === 'user-agent') ||
@@ -20,7 +32,7 @@ const getUserAgentString = (headers: AGWEvent['headers']): string | undefined =>
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { id, resource, referrer: maybeReferrer = '' } =
     req.queryStringParameters || {};
-  const [owner, hostname] = decrypt(id).split('#');
+  const [owner, hostname] = getOwnerAndHostnameFromId(id);
   const site = hostnameToSite(hostname);
   const referrer =
     maybeReferrer.length === 0
