@@ -16,16 +16,19 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "type-check": "tsc --noEmit",
-    "test": "npm-run-all lint type-check"
+    "jest": "jest",
+    "test": "npm-run-all lint type-check jest"
   },
   "author": "Emanuel Kluge (https://emanuel-kluge.de/)",
   "license": "MIT",
   "devDependencies": {
     "@architect/architect": "6.6.6",
     "@architect/functions": "3.13.3",
+    "@testing-library/dom": "7.24.3",
     "@types/aws-lambda": "8.10.63",
     "@types/chart.js": "2.9.25",
     "@types/faker": "5.1.2",
+    "@types/jest": "26.0.14",
     "@types/node": "14.11.5",
     "@types/parcel-bundler": "1.12.1",
     "@types/ua-parser-js": "0.7.33",
@@ -41,10 +44,12 @@
     "faker": "5.1.0",
     "fork-ts-checker-webpack-plugin": "5.2.0",
     "globby": "11.0.1",
+    "jest": "26.5.0",
     "npm-run-all": "4.1.5",
     "parcel-bundler": "1.12.4",
     "preact": "10.5.4",
     "prettier": "2.1.2",
+    "ts-jest": "26.4.1",
     "ts-loader": "8.0.4",
     "ts-node": "9.0.0",
     "typescript": "4.0.3",
@@ -55,5 +60,36 @@
   },
   "dependencies": {
     "chart.js": "2.9.3"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/.cache/",
+      "<rootDir>/.db/",
+      "<rootDir>/.github/",
+      "<rootDir>/src/",
+      "<rootDir>/dist/"
+    ],
+    "projects": [
+      {
+        "displayName": "lib",
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "testMatch": [
+          "<rootDir>/lib/**/*.test.ts"
+        ],
+        "setupFiles": [
+          "<rootDir>/jest.setup.ts"
+        ]
+      },
+      {
+        "displayName": "client",
+        "preset": "ts-jest",
+        "testEnvironment": "jsdom",
+        "testMatch": [
+          "<rootDir>/client/scripts/**/*.test.ts"
+        ]
+      }
+    ]
   }
 }
