@@ -11,7 +11,7 @@ export const handler = async (): Promise<AGWResult> => {
     statusCode: 301,
     headers: {
       'set-cookie': cookie,
-      location: arc.http.helpers.url('/user/'),
+      location: arc.http.helpers.url('/user'),
     },
   };
 };
