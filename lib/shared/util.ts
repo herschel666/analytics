@@ -4,7 +4,7 @@ import type { UAParser } from 'ua-parser-js';
 export const siteNameToHostname = (site: string): string =>
   site.split('_').join('.');
 
-export const hostnameToSite = (hostname: string): string =>
+export const hostnameToSite = (hostname = ''): string =>
   hostname.split('.').join('_');
 
 export const daysAgo = (days: number): string =>
