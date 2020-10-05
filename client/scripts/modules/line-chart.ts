@@ -53,6 +53,7 @@ export const init = (canvas: HTMLCanvasElement): void => {
       ],
     },
     options: {
+      // TODO: change cursour to "pointer" when hovering a point
       onClick: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
         if (!element) {
           return;

@@ -63,6 +63,7 @@ const UserPage: HC<Props> = ({ sites, table, debug }) => (
   </Layout>
 );
 
+// TODO: split pages into "dumb" views & DB-consuming controllers
 export const pageUser = async (
   owner: string,
   debug: Props['debug']
