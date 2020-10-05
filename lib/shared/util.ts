@@ -38,8 +38,11 @@ const sanitizeOsVersion = (osVersion: string): string =>
 
 export const getUserAgent = (parser: UAParser, uaString = ''): UserAgent => {
   const {
-    browser: { name: browserName, version: browserVersion },
-    os: { name: osName, version: osVersion },
+    browser: {
+      name: browserName = 'unknown',
+      version: browserVersion = 'unknown',
+    },
+    os: { name: osName = 'unknown', version: osVersion = 'unknown' },
     device: { type: device = 'unknown' },
   } = parser.setUA(uaString).getResult();
 
