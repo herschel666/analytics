@@ -63,7 +63,7 @@ export const init = (canvas: HTMLCanvasElement): void => {
         const date = `${year}-${padLeft(niceMonthToNumber(month))}-${day}`;
         const params =
           Boolean(from) && Boolean(to)
-            ? `?range=${btoa(JSON.stringify({ from, to }))}`
+            ? `?range=${encodeURIComponent(btoa(JSON.stringify({ from, to })))}`
             : '';
 
         location.href = `/user/site/${site}/date/${date}${params}`;
