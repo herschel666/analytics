@@ -17,7 +17,7 @@ const reDate = /^\d{4}-\d{2}-\d{2}$/;
 
 const getRange = (range: string): Range => {
   try {
-    const obj = JSON.parse(atob(range));
+    const obj = JSON.parse(atob(decodeURIComponent(range)));
     const from =
       typeof obj.from === 'string' && Boolean(obj.from.match(reDate))
         ? obj.from
