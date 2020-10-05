@@ -7,7 +7,7 @@ import type {
 import { withOwner } from '../../shared/with-owner';
 import { pageUser } from '../../pages/page-user';
 
-const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
+export const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
   const { debug: debugParam } = req.queryStringParameters || {};
   const debug =
     typeof debugParam === 'string' && process.env.NODE_ENV === 'testing'
