@@ -1,8 +1,8 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 
-import { MainHeader } from '../main-header/main-header';
-import type { Props as MainHeaderProps } from '../main-header/main-header';
+import { MainHeader } from './main-header';
+import type { Props as MainHeaderProps } from './main-header';
 
 type Props = MainHeaderProps;
 

@@ -11,10 +11,10 @@ import type {
 } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';
 import { page } from './page';
-import { Layout } from '../components/layout/layout';
-import { TabNav, TabItem } from '../components/tab-nav/tab-nav';
-import { MonthNavigation } from '../components/month-navigation/month-navigation';
-import { PieChart } from '../components/pie-chart/pie-chart';
+import { Layout } from '../components/layout';
+import { TabNav, TabItem } from '../components/tab-nav';
+import { MonthNavigation } from '../components/month-navigation';
+import { PieChart } from '../components/pie-chart';
 
 interface Props {
   hostname: string;

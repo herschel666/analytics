@@ -1,7 +1,7 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 
-import { siteNameToHostname } from '../../shared/util';
+import { siteNameToHostname } from '../shared/util';
 
 export interface Props {
   sites?: string[];
