@@ -6,9 +6,9 @@ import { getPageViewsBySite } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { siteNameToHostname, daysAgo, niceMonth } from '../shared/util';
 import { page } from './page';
-import { Layout } from '../components/layout/layout';
-import { TabNav, TabItem } from '../components/tab-nav/tab-nav';
-import { LineChart } from '../components/line-chart/line-chart';
+import { Layout } from '../components/layout';
+import { TabNav, TabItem } from '../components/tab-nav';
+import { LineChart } from '../components/line-chart';
 
 interface Props {
   site: string;

@@ -11,7 +11,7 @@ interface Props {
 
 export const LineChart: HC<Props> = ({ site, dates, hits, from, to }) => {
   return (
-    <div class="line-chart">
+    <div class="mx-2 my-4">
       <canvas
         id="line-chart"
         data-site={site}

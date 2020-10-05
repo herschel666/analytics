@@ -6,7 +6,7 @@ import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { hostnameToSite, siteNameToHostname } from '../shared/util';
 import { page } from './page';
-import { Layout } from '../components/layout/layout';
+import { Layout } from '../components/layout';
 
 interface Props {
   hostname: string;

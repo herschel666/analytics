@@ -6,8 +6,8 @@ import { getReferrersBySite } from '../shared/ddb';
 import type { ReferrerHostEntry } from '../shared/ddb';
 import { siteNameToHostname, hostnameToSite } from '../shared/util';
 import { page } from './page';
-import { Layout } from '../components/layout/layout';
-import { TabNav, TabItem } from '../components/tab-nav/tab-nav';
+import { Layout } from '../components/layout';
+import { TabNav, TabItem } from '../components/tab-nav';
 
 interface Props {
   site: string;
