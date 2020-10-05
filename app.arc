@@ -10,6 +10,7 @@ folder dist
 
 @http
 get /
+# TODO: rename /user to /i
 get /user
 get /user/site/:site
 get /user/site/:site/settings
@@ -25,6 +26,7 @@ get /test/some-page
 get /test/other-page
 get /test/populate
 
+# TODO: add TTL for site & account deletion
 @tables
 analytics
   PK *String

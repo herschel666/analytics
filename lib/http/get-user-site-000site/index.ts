@@ -46,6 +46,7 @@ const servePageUserSite = async (req: AGWEvent): Promise<AGWResult> => {
     typeof cursorParam === 'string' && cursorParam.length
       ? cursorParam
       : undefined;
+  // TODO: handle non-exisiting site
   const body = await pageUserSite(site, owner, from, to, cursor);
 
   return {

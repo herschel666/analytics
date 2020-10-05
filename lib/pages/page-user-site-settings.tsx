@@ -16,6 +16,8 @@ interface Props {
 // TODO: use the real one
 const trackingPixelUrl = 'http://localhost:3333/cctv.gif';
 
+// TODO: add possibility to delete a site
+// TODO: add possibility to delete the user account
 const UserSiteDatePage: HC<Props> = ({ id, site }) => (
   <Layout text={siteNameToHostname(site)}>
     <TabNav site={site} current={TabItem.Settings} />
