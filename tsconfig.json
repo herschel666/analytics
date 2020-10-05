@@ -22,5 +22,5 @@
     "types": ["node"],
     "typeRoots": ["./node_modules/@types", "./lib/types"]
   },
-  "include": ["./lib", "!./lib/compile.ts"]
+  "include": ["./lib", "!./lib/compile.ts", "client"]
 }
