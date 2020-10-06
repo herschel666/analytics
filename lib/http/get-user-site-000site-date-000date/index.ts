@@ -34,7 +34,7 @@ export const servePageUserSiteDate = async (
   const { site, date } = req.pathParameters;
   const { range } = req.queryStringParameters || { range: '' };
   const { from, to } = getRange(range);
-  const { owner } = await arc.http.session.read<{ owner: string }>(req);
+  const { owner } = req.session;
   const body = await pageUserSiteDate(site, owner, date, from, to);
 
   return {
