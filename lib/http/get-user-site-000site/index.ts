@@ -32,7 +32,7 @@ const sortInterval = (
   }
 };
 
-const servePageUserSite = async (req: AGWEvent): Promise<AGWResult> => {
+export const servePageUserSite = async (req: AGWEvent): Promise<AGWResult> => {
   const { site } = req.pathParameters;
   const { from: fromDate, to: toDate, cursor: cursorParam } =
     req.queryStringParameters || {};
