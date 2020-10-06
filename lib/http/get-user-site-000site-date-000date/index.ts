@@ -28,7 +28,9 @@ const getRange = (range: string): Range => {
   }
 };
 
-const servePageUserSiteDate = async (req: AGWEvent): Promise<AGWResult> => {
+export const servePageUserSiteDate = async (
+  req: AGWEvent
+): Promise<AGWResult> => {
   const { site, date } = req.pathParameters;
   const { range } = req.queryStringParameters || { range: '' };
   const { from, to } = getRange(range);
