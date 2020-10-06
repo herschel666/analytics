@@ -8,7 +8,7 @@ import { isValidDate } from '../../shared/util';
 import { withOwner } from '../../shared/with-owner';
 import { pageUserSiteDevicesDate } from '../../pages/page-user-site-devices-date';
 
-const servePageUserSiteDevicesDate = async (
+export const servePageUserSiteDevicesDate = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site, date } = req.pathParameters;
