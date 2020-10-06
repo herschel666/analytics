@@ -4,6 +4,7 @@ import { servePageUserSite } from '.';
 import { pageUserSite } from '../../pages/page-user-site';
 
 jest.mock('../../shared/util.ts', () => ({
+  isValidDate: jest.requireActual('../../shared/util.ts').isValidDate,
   daysAgo: (days = 0) => {
     switch (days) {
       case 0:

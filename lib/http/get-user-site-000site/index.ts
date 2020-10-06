@@ -6,15 +6,7 @@ import type {
 
 import { withOwner } from '../../shared/with-owner';
 import { pageUserSite } from '../../pages/page-user-site';
-import { daysAgo } from '../../shared/util';
-
-const isValidDate = (date: string): boolean => {
-  try {
-    return new Date(date).toISOString().split('T').shift() === date;
-  } catch {
-    return false;
-  }
-};
+import { isValidDate, daysAgo } from '../../shared/util';
 
 const sortInterval = (
   fromDate: string | undefined,

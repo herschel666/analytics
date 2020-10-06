@@ -7,6 +7,14 @@ export const siteNameToHostname = (site: string): string =>
 export const hostnameToSite = (hostname = ''): string =>
   hostname.split('.').join('_');
 
+export const isValidDate = (date: string): boolean => {
+  try {
+    return new Date(date).toISOString().split('T').shift() === date;
+  } catch {
+    return false;
+  }
+};
+
 export const daysAgo = (days: number): string =>
   new Date(Date.now() - Math.max(days, 0) * 24 * 3600 * 1000)
     .toISOString()
