@@ -1,7 +1,5 @@
-import type {
-  SubsequentAsyncHandlerEvent as AGWEvent,
-  APIGatewayResult as AGWResult,
-} from '@architect/functions';
+import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
+import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { site } = req.pathParameters;
