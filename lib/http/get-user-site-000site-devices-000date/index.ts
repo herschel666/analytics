@@ -4,6 +4,7 @@ import type {
   APIGatewayResult as AGWResult,
 } from '@architect/functions';
 
+import { isValidDate } from '../../shared/util';
 import { withOwner } from '../../shared/with-owner';
 import { pageUserSiteDevicesDate } from '../../pages/page-user-site-devices-date';
 
@@ -12,7 +13,7 @@ const servePageUserSiteDevicesDate = async (
 ): Promise<AGWResult> => {
   const { site, date } = req.pathParameters;
 
-  if (!Boolean(date.match(/^\d{4}-\d{2}$/))) {
+  if (!isValidDate(`${date}-01`)) {
     return {
       headers: {
         'content-type': 'text/plain; charset=utf8',
