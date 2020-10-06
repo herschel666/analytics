@@ -4,7 +4,7 @@ import type {
   APIGatewayResult as AGWResult,
 } from '@architect/functions';
 
-import { atob } from '../../shared/util';
+import { isValidDate, atob } from '../../shared/util';
 import { withOwner } from '../../shared/with-owner';
 import { pageUserSiteDate } from '../../pages/page-user-site-date';
 
@@ -13,19 +13,15 @@ interface Range {
   to?: string;
 }
 
-const reDate = /^\d{4}-\d{2}-\d{2}$/;
-
 const getRange = (range: string): Range => {
   try {
     const obj = JSON.parse(atob(decodeURIComponent(range)));
     const from =
-      typeof obj.from === 'string' && Boolean(obj.from.match(reDate))
+      typeof obj.from === 'string' && isValidDate(obj.from)
         ? obj.from
         : undefined;
     const to =
-      typeof obj.to === 'string' && Boolean(obj.to.match(reDate))
-        ? obj.to
-        : undefined;
+      typeof obj.to === 'string' && isValidDate(obj.to) ? obj.to : undefined;
     return { from, to };
   } catch {
     return {};
