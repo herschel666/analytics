@@ -41,7 +41,7 @@ export const servePageUserSite = async (req: AGWEvent): Promise<AGWResult> => {
     isValidDate(fromDate) ? fromDate : undefined,
     isValidDate(toDate) ? toDate : undefined
   );
-  const { owner } = await arc.http.session.read<{ owner: string }>(req);
+  const { owner } = req.session;
   const cursor =
     typeof cursorParam === 'string' && cursorParam.length
       ? cursorParam
