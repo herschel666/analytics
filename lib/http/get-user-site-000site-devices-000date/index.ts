@@ -25,7 +25,7 @@ export const servePageUserSiteDevicesDate = async (
     };
   }
 
-  const { owner } = await arc.http.session.read<{ owner: string }>(req);
+  const { owner } = req.session;
   const body = await pageUserSiteDevicesDate(site, owner, date);
 
   return {
