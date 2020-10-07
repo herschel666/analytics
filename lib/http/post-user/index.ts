@@ -14,7 +14,7 @@ interface Payload {
 }
 
 export const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
-  const { owner } = await arc.http.session.read<{ owner: string }>(req);
+  const { owner } = req.session;
   const { debug: debugParam } = req.queryStringParameters || {};
   const debug =
     typeof debugParam === 'string' && process.env.NODE_ENV === 'testing'
