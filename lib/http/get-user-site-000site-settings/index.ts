@@ -11,7 +11,7 @@ export const servePageUserSiteSettings = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site } = req.pathParameters;
-  const { owner } = await arc.http.session.read<{ owner: string }>(req);
+  const { owner } = req.session;
   const body = await pageUserSiteSettings(site, owner);
 
   return {
