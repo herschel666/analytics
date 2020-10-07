@@ -11,7 +11,7 @@ export const servePageUserSiteReferrers = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site } = req.pathParameters;
-  const { owner } = await arc.http.session.read<{ owner: string }>(req);
+  const { owner } = req.session;
   const body = await pageUserSiteReferrers(site, owner);
 
   return {
