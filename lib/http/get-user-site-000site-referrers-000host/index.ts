@@ -8,7 +8,7 @@ import { withOwner } from '../../shared/with-owner';
 import { siteNameToHostname } from '../../shared/util';
 import { pageUserSiteReferrersHost } from '../../pages/page-user-site-referrers-host';
 
-const servePageUserSiteReferrersHost = async (
+export const servePageUserSiteReferrersHost = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site, host } = req.pathParameters;
