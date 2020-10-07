@@ -13,7 +13,7 @@ interface Payload {
   site_url?: unknown;
 }
 
-const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
+export const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
   const { debug: debugParam } = req.queryStringParameters || {};
   const debug =
