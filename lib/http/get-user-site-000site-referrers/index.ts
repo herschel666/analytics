@@ -7,7 +7,7 @@ import type {
 import { withOwner } from '../../shared/with-owner';
 import { pageUserSiteReferrers } from '../../pages/page-user-site-referrers';
 
-const servePageUserSiteReferrers = async (
+export const servePageUserSiteReferrers = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site } = req.pathParameters;
