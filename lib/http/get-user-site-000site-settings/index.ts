@@ -7,7 +7,9 @@ import type {
 import { withOwner } from '../../shared/with-owner';
 import { pageUserSiteSettings } from '../../pages/page-user-site-settings';
 
-const servePageUserSiteSettings = async (req: AGWEvent): Promise<AGWResult> => {
+export const servePageUserSiteSettings = async (
+  req: AGWEvent
+): Promise<AGWResult> => {
   const { site } = req.pathParameters;
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
   const body = await pageUserSiteSettings(site, owner);
