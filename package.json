@@ -72,11 +72,22 @@
     ],
     "projects": [
       {
-        "displayName": "lib",
+        "displayName": "http",
         "preset": "ts-jest",
         "testEnvironment": "node",
         "testMatch": [
-          "<rootDir>/lib/**/*.test.ts"
+          "<rootDir>/lib/http/**/*.test.ts"
+        ],
+        "setupFiles": [
+          "<rootDir>/jest.setup.ts"
+        ]
+      },
+      {
+        "displayName": "components",
+        "preset": "ts-jest",
+        "testEnvironment": "jsdom",
+        "testMatch": [
+          "<rootDir>/lib/components/**/*.test.ts"
         ],
         "setupFiles": [
           "<rootDir>/jest.setup.ts"
