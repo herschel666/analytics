@@ -22,7 +22,7 @@
   "author": "Emanuel Kluge (https://emanuel-kluge.de/)",
   "license": "MIT",
   "devDependencies": {
-    "@architect/architect": "6.6.6",
+    "@architect/architect": "7.0.6",
     "@architect/functions": "3.13.3",
     "@testing-library/dom": "7.24.5",
     "@types/aws-lambda": "8.10.63",
