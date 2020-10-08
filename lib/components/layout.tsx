@@ -11,7 +11,7 @@ export const Layout: HC<Props> = ({ sites, text, children }) => (
     <MainHeader sites={sites} text={text} />
     <main class="container-xxl d-flex flex-column flex-grow-1">{children}</main>
     <footer class="bd-footer p-3 mt-4 bg-light">
-      &copy; {new Date().getFullYear()}
+      <span>&copy; {new Date().getFullYear()}</span>
       <a
         class="px-4"
         href="https://github.com/herschel666/analytics"
