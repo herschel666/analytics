@@ -1,29 +1,21 @@
-import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
 import type { Data } from '@architect/functions';
 
-import { decrypt } from '../../shared/crypto';
-import { addPageView } from '../../shared/ddb';
-import { handler } from '.';
+import { decrypt } from '../shared/crypto';
+import { addPageView } from '../shared/ddb';
+import { handler } from './get-cctv_gif';
 
-type Obj = Record<string, string>;
-
-jest.mock('../../shared/ddb', () => ({
+jest.mock('../shared/ddb', () => ({
   addPageView: jest.fn(),
 }));
 
-jest.mock('../../shared/crypto', () => ({
+jest.mock('../shared/crypto', () => ({
   decrypt: jest.fn(),
-}));
-
-jest.mock('@architect/functions', () => ({
-  async tables() {
-    return {} as Data;
-  },
 }));
 
 describe('get-cctv_gif', () => {
   const id = 'some-encrypted-gibberish';
   const resource = '/some/page';
+  const referrer = 'https://some-other-site.tld/';
   const log = console.log;
   const userAgentString =
     'Mozilla/5.0 (compatible; MSIE 7.0; Windows NT 6.0; Trident/3.1)';
@@ -49,12 +41,14 @@ describe('get-cctv_gif', () => {
   });
 
   describe('query params completely missing', () => {
+    const args = { data: {} as Data, headers: {} };
+
     it('should always respond with 200', async () => {
       const {
         statusCode,
         body,
         headers: { ['content-type']: contentType },
-      } = await handler({ queryStringParameters: null } as AGWEvent);
+      } = await handler(args);
 
       expect(statusCode).toBe(200);
       expect(
@@ -64,37 +58,48 @@ describe('get-cctv_gif', () => {
     });
 
     it('should not try to store a page view if ID & Resource are missing', async () => {
-      await handler({ queryStringParameters: null } as AGWEvent);
+      await handler(args);
 
       expect(addPageView).not.toHaveBeenCalled();
     });
   });
 
   describe('query params only containig ID', () => {
+    const args = {
+      data: {} as Data,
+      headers: {},
+      id,
+    };
+
     beforeEach(() => {
       (decrypt as jest.Mock).mockReturnValue('user-sdg#site-fzxhg.tld');
     });
 
     it('should not try to store a page view if Resource is missing', async () => {
-      await handler({ queryStringParameters: { id } as Obj } as AGWEvent);
+      await handler(args);
 
-      expect(decrypt).toHaveBeenCalledWith(id);
+      expect(decrypt).toHaveBeenCalledWith(args.id);
     });
   });
 
   describe('query params only containig Resource', () => {
-    beforeEach(() => {
-      (decrypt as jest.Mock).mockReturnValue('user-zufgj#site-rdgx.tld');
-    });
+    const args = { resource: '/some/page', data: {} as Data, headers: {} };
 
     it('should not try to store a page view if Resource is missing', async () => {
-      await handler({ queryStringParameters: { resource } as Obj } as AGWEvent);
+      await handler(args);
 
       expect(addPageView).not.toHaveBeenCalled();
     });
   });
 
   describe('Decrypting the ID causes an error', () => {
+    const args = {
+      data: {} as Data,
+      headers: {},
+      resource,
+      id,
+    };
+
     beforeEach(() => {
       (decrypt as jest.Mock).mockImplementationOnce(() => {
         throw new Error('could not decrypt ID');
@@ -102,16 +107,20 @@ describe('get-cctv_gif', () => {
     });
 
     it('should return successfully nonetheless', async () => {
-      const { statusCode } = await handler({
-        queryStringParameters: { id, resource } as Obj,
-        headers: {},
-      } as AGWEvent);
+      const { statusCode } = await handler(args);
 
       expect(statusCode).toBe(200);
     });
   });
 
   describe('Adding page view causes an error', () => {
+    const args = {
+      data: {} as Data,
+      headers: {},
+      resource,
+      id,
+    };
+
     beforeEach(() => {
       (decrypt as jest.Mock).mockReturnValue('user-rwsx#site-khvj.tld');
       (addPageView as jest.Mock).mockRejectedValueOnce(
@@ -120,25 +129,26 @@ describe('get-cctv_gif', () => {
     });
 
     it('should return successfully nonetheless', async () => {
-      const { statusCode } = await handler({
-        queryStringParameters: { id, resource } as Obj,
-        headers: {},
-      } as AGWEvent);
+      const { statusCode } = await handler(args);
 
       expect(statusCode).toBe(200);
     });
   });
 
   describe('Adding minimal page view data', () => {
+    const args = {
+      data: {} as Data,
+      headers: {},
+      resource,
+      id,
+    };
+
     beforeEach(() => {
       (decrypt as jest.Mock).mockReturnValue('user-123#site-1.tld');
     });
 
     it('should store Resource', async () => {
-      await handler({
-        queryStringParameters: { id, resource } as Obj,
-        headers: {},
-      } as AGWEvent);
+      await handler(args);
 
       expect(addPageView).toHaveBeenCalledWith(
         expect.any(Object),
@@ -152,16 +162,20 @@ describe('get-cctv_gif', () => {
   });
 
   describe('Adding page view & referrer', () => {
+    const args = {
+      data: {} as Data,
+      headers: {},
+      referrer,
+      resource,
+      id,
+    };
+
     beforeEach(() => {
       (decrypt as jest.Mock).mockReturnValue('user-456#site-2.tld');
     });
 
     it('should store Resource & Referrer', async () => {
-      const referrer = 'https://some-other-site.tld/';
-      await handler({
-        queryStringParameters: { id, resource, referrer } as Obj,
-        headers: {},
-      } as AGWEvent);
+      await handler(args);
 
       expect(addPageView).toHaveBeenCalledWith(
         expect.any(Object),
@@ -175,12 +189,19 @@ describe('get-cctv_gif', () => {
   });
 
   describe('Adding complete page view', () => {
+    const args = {
+      data: {} as Data,
+      headers: { 'user-agent': userAgentString },
+      referrer,
+      resource,
+      id,
+    };
+
     beforeEach(() => {
       (decrypt as jest.Mock).mockReturnValue('user-789#site-3.tld');
     });
 
     it('should store Resource, User Agent & Referrer', async () => {
-      const referrer = 'https://some-other-site.tld/';
       const userAgent = {
         browserName: 'IE',
         browserVersion: '7',
@@ -188,10 +209,7 @@ describe('get-cctv_gif', () => {
         osName: 'Windows',
         osVersion: 'Vista',
       };
-      await handler({
-        queryStringParameters: { id, resource, referrer } as Obj,
-        headers: { 'user-agent': userAgentString } as Obj,
-      } as AGWEvent);
+      await handler(args);
 
       expect(addPageView).toHaveBeenCalledWith(
         expect.any(Object),

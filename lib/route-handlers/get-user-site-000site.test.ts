@@ -1,10 +1,8 @@
-import type { SubsequentAsyncHandlerEvent as AGWEvent } from '@architect/functions';
+import { handler } from './get-user-site-000site';
+import { pageUserSite } from '../pages/page-user-site';
 
-import { servePageUserSite } from '.';
-import { pageUserSite } from '../../pages/page-user-site';
-
-jest.mock('../../shared/util.ts', () => ({
-  isValidDate: jest.requireActual('../../shared/util.ts').isValidDate,
+jest.mock('../shared/util.ts', () => ({
+  isValidDate: jest.requireActual('../shared/util.ts').isValidDate,
   daysAgo: (days = 0) => {
     switch (days) {
       case 0:
@@ -17,7 +15,7 @@ jest.mock('../../shared/util.ts', () => ({
   },
 }));
 
-jest.mock('../../pages/page-user-site', () => ({
+jest.mock('../pages/page-user-site', () => ({
   pageUserSite: jest.fn().mockReturnValue('some HTML...'),
 }));
 
@@ -31,10 +29,10 @@ describe('get-user-site-000site', () => {
 
   describe('no query params given', () => {
     it('should return successfully', async () => {
-      const { statusCode, headers, body } = await servePageUserSite(({
-        session: { owner },
-        pathParameters: { site },
-      } as unknown) as AGWEvent);
+      const { statusCode, headers, body } = await handler({
+        owner,
+        site,
+      });
       const { ['content-type']: contentType } = headers;
 
       expect(statusCode).toBe(200);
@@ -43,10 +41,10 @@ describe('get-user-site-000site', () => {
     });
 
     it('should use the default date range', async () => {
-      await servePageUserSite(({
-        session: { owner },
-        pathParameters: { site },
-      } as unknown) as AGWEvent);
+      await handler({
+        owner,
+        site,
+      });
 
       expect(pageUserSite).toHaveBeenCalledWith(
         site,
@@ -62,11 +60,12 @@ describe('get-user-site-000site', () => {
     it('should respect the given range', async () => {
       const to = '2020-03-02';
       const from = '2020-02-12';
-      await servePageUserSite(({
-        session: { owner },
-        pathParameters: { site },
-        queryStringParameters: { from, to },
-      } as unknown) as AGWEvent);
+      await handler({
+        owner,
+        site,
+        from,
+        to,
+      });
 
       expect(pageUserSite).toHaveBeenCalledWith(
         site,
@@ -80,11 +79,12 @@ describe('get-user-site-000site', () => {
     it('should fix inverted date ranges', async () => {
       const from = '2020-03-02';
       const to = '2020-02-12';
-      await servePageUserSite(({
-        session: { owner },
-        pathParameters: { site },
-        queryStringParameters: { from, to },
-      } as unknown) as AGWEvent);
+      await handler({
+        owner,
+        site,
+        from,
+        to,
+      });
 
       expect(pageUserSite).toHaveBeenCalledWith(
         site,
@@ -102,11 +102,12 @@ describe('get-user-site-000site', () => {
     const baseArgs = [site, owner, from, to];
 
     it('should ignore an undefined value', async () => {
-      await servePageUserSite(({
-        session: { owner },
-        pathParameters: { site },
-        queryStringParameters: { from, to, cursor: undefined },
-      } as unknown) as AGWEvent);
+      await handler({
+        owner,
+        site,
+        from,
+        to,
+      });
 
       expect(pageUserSite).toHaveBeenCalledWith(
         ...baseArgs.concat([undefined])
@@ -114,11 +115,12 @@ describe('get-user-site-000site', () => {
     });
 
     it('should ignore an empty value', async () => {
-      await servePageUserSite(({
-        session: { owner },
-        pathParameters: { site },
-        queryStringParameters: { from, to, cursor: undefined },
-      } as unknown) as AGWEvent);
+      await handler({
+        owner,
+        site,
+        from,
+        to,
+      });
 
       expect(pageUserSite).toHaveBeenCalledWith(
         ...baseArgs.concat([undefined])
@@ -127,11 +129,13 @@ describe('get-user-site-000site', () => {
 
     it('should pass on the cursor to the view function', async () => {
       const cursor = 'some-cursor';
-      await servePageUserSite(({
-        session: { owner },
-        pathParameters: { site },
-        queryStringParameters: { from, to, cursor },
-      } as unknown) as AGWEvent);
+      await handler({
+        owner,
+        site,
+        from,
+        to,
+        cursor,
+      });
 
       expect(pageUserSite).toHaveBeenCalledWith(...baseArgs.concat([cursor]));
     });

@@ -4,39 +4,16 @@ import type {
   APIGatewayResult as AGWResult,
 } from '@architect/functions';
 
-import { isValidDate } from '../../shared/util';
+import { handler as routeHandler } from '../../route-handlers/get-user-site-000site-devices-000date';
 import { withOwner } from '../../shared/with-owner';
-import { pageUserSiteDevicesDate } from '../../pages/page-user-site-devices-date';
 
 export const servePageUserSiteDevicesDate = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site, date } = req.pathParameters;
-
-  if (!isValidDate(`${date}-01`)) {
-    return {
-      headers: {
-        'content-type': 'text/plain; charset=utf8',
-        'cache-control':
-          'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-      },
-      statusCode: 404,
-      body: 'Wrong URL-parameter.',
-    };
-  }
-
   const { owner } = req.session;
-  const body = await pageUserSiteDevicesDate(site, owner, date);
 
-  return {
-    headers: {
-      'content-type': 'text/html; charset=utf8',
-      'cache-control':
-        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-    },
-    statusCode: 200,
-    body,
-  };
+  return routeHandler({ site, date, owner });
 };
 
 export const handler = arc.http.async(withOwner, servePageUserSiteDevicesDate);

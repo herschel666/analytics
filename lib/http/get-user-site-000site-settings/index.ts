@@ -5,24 +5,15 @@ import type {
 } from '@architect/functions';
 
 import { withOwner } from '../../shared/with-owner';
-import { pageUserSiteSettings } from '../../pages/page-user-site-settings';
+import { handler as routeHandler } from '../../route-handlers/get-user-site-000site-settings';
 
 export const servePageUserSiteSettings = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site } = req.pathParameters;
   const { owner } = req.session;
-  const body = await pageUserSiteSettings(site, owner);
 
-  return {
-    headers: {
-      'content-type': 'text/html; charset=utf8',
-      'cache-control':
-        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-    },
-    statusCode: 200,
-    body,
-  };
+  return routeHandler({ site, owner });
 };
 
 export const handler = arc.http.async(withOwner, servePageUserSiteSettings);

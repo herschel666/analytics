@@ -1,17 +1,14 @@
 import * as arc from '@architect/functions';
 import type { APIGatewayResult as AGWResult } from '@architect/functions';
 
+import { handler as routeHandler } from '../../route-handlers/get-index';
+
 export const handler = async (): Promise<AGWResult> => {
   // TODO: replace static 'test-user' with dynamic one...
   const owner = 'test-user';
   const cookie = await arc.http.session.write({ owner });
+  const location = arc.http.helpers.url('/user');
 
   // TODO: implement authentication...
-  return {
-    statusCode: 301,
-    headers: {
-      'set-cookie': cookie,
-      location: arc.http.helpers.url('/user'),
-    },
-  };
+  return routeHandler({ cookie, location });
 };

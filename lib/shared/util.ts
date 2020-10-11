@@ -7,7 +7,7 @@ export const siteNameToHostname = (site: string): string =>
 export const hostnameToSite = (hostname = ''): string =>
   hostname.split('.').join('_');
 
-export const isValidDate = (date: string): boolean => {
+export const isValidDate = (date?: string): boolean => {
   try {
     return new Date(date).toISOString().split('T').shift() === date;
   } catch {

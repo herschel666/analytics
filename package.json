@@ -76,7 +76,7 @@
         "preset": "ts-jest",
         "testEnvironment": "node",
         "testMatch": [
-          "<rootDir>/lib/http/**/*.test.ts"
+          "<rootDir>/lib/route-handlers/**/*.test.ts"
         ],
         "setupFiles": [
           "<rootDir>/jest.setup.ts"

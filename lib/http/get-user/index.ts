@@ -5,26 +5,13 @@ import type {
 } from '@architect/functions';
 
 import { withOwner } from '../../shared/with-owner';
-import { pageUser } from '../../pages/page-user';
+import { handler as routeHandler } from '../../route-handlers/get-user';
 
 export const servePageUser = async (req: AGWEvent): Promise<AGWResult> => {
-  const { debug: debugParam } = req.queryStringParameters || {};
-  const debug =
-    typeof debugParam === 'string' && process.env.NODE_ENV === 'testing'
-      ? debugParam.split(',')
-      : undefined;
+  const { debug } = req.queryStringParameters || {};
   const { owner } = req.session;
-  const body = await pageUser(owner, debug);
 
-  return {
-    headers: {
-      'content-type': 'text/html; charset=utf8',
-      'cache-control':
-        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-    },
-    statusCode: 200,
-    body,
-  };
+  return routeHandler({ owner, debug });
 };
 
 export const handler = arc.http.async(withOwner, servePageUser);

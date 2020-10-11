@@ -5,29 +5,15 @@ import type {
 } from '@architect/functions';
 
 import { withOwner } from '../../shared/with-owner';
-import { siteNameToHostname } from '../../shared/util';
-import { pageUserSiteReferrersHost } from '../../pages/page-user-site-referrers-host';
+import { handler as routeHandler } from '../../route-handlers/get-user-site-000site-referrers-000host';
 
 export const servePageUserSiteReferrersHost = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site, host } = req.pathParameters;
   const { owner } = req.session;
-  const body = await pageUserSiteReferrersHost(
-    site,
-    owner,
-    siteNameToHostname(host)
-  );
 
-  return {
-    headers: {
-      'content-type': 'text/html; charset=utf8',
-      'cache-control':
-        'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-    },
-    statusCode: 200,
-    body,
-  };
+  return routeHandler({ site, host, owner });
 };
 
 export const handler = arc.http.async(
