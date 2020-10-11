@@ -1,6 +1,4 @@
-import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
-
-import { handler } from '.';
+import { handler } from './get-user-site-000site-devices';
 
 const currentMonth = '2020-02';
 
@@ -24,10 +22,7 @@ describe('get-user-site-000site-devices', () => {
 
   it('should redirect to the current month', async () => {
     const site = 'site_tld';
-    const { statusCode, headers } = await handler(({
-      session: { owner: 'nobody' },
-      pathParameters: { site },
-    } as unknown) as AGWEvent);
+    const { statusCode, headers } = await handler({ site });
     const { location } = headers;
 
     expect(statusCode).toBe(301);

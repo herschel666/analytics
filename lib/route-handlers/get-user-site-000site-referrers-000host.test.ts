@@ -1,9 +1,7 @@
-import type { SubsequentAsyncHandlerEvent as AGWEvent } from '@architect/functions';
+import { pageUserSiteReferrersHost } from '../pages/page-user-site-referrers-host';
+import { handler } from './get-user-site-000site-referrers-000host';
 
-import { pageUserSiteReferrersHost } from '../../pages/page-user-site-referrers-host';
-import { servePageUserSiteReferrersHost } from '.';
-
-jest.mock('../../pages/page-user-site-referrers-host', () => ({
+jest.mock('../pages/page-user-site-referrers-host', () => ({
   pageUserSiteReferrersHost: jest.fn().mockReturnValue('some HTML...'),
 }));
 
@@ -13,12 +11,11 @@ describe('get-user-site-000site-referrers-000host', () => {
   const owner = 'some-user';
 
   it('should return successfully', async () => {
-    const { statusCode, headers, body } = await servePageUserSiteReferrersHost(
-      ({
-        session: { owner },
-        pathParameters: { site, host },
-      } as unknown) as AGWEvent
-    );
+    const { statusCode, headers, body } = await handler({
+      owner,
+      site,
+      host,
+    });
     const { ['content-type']: contentType } = headers;
 
     expect(statusCode).toBe(200);
@@ -27,10 +24,11 @@ describe('get-user-site-000site-referrers-000host', () => {
   });
 
   it('should call the view function', async () => {
-    await servePageUserSiteReferrersHost(({
-      session: { owner },
-      pathParameters: { site, host },
-    } as unknown) as AGWEvent);
+    await handler({
+      owner,
+      site,
+      host,
+    });
 
     expect(pageUserSiteReferrersHost).toHaveBeenCalledWith(
       site,

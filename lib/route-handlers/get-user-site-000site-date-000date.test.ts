@@ -1,10 +1,8 @@
-import type { SubsequentAsyncHandlerEvent as AGWEvent } from '@architect/functions';
+import { handler } from './get-user-site-000site-date-000date';
+import { pageUserSiteDate } from '../pages/page-user-site-date';
+import { btoa } from '../shared/util';
 
-import { servePageUserSiteDate } from '.';
-import { pageUserSiteDate } from '../../pages/page-user-site-date';
-import { btoa } from '../../shared/util';
-
-jest.mock('../../pages/page-user-site-date', () => ({
+jest.mock('../pages/page-user-site-date', () => ({
   pageUserSiteDate: jest.fn().mockReturnValue('some HTML...'),
 }));
 
@@ -19,10 +17,12 @@ describe('get-user-site-000site-date-000date', () => {
 
   describe('no query params given', () => {
     it('should return successfully', async () => {
-      const { statusCode, headers, body } = await servePageUserSiteDate(({
-        session: { owner },
-        pathParameters: { site, date },
-      } as unknown) as AGWEvent);
+      const { statusCode, headers, body } = await handler({
+        range: '',
+        owner,
+        site,
+        date,
+      });
       const { ['content-type']: contentType } = headers;
 
       expect(statusCode).toBe(200);
@@ -31,10 +31,12 @@ describe('get-user-site-000site-date-000date', () => {
     });
 
     it('should ignore the missing date range', async () => {
-      await servePageUserSiteDate(({
-        session: { owner },
-        pathParameters: { site, date },
-      } as unknown) as AGWEvent);
+      await handler({
+        range: '',
+        owner,
+        site,
+        date,
+      });
 
       expect(pageUserSiteDate).toHaveBeenCalledWith(
         site,
@@ -50,11 +52,12 @@ describe('get-user-site-000site-date-000date', () => {
     describe('invalid date range string', () => {
       it('should ignore the invalid date range', async () => {
         const range = 'this-is-not-a-valid-base-64';
-        await servePageUserSiteDate(({
-          session: { owner },
-          pathParameters: { site, date },
-          queryStringParameters: { range },
-        } as unknown) as AGWEvent);
+        await handler({
+          owner,
+          site,
+          date,
+          range,
+        });
 
         expect(pageUserSiteDate).toHaveBeenCalledWith(
           site,
@@ -76,11 +79,12 @@ describe('get-user-site-000site-date-000date', () => {
             })
           )
         );
-        await servePageUserSiteDate(({
-          session: { owner },
-          pathParameters: { site, date },
-          queryStringParameters: { range },
-        } as unknown) as AGWEvent);
+        await handler({
+          owner,
+          site,
+          date,
+          range,
+        });
 
         expect(pageUserSiteDate).toHaveBeenCalledWith(
           site,
@@ -97,11 +101,12 @@ describe('get-user-site-000site-date-000date', () => {
         const from = '2020-02-12';
         const to = '2020-03-02';
         const range = encodeURIComponent(btoa(JSON.stringify({ from, to })));
-        await servePageUserSiteDate(({
-          session: { owner },
-          pathParameters: { site, date },
-          queryStringParameters: { range },
-        } as unknown) as AGWEvent);
+        await handler({
+          owner,
+          site,
+          date,
+          range,
+        });
 
         expect(pageUserSiteDate).toHaveBeenCalledWith(
           site,
