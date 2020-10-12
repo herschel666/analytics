@@ -53,7 +53,14 @@ export const init = (canvas: HTMLCanvasElement): void => {
       ],
     },
     options: {
-      // TODO: change cursour to "pointer" when hovering a point
+      onHover: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
+        const className = 'cursor-pointer';
+        if (element) {
+          canvas.classList.add(className);
+        } else {
+          canvas.classList.remove(className);
+        }
+      },
       onClick: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
         if (!element) {
           return;
