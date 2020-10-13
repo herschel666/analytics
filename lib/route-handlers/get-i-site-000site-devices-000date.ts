@@ -1,15 +1,18 @@
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { Data, APIGatewayResult as AGWResult } from '@architect/functions';
 
+import { getUserAgentEntriesBySiteAndDate } from '../shared/ddb';
 import { isValidDate } from '../shared/util';
 import { pageSiteDevicesDate } from '../pages/page-i-site-devices-date';
 
 interface Args {
+  data: Data;
   site: string;
   date: string;
   owner: string;
 }
 
 export const handler = async ({
+  data,
   site,
   date,
   owner,
@@ -26,7 +29,13 @@ export const handler = async ({
     };
   }
 
-  const body = await pageSiteDevicesDate(site, owner, date);
+  const devices = await getUserAgentEntriesBySiteAndDate(
+    data.analytics,
+    site,
+    owner,
+    date
+  );
+  const body = pageSiteDevicesDate({ devices, site, date });
 
   return {
     headers: {

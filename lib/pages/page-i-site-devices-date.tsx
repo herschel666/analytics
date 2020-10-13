@@ -1,8 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-import * as arc from '@architect/functions';
 
-import { getUserAgentEntriesBySiteAndDate } from '../shared/ddb';
 import type {
   UserAgentEntries,
   UABrowser,
@@ -22,6 +20,12 @@ interface Props {
   devices: UserAgentEntries;
   currentYear: number;
   currentMonth: number;
+}
+
+interface Args {
+  devices: UserAgentEntries;
+  site: string;
+  date: string;
 }
 
 const countDescending = <T extends { count: number }>(
@@ -156,18 +160,7 @@ const Page: HC<Props> = ({
   );
 };
 
-export const pageSiteDevicesDate = async (
-  site: string,
-  owner: string,
-  date: string
-): Promise<string> => {
-  const doc = await arc.tables();
-  const devices = await getUserAgentEntriesBySiteAndDate(
-    doc.analytics,
-    site,
-    owner,
-    date
-  );
+export const pageSiteDevicesDate = ({ devices, site, date }: Args): string => {
   const [currentYear, currentMonth] = date.split('-');
 
   return pageFrame(
