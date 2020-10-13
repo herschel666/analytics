@@ -1,14 +1,9 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-import * as arc from '@architect/functions';
 
-import { getTable, getSites } from '../shared/ddb';
 import type { TableItem } from '../shared/ddb';
 import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
-
-type DDBPromise = [Promise<TableItem[]>, Promise<string[]>];
-type DDBResults = [TableItem[], string[]];
 
 interface Props {
   sites: string[];
@@ -29,7 +24,7 @@ const Page: HC<Props> = ({ sites, table, debug }) => (
     <form
       class="w-50 m-auto"
       method="post"
-      action={`/i/${debug ? `?debug=${debug.join(',')}` : ''}`}
+      action={`/i${debug ? `?debug=${debug.join(',')}` : ''}`}
     >
       <fieldset>
         <label for="site_url" class="form-label">
@@ -63,22 +58,5 @@ const Page: HC<Props> = ({ sites, table, debug }) => (
   </Layout>
 );
 
-// TODO: split pages into "dumb" views & DB-consuming controllers
-export const pageInternal = async (
-  owner: string,
-  debug: Props['debug']
-): Promise<string> => {
-  const doc = await arc.tables();
-  const promises: DDBPromise = [
-    Promise.resolve([]),
-    getSites(doc.analytics, owner),
-  ];
-
-  if (debug) {
-    promises[0] = getTable(doc.analytics);
-  }
-
-  const [table, sites] = (await Promise.all(promises)) as DDBResults;
-
-  return pageFrame(<Page sites={sites} table={table} debug={debug} />);
-};
+export const pageInternal = ({ sites, table, debug }: Props): string =>
+  pageFrame(<Page sites={sites} table={table} debug={debug} />);

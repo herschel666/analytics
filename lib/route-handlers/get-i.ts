@@ -1,13 +1,20 @@
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { Data, APIGatewayResult as AGWResult } from '@architect/functions';
 
+import { getTable, getSites } from '../shared/ddb';
+import type { TableItem } from '../shared/ddb';
 import { pageInternal } from '../pages/page-i';
 
+type DDBPromise = [Promise<TableItem[]>, Promise<string[]>];
+type DDBResults = [TableItem[], string[]];
+
 interface Args {
+  data: Data;
   owner: string;
   debug?: string;
 }
 
 export const handler = async ({
+  data,
   owner,
   debug: debugParam,
 }: Args): Promise<AGWResult> => {
@@ -15,7 +22,16 @@ export const handler = async ({
     typeof debugParam === 'string' && process.env.NODE_ENV === 'testing'
       ? debugParam.split(',')
       : undefined;
-  const body = await pageInternal(owner, debug);
+  const promises: DDBPromise = [
+    Promise.resolve([]),
+    getSites(data.analytics, owner),
+  ];
+
+  if (debug) {
+    promises[0] = getTable(data.analytics);
+  }
+  const [table, sites] = (await Promise.all(promises)) as DDBResults;
+  const body = pageInternal({ sites, table, debug });
 
   return {
     headers: {
