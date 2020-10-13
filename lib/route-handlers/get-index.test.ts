@@ -2,7 +2,7 @@ import { handler } from './get-index';
 
 const args = {
   cookie: 'idx=session-cookie',
-  location: '/user',
+  location: '/i',
 };
 
 describe('get-index', () => {
@@ -14,7 +14,7 @@ describe('get-index', () => {
     expect(cookie).toBe(args.cookie);
   });
 
-  it('redirects to /user', async () => {
+  it('redirects to /i', async () => {
     const {
       statusCode,
       headers: { location },

@@ -12,7 +12,7 @@ export const MainHeader: HC<Props> = ({ sites, text }) => {
   return (
     <header class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/user">
+        <a class="navbar-brand" href="/i">
           ek|analytics
         </a>
         {Boolean(sites && sites.length) && (
@@ -33,7 +33,7 @@ export const MainHeader: HC<Props> = ({ sites, text }) => {
               >
                 {sites.map((site) => (
                   <span>
-                    <a class="dropdown-item" href={`/user/site/${site}`}>
+                    <a class="dropdown-item" href={`/i/site/${site}`}>
                       {siteNameToHostname(site)}
                     </a>
                   </span>

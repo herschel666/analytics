@@ -19,8 +19,7 @@ const linkClass = (self: TabItem, current: TabItem): string =>
 const ariaCurrent = (self: TabItem, current: TabItem): Record<string, string> =>
   self === current ? { 'aria-current': 'page' } : {};
 
-const url = (site: string, suffix = ''): string =>
-  `/user/site/${site}${suffix}`;
+const url = (site: string, suffix = ''): string => `/i/site/${site}${suffix}`;
 
 export const TabNav: HC<Props> = ({ site, current }) => (
   <ul class="nav nav-tabs mt-4">
