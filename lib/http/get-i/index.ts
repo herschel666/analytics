@@ -10,8 +10,9 @@ import { handler as routeHandler } from '../../route-handlers/get-i';
 export const servePage = async (req: AGWEvent): Promise<AGWResult> => {
   const { debug } = req.queryStringParameters || {};
   const { owner } = req.session;
+  const data = await arc.tables();
 
-  return routeHandler({ owner, debug });
+  return routeHandler({ data, owner, debug });
 };
 
 export const handler = arc.http.async(withOwner, servePage);
