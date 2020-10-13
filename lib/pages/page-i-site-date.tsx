@@ -5,7 +5,7 @@ import * as arc from '@architect/functions';
 import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { hostnameToSite, siteNameToHostname } from '../shared/util';
-import { pageFrame } from './frame';
+import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
 
 interface Props {

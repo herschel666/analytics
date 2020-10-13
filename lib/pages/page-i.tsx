@@ -4,7 +4,7 @@ import * as arc from '@architect/functions';
 
 import { getTable, getSites } from '../shared/ddb';
 import type { TableItem } from '../shared/ddb';
-import { pageFrame } from './frame';
+import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
 
 type DDBPromise = [Promise<TableItem[]>, Promise<string[]>];

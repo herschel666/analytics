@@ -5,7 +5,7 @@ import * as arc from '@architect/functions';
 import { getReferrersBySite } from '../shared/ddb';
 import type { ReferrerHostEntry } from '../shared/ddb';
 import { siteNameToHostname, hostnameToSite } from '../shared/util';
-import { pageFrame } from './frame';
+import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
 import { TabNav, TabItem } from '../components/tab-nav';
 
