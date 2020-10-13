@@ -1,5 +1,14 @@
+import type { Data } from '@architect/functions';
+
+import { getPageViewsBySite } from '../shared/ddb';
 import { handler } from './get-i-site-000site';
 import { pageSite } from '../pages/page-i-site';
+
+jest.mock('../shared/ddb', () => ({
+  getPageViewsBySite: jest
+    .fn()
+    .mockResolvedValue({ views: [{ type: 'views' }] }),
+}));
 
 jest.mock('../shared/util.ts', () => ({
   isValidDate: jest.requireActual('../shared/util.ts').isValidDate,
@@ -20,16 +29,23 @@ jest.mock('../pages/page-i-site', () => ({
 }));
 
 describe('get-i-site-000site', () => {
+  const data = ({ analytics: 'analytics' } as unknown) as Data;
+  const pageViews = [{ type: 'views' }];
   const site = 'site_tld';
   const owner = 'some-user';
 
   afterEach(() => {
-    (pageSite as jest.Mock).mockReset();
+    (getPageViewsBySite as jest.Mock).mockClear();
+    (pageSite as jest.Mock).mockClear();
   });
 
   describe('no query params given', () => {
+    const from = '2020-02-22';
+    const to = '2020-02-29';
+
     it('should return successfully', async () => {
       const { statusCode, headers, body } = await handler({
+        data,
         owner,
         site,
       });
@@ -40,80 +56,89 @@ describe('get-i-site-000site', () => {
       expect(body).toBe('some HTML...');
     });
 
+    it('should call the data', async () => {
+      await handler({
+        data,
+        site,
+        owner,
+      });
+
+      expect(getPageViewsBySite).toHaveBeenCalledWith(
+        data.analytics,
+        site,
+        owner,
+        from,
+        to,
+        undefined
+      );
+    });
+
     it('should use the default date range', async () => {
       await handler({
+        data,
         owner,
         site,
       });
 
-      expect(pageSite).toHaveBeenCalledWith(
+      expect(pageSite).toHaveBeenCalledWith({
+        pageViews,
         site,
         owner,
-        '2020-02-22',
-        '2020-02-29',
-        undefined
-      );
+        from,
+        to,
+      });
     });
   });
 
   describe('date range params given', () => {
+    const to = '2020-03-02';
+    const from = '2020-02-12';
+
     it('should respect the given range', async () => {
-      const to = '2020-03-02';
-      const from = '2020-02-12';
       await handler({
+        data,
         owner,
         site,
         from,
         to,
       });
 
-      expect(pageSite).toHaveBeenCalledWith(site, owner, from, to, undefined);
+      expect(pageSite).toHaveBeenCalledWith({
+        pageViews,
+        site,
+        owner,
+        from,
+        to,
+      });
     });
 
     it('should fix inverted date ranges', async () => {
-      const from = '2020-03-02';
-      const to = '2020-02-12';
       await handler({
+        data,
         owner,
         site,
         from,
         to,
       });
 
-      expect(pageSite).toHaveBeenCalledWith(site, owner, to, from, undefined);
+      expect(pageSite).toHaveBeenCalledWith({
+        pageViews,
+        site,
+        owner,
+        to,
+        from,
+      });
     });
   });
 
   describe('cursor param given', () => {
     const from = '2020-02-22';
     const to = '2020-02-29';
-    const baseArgs = [site, owner, from, to];
 
-    it('should ignore an undefined value', async () => {
-      await handler({
-        owner,
-        site,
-        from,
-        to,
-      });
-
-      expect(pageSite).toHaveBeenCalledWith(...baseArgs.concat([undefined]));
-    });
-
-    it('should ignore an empty value', async () => {
-      await handler({
-        owner,
-        site,
-        from,
-        to,
-      });
-
-      expect(pageSite).toHaveBeenCalledWith(...baseArgs.concat([undefined]));
-    });
-
-    it('should pass on the cursor to the view function', async () => {
+    it('should pass on the cursor to the data function', async () => {
       const cursor = 'some-cursor';
       await handler({
+        data,
         owner,
         site,
         from,
@@ -121,7 +146,61 @@ describe('get-i-site-000site', () => {
         cursor,
       });
 
-      expect(pageSite).toHaveBeenCalledWith(...baseArgs.concat([cursor]));
+      expect(getPageViewsBySite).toHaveBeenCalledWith(
+        data.analytics,
+        site,
+        owner,
+        from,
+        to,
+        cursor
+      );
+    });
+
+    it('should pass on the cursor to the view function', async () => {
+      const cursor = 'some-cursor';
+      await handler({
+        data,
+        owner,
+        site,
+        from,
+        to,
+        cursor,
+      });
+
+      expect(pageSite).toHaveBeenCalledWith({
+        pageViews,
+        site,
+        owner,
+        to,
+        from,
+        cursor,
+      });
+    });
+
+    it('should pass on a new cursor to the view function', async () => {
+      (getPageViewsBySite as jest.Mock).mockResolvedValueOnce({
+        views: [{ type: 'views' }],
+        cursor: 'the-new-cursor',
+      });
+      const cursor = 'some-cursor';
+      await handler({
+        data,
+        owner,
+        site,
+        from,
+        to,
+        cursor,
+      });
+
+      expect(pageSite).toHaveBeenCalledWith({
+        newCursor: 'the-new-cursor',
+        pageViews,
+        site,
+        owner,
+        to,
+        from,
+        cursor,
+      });
     });
   });
 });
