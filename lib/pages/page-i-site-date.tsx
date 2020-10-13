@@ -1,8 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-import * as arc from '@architect/functions';
 
-import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { hostnameToSite, siteNameToHostname } from '../shared/util';
 import { pageFrame } from '../shared/page-frame';
@@ -12,6 +10,14 @@ interface Props {
   hostname: string;
   date: string;
   pageViews: PageView[];
+  from?: string;
+  to?: string;
+}
+
+interface Args {
+  pageViews: PageView[];
+  site: string;
+  date: string;
   from?: string;
   to?: string;
 }
@@ -67,28 +73,19 @@ const Page: HC<Props> = ({ hostname, date, pageViews, from, to }) => (
   </Layout>
 );
 
-export const pageSiteDate = async (
-  site: string,
-  owner: string,
-  date: string,
-  from?: string,
-  to?: string
-): Promise<string> => {
-  const doc = await arc.tables();
-  const pageViewsPerDate = await getPageViewsBySiteAndDate(
-    doc.analytics,
-    site,
-    owner,
-    date
-  );
-
-  return pageFrame(
+export const pageSiteDate = ({
+  pageViews,
+  site,
+  date,
+  from,
+  to,
+}: Args): string =>
+  pageFrame(
     <Page
       hostname={siteNameToHostname(site)}
       date={date}
-      pageViews={pageViewsPerDate.sort(sortPageViewsPerDate)}
+      pageViews={pageViews.sort(sortPageViewsPerDate)}
       from={from}
       to={to}
     />
   );
-};

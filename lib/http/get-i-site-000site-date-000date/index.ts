@@ -11,8 +11,9 @@ export const servePageSiteDate = async (req: AGWEvent): Promise<AGWResult> => {
   const { site, date } = req.pathParameters;
   const { range } = req.queryStringParameters || { range: '' };
   const { owner } = req.session;
+  const data = await arc.tables();
 
-  return routeHandler({ owner, site, date, range });
+  return routeHandler({ data, owner, site, date, range });
 };
 
 export const handler = arc.http.async(withOwner, servePageSiteDate);

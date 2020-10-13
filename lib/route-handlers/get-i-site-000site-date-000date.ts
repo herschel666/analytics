@@ -1,9 +1,11 @@
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { Data, APIGatewayResult as AGWResult } from '@architect/functions';
 
+import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import { isValidDate, atob } from '../shared/util';
 import { pageSiteDate } from '../pages/page-i-site-date';
 
 interface Args {
+  data: Data;
   owner: string;
   site: string;
   date: string;
@@ -31,13 +33,20 @@ const getRange = (range: string): Range => {
 };
 
 export const handler = async ({
+  data,
   owner,
   site,
   date,
   range,
 }: Args): Promise<AGWResult> => {
   const { from, to } = getRange(range);
-  const body = await pageSiteDate(site, owner, date, from, to);
+  const pageViews = await getPageViewsBySiteAndDate(
+    data.analytics,
+    site,
+    owner,
+    date
+  );
+  const body = pageSiteDate({ pageViews, site, date, from, to });
 
   return {
     headers: {
