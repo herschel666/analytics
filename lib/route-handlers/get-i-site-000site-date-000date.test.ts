@@ -1,12 +1,21 @@
+import type { Data } from '@architect/functions';
+
+import { getPageViewsBySiteAndDate } from '../shared/ddb';
 import { handler } from './get-i-site-000site-date-000date';
 import { pageSiteDate } from '../pages/page-i-site-date';
 import { btoa } from '../shared/util';
+
+jest.mock('../shared/ddb', () => ({
+  getPageViewsBySiteAndDate: jest.fn().mockResolvedValue([{ type: 'views' }]),
+}));
 
 jest.mock('../pages/page-i-site-date', () => ({
   pageSiteDate: jest.fn().mockReturnValue('some HTML...'),
 }));
 
 describe('get-i-site-000site-date-000date', () => {
+  const data = ({ analytics: 'analytics' } as unknown) as Data;
+  const pageViews = [{ type: 'views' }];
   const site = 'site_tld';
   const date = '2020-05-10';
   const owner = 'some-user';
@@ -18,6 +27,7 @@ describe('get-i-site-000site-date-000date', () => {
   describe('no query params given', () => {
     it('should return successfully', async () => {
       const { statusCode, headers, body } = await handler({
+        data,
         range: '',
         owner,
         site,
@@ -30,21 +40,37 @@ describe('get-i-site-000site-date-000date', () => {
       expect(body).toBe('some HTML...');
     });
 
-    it('should ignore the missing date range', async () => {
+    it('should request data from the DDB', async () => {
       await handler({
+        data,
         range: '',
         owner,
         site,
         date,
       });
 
-      expect(pageSiteDate).toHaveBeenCalledWith(
+      expect(getPageViewsBySiteAndDate).toHaveBeenCalledWith(
+        data.analytics,
         site,
         owner,
-        date,
-        undefined,
-        undefined
+        date
       );
+    });
+
+    it('should ignore the missing date range', async () => {
+      await handler({
+        data,
+        range: '',
+        owner,
+        site,
+        date,
+      });
+
+      expect(pageSiteDate).toHaveBeenCalledWith({
+        pageViews,
+        site,
+        date,
+      });
     });
   });
 
@@ -53,19 +79,18 @@ describe('get-i-site-000site-date-000date', () => {
       it('should ignore the invalid date range', async () => {
         const range = 'this-is-not-a-valid-base-64';
         await handler({
+          data,
           owner,
           site,
           date,
           range,
         });
 
-        expect(pageSiteDate).toHaveBeenCalledWith(
+        expect(pageSiteDate).toHaveBeenCalledWith({
+          pageViews,
           site,
-          owner,
           date,
-          undefined,
-          undefined
-        );
+        });
       });
     });
 
@@ -80,19 +105,18 @@ describe('get-i-site-000site-date-000date', () => {
           )
         );
         await handler({
+          data,
           owner,
           site,
           date,
           range,
         });
 
-        expect(pageSiteDate).toHaveBeenCalledWith(
+        expect(pageSiteDate).toHaveBeenCalledWith({
+          pageViews,
           site,
-          owner,
           date,
-          undefined,
-          undefined
-        );
+        });
       });
     });
 
@@ -102,13 +126,20 @@ describe('get-i-site-000site-date-000date', () => {
         const to = '2020-03-02';
         const range = encodeURIComponent(btoa(JSON.stringify({ from, to })));
         await handler({
+          data,
           owner,
           site,
           date,
           range,
         });
 
-        expect(pageSiteDate).toHaveBeenCalledWith(site, owner, date, from, to);
+        expect(pageSiteDate).toHaveBeenCalledWith({
+          pageViews,
+          site,
+          date,
+          from,
+          to,
+        });
       });
     });
   });
