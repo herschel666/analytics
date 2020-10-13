@@ -10,17 +10,16 @@ folder dist
 
 @http
 get /
-# TODO: rename /user to /i
-get /user
-get /user/site/:site
-get /user/site/:site/settings
-get /user/site/:site/referrers
-get /user/site/:site/referrers/:host
-get /user/site/:site/devices
-get /user/site/:site/devices/:date
-get /user/site/:site/date/:date
+get /i
+get /i/site/:site
+get /i/site/:site/settings
+get /i/site/:site/referrers
+get /i/site/:site/referrers/:host
+get /i/site/:site/devices
+get /i/site/:site/devices/:date
+get /i/site/:site/date/:date
 get /cctv.gif
-post /user
+post /i
 
 get /test/some-page
 get /test/other-page

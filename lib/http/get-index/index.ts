@@ -7,7 +7,7 @@ export const handler = async (): Promise<AGWResult> => {
   // TODO: replace static 'test-user' with dynamic one...
   const owner = 'test-user';
   const cookie = await arc.http.session.write({ owner });
-  const location = arc.http.helpers.url('/user');
+  const location = arc.http.helpers.url('/i');
 
   // TODO: implement authentication...
   return routeHandler({ cookie, location });

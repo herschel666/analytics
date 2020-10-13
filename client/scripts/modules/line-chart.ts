@@ -74,7 +74,7 @@ export const init = (canvas: HTMLCanvasElement): void => {
             ? `?range=${encodeURIComponent(btoa(JSON.stringify({ from, to })))}`
             : '';
 
-        location.href = `/user/site/${site}/date/${date}${params}`;
+        location.href = `/i/site/${site}/date/${date}${params}`;
       },
     },
   });

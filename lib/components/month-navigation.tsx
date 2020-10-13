@@ -27,7 +27,7 @@ const getLatestDate = (): [number, number] => {
   return [Number(latestYear), Number(latestMonth)];
 };
 
-const getUrlBase = (site: string): string => `/user/site/${site}/devices`;
+const getUrlBase = (site: string): string => `/i/site/${site}/devices`;
 
 const padLeft = (i: number): string => `0${i}`.slice(-2);
 
