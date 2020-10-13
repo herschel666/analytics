@@ -1,14 +1,22 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-import * as arc from '@architect/functions';
 
-import { getPageViewsBySite } from '../shared/ddb';
 import type { PageView } from '../shared/ddb';
 import { siteNameToHostname, daysAgo, niceMonth } from '../shared/util';
 import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
 import { TabNav, TabItem } from '../components/tab-nav';
 import { LineChart } from '../components/line-chart';
+
+interface Args {
+  pageViews: PageView[];
+  site: string;
+  owner: string;
+  from?: string;
+  to?: string;
+  cursor?: string;
+  newCursor?: string;
+}
 
 interface Props {
   site: string;
@@ -120,22 +128,15 @@ const Page: HC<Props> = ({
   );
 };
 
-export const pageSite = async (
-  site: string,
-  owner: string,
-  from?: string,
-  to?: string,
-  cursor?: string
-): Promise<string> => {
-  const doc = await arc.tables();
-  const { views: pageViews, cursor: newCursor } = await getPageViewsBySite(
-    doc.analytics,
-    site,
-    owner,
-    from,
-    to,
-    cursor
-  );
+export const pageSite = ({
+  pageViews,
+  site,
+  owner,
+  from,
+  to,
+  cursor,
+  newCursor,
+}: Args): string => {
   const aggregatedPageViews = getAggregatedPageViews(pageViews);
   const dates = aggregatedPageViews.map(({ date }) => formatDate(date));
   const hits = aggregatedPageViews.map(({ pageViews }) => pageViews);

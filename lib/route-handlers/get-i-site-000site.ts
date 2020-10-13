@@ -1,9 +1,11 @@
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { Data, APIGatewayResult as AGWResult } from '@architect/functions';
 
+import { getPageViewsBySite } from '../shared/ddb';
 import { pageSite } from '../pages/page-i-site';
 import { isValidDate, daysAgo } from '../shared/util';
 
 interface Args {
+  data: Data;
   owner: string;
   site: string;
   from?: string;
@@ -28,6 +30,7 @@ const sortInterval = (
 };
 
 export const handler = async ({
+  data,
   owner,
   site,
   from: fromDate,
@@ -43,8 +46,24 @@ export const handler = async ({
     typeof cursorParam === 'string' && cursorParam.length
       ? cursorParam
       : undefined;
+  const { views: pageViews, cursor: newCursor } = await getPageViewsBySite(
+    data.analytics,
+    site,
+    owner,
+    from,
+    to,
+    cursor
+  );
   // TODO: handle non-exisiting site
-  const body = await pageSite(site, owner, from, to, cursor);
+  const body = pageSite({
+    newCursor,
+    cursor,
+    pageViews,
+    site,
+    owner,
+    from,
+    to,
+  });
 
   return {
     headers: {

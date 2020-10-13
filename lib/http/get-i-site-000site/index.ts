@@ -11,8 +11,10 @@ export const servePageSite = async (req: AGWEvent): Promise<AGWResult> => {
   const { site } = req.pathParameters;
   const { from, to, cursor } = req.queryStringParameters || {};
   const { owner } = req.session;
+  const data = await arc.tables();
 
   return routeHandler({
+    data,
     owner,
     site,
     from,
