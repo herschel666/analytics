@@ -50,7 +50,7 @@
     "preact": "10.5.4",
     "prettier": "2.1.2",
     "ts-jest": "26.4.1",
-    "ts-loader": "8.0.4",
+    "ts-loader": "8.0.5",
     "ts-node": "9.0.0",
     "typescript": "4.0.3",
     "ua-parser-js": "0.7.22",
