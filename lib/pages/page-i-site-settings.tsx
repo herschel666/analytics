@@ -4,7 +4,7 @@ import * as arc from '@architect/functions';
 
 import { getSite } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';
-import { pageFrame } from './frame';
+import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
 import { TabNav, TabItem } from '../components/tab-nav';
 
