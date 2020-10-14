@@ -12,8 +12,9 @@ export const servePageSiteReferrersHost = async (
 ): Promise<AGWResult> => {
   const { site, host } = req.pathParameters;
   const { owner } = req.session;
+  const data = await arc.tables();
 
-  return routeHandler({ site, host, owner });
+  return routeHandler({ data, site, host, owner });
 };
 
 export const handler = arc.http.async(withOwner, servePageSiteReferrersHost);
