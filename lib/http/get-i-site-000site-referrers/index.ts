@@ -12,8 +12,10 @@ export const servePageSiteReferrers = async (
 ): Promise<AGWResult> => {
   const { site } = req.pathParameters;
   const { owner } = req.session;
+  const data = await arc.tables();
 
   return routeHandler({
+    data,
     site,
     owner,
   });

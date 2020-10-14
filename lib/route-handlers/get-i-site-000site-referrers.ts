@@ -1,14 +1,21 @@
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { Data, APIGatewayResult as AGWResult } from '@architect/functions';
 
+import { getReferrersBySite } from '../shared/ddb';
 import { pageSiteReferrers } from '../pages/page-i-site-referrers';
 
 interface Args {
+  data: Data;
   site: string;
   owner: string;
 }
 
-export const handler = async ({ site, owner }: Args): Promise<AGWResult> => {
-  const body = await pageSiteReferrers(site, owner);
+export const handler = async ({
+  data,
+  site,
+  owner,
+}: Args): Promise<AGWResult> => {
+  const referrers = await getReferrersBySite(data.analytics, site, owner);
+  const body = pageSiteReferrers({ referrers, site });
 
   return {
     headers: {
