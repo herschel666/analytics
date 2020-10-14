@@ -1,8 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-import * as arc from '@architect/functions';
 
-import { getSite } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';
 import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
@@ -40,12 +38,5 @@ const Page: HC<Props> = ({ id, site }) => (
   </Layout>
 );
 
-export const pageSiteSettings = async (
-  site: string,
-  owner: string
-): Promise<string> => {
-  const doc = await arc.tables();
-  const { hash: id } = await getSite(doc.analytics, site, owner);
-
-  return pageFrame(<Page id={id} site={site} />);
-};
+export const pageSiteSettings = ({ site, id }: Props): string =>
+  pageFrame(<Page id={id} site={site} />);

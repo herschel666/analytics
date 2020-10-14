@@ -1,14 +1,21 @@
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type { Data, APIGatewayResult as AGWResult } from '@architect/functions';
 
+import { getSite } from '../shared/ddb';
 import { pageSiteSettings } from '../pages/page-i-site-settings';
 
 interface Args {
+  data: Data;
   site: string;
   owner: string;
 }
 
-export const handler = async ({ site, owner }: Args): Promise<AGWResult> => {
-  const body = await pageSiteSettings(site, owner);
+export const handler = async ({
+  data,
+  site,
+  owner,
+}: Args): Promise<AGWResult> => {
+  const { hash: id } = await getSite(data.analytics, site, owner);
+  const body = pageSiteSettings({ site, id });
 
   return {
     headers: {
