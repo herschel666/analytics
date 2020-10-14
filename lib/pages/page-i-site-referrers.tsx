@@ -1,8 +1,6 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
-import * as arc from '@architect/functions';
 
-import { getReferrersBySite } from '../shared/ddb';
 import type { ReferrerHostEntry } from '../shared/ddb';
 import { siteNameToHostname, hostnameToSite } from '../shared/util';
 import { pageFrame } from '../shared/page-frame';
@@ -58,14 +56,5 @@ const Page: HC<Props> = ({ site, referrers }) => {
   );
 };
 
-export const pageSiteReferrers = async (
-  site: string,
-  owner: string
-): Promise<string> => {
-  const doc = await arc.tables();
-  const referrers = await getReferrersBySite(doc.analytics, site, owner);
-
-  return pageFrame(
-    <Page referrers={referrers.sort(countDescending)} site={site} />
-  );
-};
+export const pageSiteReferrers = ({ referrers, site }: Props): string =>
+  pageFrame(<Page referrers={referrers.sort(countDescending)} site={site} />);
