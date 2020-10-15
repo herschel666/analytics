@@ -20,6 +20,7 @@ get /i/site/:site/devices/:date
 get /i/site/:site/date/:date
 get /cctv.gif
 post /i
+post /i/site/:site/settings
 
 get /test/some-page
 get /test/other-page
@@ -35,3 +36,7 @@ analytics
 analytics
   GSI1PK *String
   GSI1SK **String
+
+@queues
+delegate-site-deletion
+delete-site-entry

@@ -35,6 +35,7 @@ export const init = (canvas: HTMLCanvasElement): void => {
   const from = canvas.dataset.from;
   const to = canvas.dataset.to;
 
+  // TODO: fix y-axis numbers for single-digit values
   new Chart(ctx, {
     type: 'line',
     data: {

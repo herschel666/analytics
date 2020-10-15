@@ -21,6 +21,9 @@ declare module '@architect/functions' {
     update(
       param: Omit<DocumentClient.UpdateItemInput, 'TableName'>
     ): Promise<DocumentClient.UpdateItemOutput>;
+    delete(
+      key: DocumentClient.DeleteItemInput['Key']
+    ): Promise<DocumentClient.DeleteItemOutput>;
   }
 
   export interface Data {
@@ -64,6 +67,13 @@ declare module '@architect/functions' {
     ...handlers: SubsequentAsyncHandler[]
   ) => Promise<APIGatewayResult>;
 
+  export interface ArcQueues {
+    publish(event: {
+      name: string;
+      payload: Record<string, string | number | boolean>;
+    }): Promise<void>;
+  }
+
   interface Http {
     session: Session;
     async: Async;
@@ -75,5 +85,6 @@ declare module '@architect/functions' {
   }
 
   export const http: Http;
+  export const queues: ArcQueues;
   export const tables: () => Promise<Data>;
 }

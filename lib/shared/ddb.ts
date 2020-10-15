@@ -19,6 +19,11 @@ export interface SiteEntry {
   hash: string;
 }
 
+export interface SiteRelatedEntry {
+  entries: { PK: string; SK: string }[];
+  cursor?: string;
+}
+
 export interface PageView {
   pageViews: number;
   date: string;
@@ -184,6 +189,34 @@ export const getSite = async (
   } catch (err) {
     console.log(err);
   }
+};
+
+export const getAllSiteRelatedEntries = async (
+  doc: ArcTableClient,
+  owner: string,
+  site: string,
+  cursor?: string
+): Promise<SiteRelatedEntry> => {
+  const primaryKey = `SITE#${owner}#${site}`;
+  const exclusiveStartKey = getExclusiveStartKey(primaryKey, cursor);
+  const {
+    Items: items = [],
+    LastEvaluatedKey: lastEvaluatedKey,
+  } = await doc.query({
+    KeyConditionExpression: 'PK = :PK',
+    ProjectionExpression: 'PK, SK',
+    ExpressionAttributeValues: {
+      ':PK': primaryKey,
+    },
+    ...exclusiveStartKey,
+  });
+  const newCursor =
+    typeof lastEvaluatedKey === 'object' && lastEvaluatedKey !== null
+      ? btoa(lastEvaluatedKey.SK)
+      : undefined;
+  const entries = items.map(({ PK, SK }) => ({ PK, SK }));
+
+  return { entries, cursor: newCursor };
 };
 
 export const getPageViewsBySite = async (
