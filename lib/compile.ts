@@ -8,6 +8,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const LIB_DIR = path.join(ROOT_DIR, 'lib');
 const SRC_DIR = path.join(ROOT_DIR, 'src');
 const HTTP_DIR = path.join(LIB_DIR, 'http');
+const QUEUES_DIR = path.join(LIB_DIR, 'queues');
 
 const prod = Boolean(
   process.argv.find((flag) => flag === '-p' || flag === '--production')
@@ -17,7 +18,9 @@ const watch =
   !prod;
 const nodeEnv = prod ? 'production' : 'development';
 
-const files = globby(path.join(HTTP_DIR, '**/index.{ts,tsx}'));
+const filesHttp = globby(path.join(HTTP_DIR, '**/index.{ts,tsx}'));
+const filesQueues = globby(path.join(QUEUES_DIR, '**/index.ts'));
+const files = [...filesHttp, ...filesQueues];
 
 const baseConfig: Configuration = {
   cache: true,

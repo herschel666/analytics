@@ -14,14 +14,14 @@ interface Props {
 // TODO: use the real one
 const trackingPixelUrl = 'http://localhost:3333/cctv.gif';
 
-// TODO: add possibility to delete a site
 // TODO: add possibility to delete the user account
 const Page: HC<Props> = ({ id, site }) => (
   <Layout text={siteNameToHostname(site)}>
     <TabNav site={site} current={TabItem.Settings} />
     <div class="mt-4">
+      <h3>Tracking Code</h3>
       <label for="tracking-code" class="form-label">
-        Tracking code
+        Insert this code into the source of {siteNameToHostname(site)}
       </label>
       <textarea
         id="tracking-code"
@@ -34,6 +34,21 @@ const Page: HC<Props> = ({ id, site }) => (
   Object.assign(new Image(), { src });
 })('${trackingPixelUrl}', '${id}', location.pathname, location.search, document.referrer);
 `}</textarea>
+    </div>
+    <hr />
+    <div class="mt-4">
+      <h3>Danger Zone</h3>
+      <p>Once you delete a site, there is no going back. Please be certain.</p>
+      <form method="post" action={`/i/site/${site}/settings`}>
+        <button
+          class="btn btn-danger"
+          type="button"
+          id="delete-site"
+          data-hostname={siteNameToHostname(site)}
+        >
+          Delete site
+        </button>
+      </form>
     </div>
   </Layout>
 );
