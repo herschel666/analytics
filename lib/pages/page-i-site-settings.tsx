@@ -9,13 +9,14 @@ import { TabNav, TabItem } from '../components/tab-nav';
 interface Props {
   id: string;
   site: string;
+  error?: boolean;
 }
 
 // TODO: use the real one
 const trackingPixelUrl = 'http://localhost:3333/cctv.gif';
 
 // TODO: add possibility to delete the user account
-const Page: HC<Props> = ({ id, site }) => (
+const Page: HC<Props> = ({ id, site, error }) => (
   <Layout text={siteNameToHostname(site)}>
     <TabNav site={site} current={TabItem.Settings} />
     <div class="mt-4">
@@ -39,6 +40,11 @@ const Page: HC<Props> = ({ id, site }) => (
     <div class="mt-4">
       <h3>Danger Zone</h3>
       <p>Once you delete a site, there is no going back. Please be certain.</p>
+      {Boolean(error) && (
+        <div class="alert alert-danger" role="alert">
+          Could not delete site!
+        </div>
+      )}
       <form method="post" action={`/i/site/${site}/settings`}>
         <button
           class="btn btn-danger"
@@ -53,5 +59,5 @@ const Page: HC<Props> = ({ id, site }) => (
   </Layout>
 );
 
-export const pageSiteSettings = ({ site, id }: Props): string =>
-  pageFrame(<Page id={id} site={site} />);
+export const pageSiteSettings = ({ site, id, error }: Props): string =>
+  pageFrame(<Page id={id} site={site} error={error} />);

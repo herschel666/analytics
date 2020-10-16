@@ -14,7 +14,7 @@ export const servePage = async (req: AGWEvent): Promise<AGWResult> => {
 
   return routeHandler({
     queues: arc.queues,
-    doc: data.analytics,
+    data,
     site,
     owner,
   });

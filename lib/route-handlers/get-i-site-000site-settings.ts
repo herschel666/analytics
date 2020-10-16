@@ -7,15 +7,17 @@ interface Args {
   data: Data;
   site: string;
   owner: string;
+  error?: boolean;
 }
 
 export const handler = async ({
   data,
   site,
   owner,
+  error,
 }: Args): Promise<AGWResult> => {
   const { hash: id } = await getSite(data.analytics, site, owner);
-  const body = pageSiteSettings({ site, id });
+  const body = pageSiteSettings({ site, id, error });
 
   return {
     headers: {
@@ -23,7 +25,7 @@ export const handler = async ({
       'cache-control':
         'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
     },
-    statusCode: 200,
+    statusCode: error ? 500 : 200,
     body,
   };
 };
