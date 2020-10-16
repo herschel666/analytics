@@ -1,58 +1,95 @@
-import type { ArcTableClient, ArcQueues } from '@architect/functions';
+import type { Data, ArcQueues } from '@architect/functions';
 
 import { handler } from './post-i-site-000site-settings';
 
+jest.mock('../pages/page-i-site-settings', () => ({
+  pageSiteSettings: jest.fn().mockReturnValue('some HTML...'),
+}));
+
 describe('post-i-site-000site-settings', () => {
-  const doc = ({ delete: jest.fn() } as unknown) as ArcTableClient;
-  const queues = ({ publish: jest.fn() } as unknown) as ArcQueues;
   const owner = 'some-user';
   const site = 'my_awesome_site';
+  const sitedata = {
+    CreatedAt: new Date().toISOString(),
+    Site: site,
+    Owner: owner,
+    Hash: '123abc',
+  };
+  const data = ({
+    analytics: {
+      delete: jest.fn(),
+      get: jest.fn().mockResolvedValue(sitedata),
+    },
+  } as unknown) as Data;
+  const queues = ({ publish: jest.fn() } as unknown) as ArcQueues;
 
   afterEach(() => {
-    (doc.delete as jest.Mock).mockClear();
+    (data.analytics.delete as jest.Mock).mockClear();
     (queues.publish as jest.Mock).mockClear();
   });
 
-  it('should have the corect response properties', async () => {
-    const {
-      statusCode,
-      headers: { location },
-    } = await handler({
-      doc,
-      queues,
-      site,
-      owner,
+  describe('Successful deletion', () => {
+    it('should have the corect response properties', async () => {
+      const {
+        statusCode,
+        headers: { location },
+      } = await handler({
+        data,
+        queues,
+        site,
+        owner,
+      });
+
+      expect(statusCode).toBe(301);
+      expect(location).toBe('/i');
     });
 
-    expect(statusCode).toBe(301);
-    expect(location).toBe('/i');
+    it('should delete the site', async () => {
+      await handler({
+        data,
+        queues,
+        site,
+        owner,
+      });
+
+      expect(data.analytics.delete).toHaveBeenCalledWith({
+        PK: `SITE#${owner}#${site}`,
+        SK: `SITE#${owner}#${site}`,
+      });
+    });
+
+    it('should publish the delegation of the site data deletion', async () => {
+      await handler({
+        data,
+        queues,
+        site,
+        owner,
+      });
+
+      expect(queues.publish).toHaveBeenCalledWith({
+        name: 'delegate-site-deletion',
+        payload: { site, owner },
+      });
+    });
   });
 
-  it('should delete the site', async () => {
-    await handler({
-      doc,
-      queues,
-      site,
-      owner,
+  describe('Failed deletion', () => {
+    beforeAll(() => {
+      (data.analytics.delete as jest.Mock).mockRejectedValue(
+        'Could not delete site.'
+      );
     });
 
-    expect(doc.delete).toHaveBeenCalledWith({
-      PK: `SITE#${owner}#${site}`,
-      SK: `SITE#${owner}#${site}`,
-    });
-  });
+    it('should return an erroneous response', async () => {
+      const { statusCode, body } = await handler({
+        queues,
+        data,
+        owner,
+        site,
+      });
 
-  it('should publish the delegation of the site data deletion', async () => {
-    await handler({
-      doc,
-      queues,
-      site,
-      owner,
-    });
-
-    expect(queues.publish).toHaveBeenCalledWith({
-      name: 'delegate-site-deletion',
-      payload: { site, owner },
+      expect(statusCode).toBe(500);
+      expect(body).toBe('some HTML...');
     });
   });
 });
