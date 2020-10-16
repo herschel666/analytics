@@ -18,6 +18,7 @@ export const handler = async ({
   site,
   owner,
 }: Args): Promise<AGWResult> => {
+  // TODO: give error feedback in case of failure
   try {
     const key = `SITE#${owner}#${site}`;
     const deletion = doc.delete({ PK: key, SK: key });
