@@ -40,3 +40,11 @@ analytics
 @queues
 delegate-site-deletion
 delete-site-entry
+
+@macros
+herschel666-arc-macros-remove-local-routes
+
+@herschel666-arc-macros-remove-local-routes
+/test/some-page
+/test/other-page
+/test/populate
