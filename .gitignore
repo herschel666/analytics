@@ -19,3 +19,4 @@ yarn-error.log*
 src/**/*.js
 src/**/*.css
 dist
+sam.*
