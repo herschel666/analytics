@@ -24,7 +24,7 @@
   "author": "Emanuel Kluge (https://emanuel-kluge.de/)",
   "license": "MIT",
   "devDependencies": {
-    "@architect/architect": "8.0.3",
+    "@architect/architect": "8.1.0",
     "@architect/functions": "3.13.3",
     "@testing-library/dom": "7.26.0",
     "@types/aws-lambda": "8.10.64",
