@@ -16,6 +16,7 @@ describe('layout', () => {
     mount.innerHTML = h(
       Layout,
       {
+        loggedIn: false,
         sites: ['some-site_tld', 'other_site_tld'],
         text: 'random text',
       },
