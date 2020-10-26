@@ -63,6 +63,13 @@ const baseConfig: Configuration = {
     sideEffects: false,
     nodeEnv,
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(
+        nodeEnv === 'production' ? nodeEnv : 'testing'
+      ),
+    }),
+  ],
 };
 
 const watchOptions = {
@@ -89,7 +96,10 @@ for (const file of files) {
   const outputPath = path.resolve(SRC_DIR, path.dirname(entry));
   const compiler = webpack({
     ...baseConfig,
-    plugins: prod ? [] : [new ForkTSCheckerPlugin(forkCheckerOptions)],
+    plugins: [
+      ...baseConfig.plugins,
+      ...(prod ? [] : [new ForkTSCheckerPlugin(forkCheckerOptions)]),
+    ],
     output: {
       ...baseConfig.output,
       path: outputPath,
