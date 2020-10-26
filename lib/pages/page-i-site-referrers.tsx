@@ -26,7 +26,7 @@ const Page: HC<Props> = ({ site, referrers }) => {
   const hostname = siteNameToHostname(site);
 
   return (
-    <Layout text={hostname}>
+    <Layout loggedIn={true} text={hostname}>
       <TabNav site={site} current={TabItem.Referrers} />
       {Boolean(referrers.length) && (
         <table class="table mt-4">

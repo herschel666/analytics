@@ -1,14 +1,14 @@
 import * as arc from '@architect/functions';
-import type { APIGatewayResult as AGWResult } from '@architect/functions';
+import type {
+  SubsequentAsyncHandlerEvent as AGWEvent,
+  APIGatewayResult as AGWResult,
+} from '@architect/functions';
 
 import { handler as routeHandler } from '../../route-handlers/get-index';
 
-export const handler = async (): Promise<AGWResult> => {
-  // TODO: replace static 'test-user' with dynamic one...
-  const owner = 'test-user';
-  const cookie = await arc.http.session.write({ owner });
-  const location = arc.http.helpers.url('/i');
+export const handler = async (req: AGWEvent): Promise<AGWResult> => {
+  const { owner } = await arc.http.session.read<{ owner?: string }>(req);
+  const { code } = req.queryStringParameters || {};
 
-  // TODO: implement authentication...
-  return routeHandler({ cookie, location });
+  return routeHandler({ owner, code, write: arc.http.session.write });
 };

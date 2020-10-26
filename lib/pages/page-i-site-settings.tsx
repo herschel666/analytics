@@ -17,7 +17,7 @@ const trackingPixelUrl = 'http://localhost:3333/cctv.gif';
 
 // TODO: add possibility to delete the user account
 const Page: HC<Props> = ({ id, site, error }) => (
-  <Layout text={siteNameToHostname(site)}>
+  <Layout loggedIn={true} text={siteNameToHostname(site)}>
     <TabNav site={site} current={TabItem.Settings} />
     <div class="mt-4">
       <h3>Tracking Code</h3>

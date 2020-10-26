@@ -67,7 +67,7 @@ const Page: HC<Props> = ({
   const pagePath = `/i/site/${site}`;
 
   return (
-    <Layout text={siteNameToHostname(site)}>
+    <Layout loggedIn={true} text={siteNameToHostname(site)}>
       <TabNav site={site} current={TabItem.PageViews} />
       <form method="get" action={pagePath} class="my-4">
         <fieldset>
