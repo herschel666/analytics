@@ -39,7 +39,7 @@ declare module '@architect/functions' {
     body?: string;
   }
 
-  interface Session {
+  export interface Session {
     write: (data: Obj) => Promise<string>;
     read: <T = Obj>(req: OrigAPIGatewayEvent) => Promise<T>;
   }

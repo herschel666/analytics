@@ -41,7 +41,7 @@ const getRange = (from?: string, to?: string): string => {
 };
 
 const Page: HC<Props> = ({ hostname, date, pageViews, from, to }) => (
-  <Layout text={hostname}>
+  <Layout loggedIn={true} text={hostname}>
     {Boolean(pageViews.length) && (
       <div>
         <div class="my-4">

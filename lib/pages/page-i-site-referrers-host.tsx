@@ -21,7 +21,7 @@ const countDescending = (
 };
 
 const Page: HC<Props> = ({ site, referrerHostname, referrers }) => (
-  <Layout text={siteNameToHostname(site)}>
+  <Layout loggedIn={true} text={siteNameToHostname(site)}>
     <TabNav site={site} current={TabItem.Referrers} />
     <h2 class="my-4">
       Referrers for <strong class="text-secondary">{referrerHostname}</strong>

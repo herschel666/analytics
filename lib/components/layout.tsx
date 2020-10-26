@@ -6,9 +6,9 @@ import type { Props as MainHeaderProps } from './main-header';
 
 type Props = MainHeaderProps;
 
-export const Layout: HC<Props> = ({ sites, text, children }) => (
+export const Layout: HC<Props> = ({ loggedIn, sites, text, children }) => (
   <div class="d-flex flex-column min-vh-100">
-    <MainHeader sites={sites} text={text} />
+    <MainHeader loggedIn={loggedIn} sites={sites} text={text} />
     <main class="container-xxl d-flex flex-column flex-grow-1">{children}</main>
     <footer class="bd-footer p-3 mt-4 bg-light">
       <span>&copy; {new Date().getFullYear()}</span>

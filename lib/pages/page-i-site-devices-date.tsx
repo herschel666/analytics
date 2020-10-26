@@ -56,7 +56,7 @@ const Page: HC<Props> = ({
   const aggregatedDeviceData = getAggregatedData(devices.devices);
 
   return (
-    <Layout text={hostname}>
+    <Layout loggedIn={true} text={hostname}>
       <TabNav site={site} current={TabItem.Devices} />
       <MonthNavigation
         site={site}

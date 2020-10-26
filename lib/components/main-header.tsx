@@ -4,11 +4,12 @@ import type { HC } from 'vhtml';
 import { siteNameToHostname } from '../shared/util';
 
 export interface Props {
+  loggedIn: boolean;
   sites?: string[];
   text?: string;
 }
 
-export const MainHeader: HC<Props> = ({ sites, text }) => {
+export const MainHeader: HC<Props> = ({ loggedIn, sites, text }) => {
   return (
     <header class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
@@ -43,6 +44,11 @@ export const MainHeader: HC<Props> = ({ sites, text }) => {
           </nav>
         )}
         {Boolean(text) && <span class="navbar-text">{text}</span>}
+        {loggedIn && (
+          <form action="/logout" method="post">
+            <button class="btn btn-outline-dark btn-sm">Logout</button>
+          </form>
+        )}
       </div>
     </header>
   );

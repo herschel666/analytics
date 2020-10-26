@@ -20,7 +20,7 @@ const filterTable = (table: TableItem[], keys: string[]) => {
 };
 
 const Page: HC<Props> = ({ sites, table, debug }) => (
-  <Layout sites={sites}>
+  <Layout loggedIn={true} sites={sites}>
     <form
       class="w-50 m-auto"
       method="post"

@@ -21,6 +21,7 @@ get /i/site/:site/date/:date
 get /cctv.gif
 post /i
 post /i/site/:site/settings
+post /logout
 
 get /test/some-page
 get /test/other-page
