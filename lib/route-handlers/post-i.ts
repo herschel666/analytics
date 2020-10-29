@@ -18,12 +18,18 @@ export const handler = async ({
   siteUrl,
   debug,
 }: Args): Promise<AGWResult> => {
+  let error = false;
+
   if (siteUrl) {
     const { hostname } = new URL(siteUrl);
 
-    // TODO: provide user feedback on error
-    await addSite(data.analytics, hostnameToSite(hostname), owner);
+    try {
+      await addSite(data.analytics, hostnameToSite(hostname), owner);
+    } catch (err) {
+      console.log(err);
+      error = true;
+    }
   }
 
-  return await getHandler({ data, owner, debug });
+  return await getHandler({ data, owner, error, debug });
 };

@@ -55,7 +55,6 @@ export const handler = async ({
     const userAgent = getUserAgent(parser, getUserAgentString(headers));
 
     try {
-      // TODO: do this in deferred event
       await addPageView(
         data,
         site,

@@ -139,20 +139,16 @@ export const addSite = async (
   const hash = encrypt(ownerSite);
   const createdAt = new Date().toISOString();
 
-  try {
-    await doc.put({
-      PK: `SITE#${ownerSite}`,
-      SK: `SITE#${ownerSite}`,
-      GSI1PK: 'SITE',
-      GSI1SK: `SITE#${ownerSite}`,
-      CreatedAt: createdAt,
-      Site: site,
-      Owner: owner,
-      Hash: hash,
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  await doc.put({
+    PK: `SITE#${ownerSite}`,
+    SK: `SITE#${ownerSite}`,
+    GSI1PK: 'SITE',
+    GSI1SK: `SITE#${ownerSite}`,
+    CreatedAt: createdAt,
+    Site: site,
+    Owner: owner,
+    Hash: hash,
+  });
 };
 
 export const getSites = async (

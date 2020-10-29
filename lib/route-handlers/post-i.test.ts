@@ -36,6 +36,7 @@ describe('post-i', () => {
       expect(getHandler).toHaveBeenCalledWith({
         data: {} as Data,
         debug: undefined,
+        error: false,
         owner,
       });
     });
@@ -73,6 +74,32 @@ describe('post-i', () => {
     });
   });
 
+  describe('Creating site fails', () => {
+    const errorMessage = 'could not create site';
+    let log: jest.SpyInstance;
+
+    beforeAll(() => {
+      (addSite as jest.Mock).mockRejectedValue(errorMessage);
+      log = jest.spyOn(console, 'log').mockReturnValue();
+    });
+
+    it('should pass on the error', async () => {
+      await handler({
+        data: {} as Data,
+        owner,
+        siteUrl,
+      });
+
+      expect(getHandler).toHaveBeenCalledWith({
+        data: {} as Data,
+        debug: undefined,
+        error: true,
+        owner,
+      });
+      expect(log).toHaveBeenCalledWith(errorMessage);
+    });
+  });
+
   describe('debug-param given', () => {
     it('should pass on debug-param to the GET-handler', async () => {
       const debug = 'SITES';
@@ -85,6 +112,7 @@ describe('post-i', () => {
 
       expect(getHandler).toHaveBeenCalledWith({
         data: {} as Data,
+        error: false,
         debug,
         owner,
       });

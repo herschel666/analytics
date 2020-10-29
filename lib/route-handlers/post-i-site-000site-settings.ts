@@ -13,7 +13,6 @@ interface Args {
   owner: string;
 }
 
-// TODO: add tests
 export const handler = async ({
   queues,
   data,

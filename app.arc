@@ -27,7 +27,6 @@ get /test/some-page
 get /test/other-page
 get /test/populate
 
-# TODO: add TTL for site & account deletion
 @tables
 analytics
   PK *String

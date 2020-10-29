@@ -34,8 +34,9 @@ export const init = (canvas: HTMLCanvasElement): void => {
   const hits = JSON.parse(canvas.dataset.hits) as number[];
   const from = canvas.dataset.from;
   const to = canvas.dataset.to;
+  const min = Math.max(0, [...hits].sort().shift() - 1);
+  const max = [...hits].sort().pop() + 1;
 
-  // TODO: fix y-axis numbers for single-digit values
   new Chart(ctx, {
     type: 'line',
     data: {
@@ -54,6 +55,9 @@ export const init = (canvas: HTMLCanvasElement): void => {
       ],
     },
     options: {
+      scales: {
+        yAxes: [{ ticks: { min, max, stepSize: 1 } }],
+      },
       onHover: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
         const className = 'cursor-pointer';
         if (element) {

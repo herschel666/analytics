@@ -1,6 +1,7 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 
+import { HOSTNAME } from '../shared/variables';
 import { siteNameToHostname } from '../shared/util';
 import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
@@ -12,10 +13,12 @@ interface Props {
   error?: boolean;
 }
 
-// TODO: use the real one
-const trackingPixelUrl = 'http://localhost:3333/cctv.gif';
+const getHostname = () =>
+  process.env.NODE_ENV === 'testing'
+    ? `localhost:${process.env.PORT}`
+    : HOSTNAME;
+const trackingPixelUrl = new URL('/cctv.gif', `https://${getHostname()}`);
 
-// TODO: add possibility to delete the user account
 const Page: HC<Props> = ({ id, site, error }) => (
   <Layout loggedIn={true} text={siteNameToHostname(site)}>
     <TabNav site={site} current={TabItem.Settings} />
