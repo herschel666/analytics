@@ -34,11 +34,6 @@ describe('get-i-site-000site', () => {
   const site = 'site_tld';
   const owner = 'some-user';
 
-  afterEach(() => {
-    (getPageViewsBySite as jest.Mock).mockClear();
-    (pageSite as jest.Mock).mockClear();
-  });
-
   describe('no query params given', () => {
     const from = '2020-02-22';
     const to = '2020-02-29';

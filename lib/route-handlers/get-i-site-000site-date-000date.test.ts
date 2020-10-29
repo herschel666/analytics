@@ -20,10 +20,6 @@ describe('get-i-site-000site-date-000date', () => {
   const date = '2020-05-10';
   const owner = 'some-user';
 
-  afterEach(() => {
-    (pageSiteDate as jest.Mock).mockReset();
-  });
-
   describe('no query params given', () => {
     it('should return successfully', async () => {
       const { statusCode, headers, body } = await handler({

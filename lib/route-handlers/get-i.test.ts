@@ -13,12 +13,6 @@ jest.mock('../pages/page-i', () => ({
   pageInternal: jest.fn().mockReturnValue('some HTML...'),
 }));
 
-afterEach(() => {
-  (getTable as jest.Mock).mockClear();
-  (getSites as jest.Mock).mockClear();
-  (pageInternal as jest.Mock).mockClear();
-});
-
 describe('get-i', () => {
   const data = ({ analytics: 'analytics' } as unknown) as Data;
   const owner = 'some-user';

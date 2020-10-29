@@ -16,11 +16,6 @@ describe('post-i', () => {
   const owner = 'some-user';
   const siteUrl = 'https://my.awesome.site';
 
-  afterEach(() => {
-    (addSite as jest.Mock).mockClear();
-    (getHandler as jest.Mock).mockClear();
-  });
-
   describe('no POST data given', () => {
     it('should have the corect response properties', async () => {
       const { statusCode, body } = await handler({
