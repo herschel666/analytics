@@ -37,7 +37,6 @@ export const handler = async ({
   to: toDate,
   cursor: cursorParam,
 }: Args): Promise<AGWResult> => {
-  // TODO: store interval by site in session
   const [from, to] = sortInterval(
     isValidDate(fromDate) ? fromDate : undefined,
     isValidDate(toDate) ? toDate : undefined

@@ -9,6 +9,7 @@ interface Props {
   sites: string[];
   table: TableItem[];
   debug: string[] | undefined;
+  error?: boolean;
 }
 
 const filterTable = (table: TableItem[], keys: string[]) => {
@@ -19,7 +20,7 @@ const filterTable = (table: TableItem[], keys: string[]) => {
   return JSON.stringify(result, null, 2);
 };
 
-const Page: HC<Props> = ({ sites, table, debug }) => (
+const Page: HC<Props> = ({ sites, table, error, debug }) => (
   <Layout loggedIn={true} sites={sites}>
     <form
       class="w-50 m-auto"
@@ -30,6 +31,11 @@ const Page: HC<Props> = ({ sites, table, debug }) => (
         <label for="site_url" class="form-label">
           Add a new site…
         </label>
+        {Boolean(error) && (
+          <div class="alert alert-danger" role="alert">
+            An error occurred! Could not add site.
+          </div>
+        )}
         <div class="row">
           <div class="col col-sm-9">
             <input
@@ -58,5 +64,5 @@ const Page: HC<Props> = ({ sites, table, debug }) => (
   </Layout>
 );
 
-export const pageInternal = ({ sites, table, debug }: Props): string =>
-  pageFrame(<Page sites={sites} table={table} debug={debug} />);
+export const pageInternal = ({ sites, table, error, debug }: Props): string =>
+  pageFrame(<Page sites={sites} table={table} error={error} debug={debug} />);

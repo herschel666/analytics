@@ -48,7 +48,6 @@ const createPageViewsForSite = (
         pathnames
           .map((pathname) =>
             Array.from({ length: faker.random.number(5) }, () =>
-              // TODO: replace static 'test-user' with dynamic one...
               addPageView(
                 doc,
                 site,
@@ -78,7 +77,6 @@ export const handler = async (): Promise<AGWResult> => {
     sites.reduce(
       (acc, site) =>
         acc.concat([
-          // TODO: replace static 'test-user' with dynamic one...
           addSite(doc.analytics, site, 'test-user'),
           ...dates
             .map((date) => createPageViewsForSite(doc, sitesPathnames, date))

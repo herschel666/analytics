@@ -10,12 +10,14 @@ type DDBResults = [TableItem[], string[]];
 interface Args {
   data: Data;
   owner: string;
+  error?: boolean;
   debug?: string;
 }
 
 export const handler = async ({
   data,
   owner,
+  error,
   debug: debugParam,
 }: Args): Promise<AGWResult> => {
   const debug =
@@ -31,7 +33,7 @@ export const handler = async ({
     promises[0] = getTable(data.analytics);
   }
   const [table, sites] = (await Promise.all(promises)) as DDBResults;
-  const body = pageInternal({ sites, table, debug });
+  const body = pageInternal({ sites, table, error, debug });
 
   return {
     headers: {
