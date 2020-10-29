@@ -31,11 +31,6 @@ describe('get-cctv_gif', () => {
     console.log = () => void 0;
   });
 
-  afterEach(() => {
-    (addPageView as jest.Mock).mockReset();
-    (decrypt as jest.Mock).mockReset();
-  });
-
   afterAll(() => {
     console.log = log;
   });

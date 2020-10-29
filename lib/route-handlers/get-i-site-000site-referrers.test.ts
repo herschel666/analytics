@@ -12,10 +12,6 @@ jest.mock('../pages/page-i-site-referrers', () => ({
   pageSiteReferrers: jest.fn().mockReturnValue('some HTML...'),
 }));
 
-afterEach(() => {
-  (getReferrersBySite as jest.Mock).mockClear();
-});
-
 describe('get-i-site-000site-referrers', () => {
   const data = ({ analytics: 'analytics' } as unknown) as Data;
   const referrers = [{ type: 'referrers' }];

@@ -75,6 +75,7 @@
       "<rootDir>/src/",
       "<rootDir>/dist/"
     ],
+    "resetMocks": true,
     "projects": [
       {
         "displayName": "http",

@@ -23,11 +23,6 @@ describe('post-i-site-000site-settings', () => {
   } as unknown) as Data;
   const queues = ({ publish: jest.fn() } as unknown) as ArcQueues;
 
-  afterEach(() => {
-    (data.analytics.delete as jest.Mock).mockClear();
-    (queues.publish as jest.Mock).mockClear();
-  });
-
   describe('Successful deletion', () => {
     it('should have the corect response properties', async () => {
       const {
@@ -74,10 +69,12 @@ describe('post-i-site-000site-settings', () => {
   });
 
   describe('Failed deletion', () => {
+    const errorMessage = 'Could not delete site.';
+    let log: jest.SpyInstance;
+
     beforeAll(() => {
-      (data.analytics.delete as jest.Mock).mockRejectedValue(
-        'Could not delete site.'
-      );
+      log = jest.spyOn(console, 'log').mockReturnValue();
+      (data.analytics.delete as jest.Mock).mockRejectedValue(errorMessage);
     });
 
     it('should return an erroneous response', async () => {
@@ -90,6 +87,7 @@ describe('post-i-site-000site-settings', () => {
 
       expect(statusCode).toBe(500);
       expect(body).toBe('some HTML...');
+      expect(log).toHaveBeenCalledWith(errorMessage);
     });
   });
 });

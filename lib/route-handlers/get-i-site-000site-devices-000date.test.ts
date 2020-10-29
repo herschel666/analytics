@@ -14,11 +14,6 @@ jest.mock('../pages/page-i-site-devices-date', () => ({
   pageSiteDevicesDate: jest.fn().mockReturnValue('some HTML...'),
 }));
 
-afterEach(() => {
-  (getUserAgentEntriesBySiteAndDate as jest.Mock).mockClear();
-  (pageSiteDevicesDate as jest.Mock).mockClear();
-});
-
 describe('get-i-site-000site-devices-000date', () => {
   const data = ({ analytics: 'analytics' } as unknown) as Data;
   const devices = { type: 'devices' };
