@@ -3,6 +3,7 @@ analytics
 
 @aws
 region eu-central-1
+profile ek-analytics
 bucket ek-geloets-installationen-ftw
 
 @static
