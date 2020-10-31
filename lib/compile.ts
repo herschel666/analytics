@@ -35,6 +35,7 @@ const baseConfig: Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    alias: { keyv: false },
   },
   module: {
     rules: [
