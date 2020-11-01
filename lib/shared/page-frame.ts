@@ -1,3 +1,5 @@
+import * as arc from '@architect/functions';
+
 const html = String.raw;
 
 export const pageFrame = (body: string, title = 'ek|analytics'): string =>
@@ -13,7 +15,10 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
           integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK"
           crossorigin="anonymous"
         />
-        <link href="/_static/styles/main.css" rel="stylesheet" />
+        <link
+          href="${arc.http.helpers.static('styles/main.css')}"
+          rel="stylesheet"
+        />
       </head>
       <body class="min-vh-100">
         ${body}
@@ -22,7 +27,7 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
           integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
           crossorigin="anonymous"
         ></script>
-        <script src="/_static/scripts/index.js"></script>
+        <script src="${arc.http.helpers.static('scripts/index.js')}"></script>
       </body>
     </html>
   `.trim();
