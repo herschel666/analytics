@@ -98,7 +98,7 @@ const watchOptions = {
 const forkCheckerOptions = {
   async: true,
   typescript: {
-    context: LIB_DIR,
+    context: ROOT_DIR,
     configFile: path.join(ROOT_DIR, 'tsconfig.json'),
   },
 };
