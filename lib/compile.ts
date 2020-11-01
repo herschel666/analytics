@@ -8,6 +8,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const LIB_DIR = path.join(ROOT_DIR, 'lib');
 const SRC_DIR = path.join(ROOT_DIR, 'src');
 const HTTP_DIR = path.join(LIB_DIR, 'http');
+const MACROS_DIR = path.join(LIB_DIR, 'macros');
 const QUEUES_DIR = path.join(LIB_DIR, 'queues');
 
 const prod = Boolean(
@@ -21,6 +22,11 @@ const nodeEnv = prod ? 'production' : 'development';
 const filesHttp = globby(path.join(HTTP_DIR, '**/index.{ts,tsx}'));
 const filesQueues = globby(path.join(QUEUES_DIR, '**/index.ts'));
 const files = [...filesHttp, ...filesQueues];
+
+if (prod) {
+  const filesMacros = globby(path.join(MACROS_DIR, '*/index.ts'));
+  files.push(...filesMacros);
+}
 
 const baseConfig: Configuration = {
   cache: watch || {
