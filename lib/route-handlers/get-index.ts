@@ -5,6 +5,7 @@ import type {
 import got from 'got';
 
 import {
+  ALLOWED_USERS,
   HOSTNAME,
   GH_APP_CLIENT_ID,
   GH_APP_CLIENT_SECRET,
@@ -16,6 +17,12 @@ interface Args {
   owner?: string;
   code?: string;
   write: Session['write'];
+}
+
+class UserNotAllowedError extends Error {
+  constructor() {
+    super('The given is not alllowed.');
+  }
 }
 
 const redirectURL = new URL('https://x');
@@ -45,6 +52,11 @@ const getGithubName = async (code: string): Promise<string> => {
     },
     responseType: 'json',
   });
+
+  if (!ALLOWED_USERS.includes(name)) {
+    throw new UserNotAllowedError();
+  }
+
   return name;
 };
 
@@ -70,22 +82,32 @@ export const handler = async ({
   code,
   write,
 }: Args): Promise<AGWResult> => {
+  let notAllowed = false;
+
   if (truthy(owner) || truthy(code) || isTestEnv()) {
-    const ownerName = await getOwnerName(isTestEnv(), owner, code);
-    const cookie = await write({ owner: ownerName });
-    return {
-      statusCode: 301,
-      headers: {
-        'set-cookie': cookie,
-        location: '/i',
-      },
-    };
+    try {
+      const ownerName = await getOwnerName(isTestEnv(), owner, code);
+      const cookie = await write({ owner: ownerName });
+      return {
+        statusCode: 301,
+        headers: {
+          'set-cookie': cookie,
+          location: '/i',
+        },
+      };
+    } catch (err) {
+      if (err instanceof UserNotAllowedError) {
+        notAllowed = true;
+      } else {
+        throw err;
+      }
+    }
   }
 
   const href = new URL('https://github.com/login/oauth/authorize');
   href.searchParams.append('client_id', GH_APP_CLIENT_ID);
   href.searchParams.append('redirect_url', redirectURL.toString());
-  const body = pageIndex({ href: href.toString() });
+  const body = pageIndex({ href: href.toString(), notAllowed });
 
   return {
     headers: {
@@ -93,7 +115,7 @@ export const handler = async ({
       'cache-control':
         'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
     },
-    statusCode: 200,
+    statusCode: notAllowed ? 403 : 200,
     body,
   };
 };
