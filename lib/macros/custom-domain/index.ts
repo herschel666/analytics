@@ -1,6 +1,8 @@
 import assert from 'assert';
 import { ACM, Route53 } from 'aws-sdk';
 
+import { truthy } from '../../shared/util';
+
 interface CFN {
   Resources: {
     HTTP: {
@@ -16,6 +18,17 @@ interface CFN {
     };
   };
 }
+
+const assertCredentials = (
+  { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_PROFILE }: NodeJS.ProcessEnv,
+  message: string
+): void | never => {
+  assert(
+    (truthy(AWS_ACCESS_KEY_ID) && truthy(AWS_SECRET_ACCESS_KEY)) ||
+      truthy(AWS_PROFILE),
+    message
+  );
+};
 
 const getDomainFromHostname = (hostname: string): string =>
   hostname.split('.').slice(-2).join('.');
@@ -58,9 +71,12 @@ const getCertificateArn = async (hostname: string): Promise<string | null> => {
 };
 
 module.exports = async (_: unknown, cfn: CFN): Promise<CFN> | never => {
-  assert(process.env.HOSTNAME, 'Env var HOSTNAME is present');
-  assert(process.env.AWS_PROFILE, 'Env var AWS_PROFILE is present');
-  assert(process.env.AWS_REGION, 'Env var AWS_REGION is present');
+  assert(truthy(process.env.HOSTNAME), 'Env var HOSTNAME is present');
+  assert(truthy(process.env.AWS_REGION), 'Env var AWS_REGION is present');
+  assertCredentials(
+    process.env,
+    'AWS credentials are given explicitly or via profile'
+  );
 
   const [hostedZoneId, certificateArn] = await Promise.all([
     getHostedZoneId(process.env.HOSTNAME),
