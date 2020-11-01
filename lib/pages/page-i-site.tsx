@@ -113,6 +113,7 @@ const Page: HC<Props> = ({
           </div>
         </fieldset>
       </form>
+      {/* TODO: pass in the date range separately */}
       {Boolean(dates.length && hits.length) && (
         <LineChart
           site={site}
