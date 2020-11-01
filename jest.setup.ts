@@ -1,3 +1,4 @@
+process.env.ALLOWED_USERS = 'the-username,other-user';
 process.env.SECRET_KEY = 'secret-key';
 process.env.NODE_ENV = 'testing';
 process.env.HOSTNAME = 'app.url';
