@@ -23,9 +23,13 @@ const filesQueues = globby(path.join(QUEUES_DIR, '**/index.ts'));
 const files = [...filesHttp, ...filesQueues];
 
 const baseConfig: Configuration = {
-  cache: true,
+  cache: watch || {
+    type: 'filesystem',
+    cacheDirectory: path.resolve(ROOT_DIR, '.cache'),
+  },
   mode: nodeEnv,
   target: 'node',
+  node: { global: false },
   devtool: prod ? false : 'inline-source-map',
   context: LIB_DIR,
   output: {
@@ -38,15 +42,17 @@ const baseConfig: Configuration = {
     alias: { keyv: false },
   },
   module: {
+    noParse: /aws-sdk/,
     rules: [
       {
         test: /\.tsx?$/,
-        include: LIB_DIR,
+        include: [LIB_DIR],
+        exclude: [/node_modules/, __filename],
         use: [
           {
             loader: 'ts-loader',
             options: {
-              transpileOnly: watch,
+              transpileOnly: true,
             },
           },
         ],
@@ -84,48 +90,64 @@ const watchOptions = {
   ],
 };
 const forkCheckerOptions = {
-  async: watch,
+  async: true,
   typescript: {
-    context: ROOT_DIR,
+    context: LIB_DIR,
     configFile: path.join(ROOT_DIR, 'tsconfig.json'),
   },
 };
 
-for (const file of files) {
-  const name = path.basename(path.dirname(file));
-  const entry = `./${file.split('/lib/').pop()}`;
-  const outputPath = path.resolve(SRC_DIR, path.dirname(entry));
-  const compiler = webpack({
-    ...baseConfig,
-    plugins: [
-      ...baseConfig.plugins,
-      ...(prod ? [] : [new ForkTSCheckerPlugin(forkCheckerOptions)]),
-    ],
-    output: {
-      ...baseConfig.output,
-      path: outputPath,
-    },
-    entry,
-    name,
+const compile = async (
+  configuration: webpack.Configuration,
+  watchOptions?: Record<string, unknown>
+): Promise<string | Error> =>
+  new Promise((resolve, reject) => {
+    const compiler = webpack(configuration);
+
+    if (watchOptions) {
+      compiler.watch(watchOptions, (err, stats) => {
+        switch (true) {
+          case Boolean(err):
+            reject(err);
+            break;
+          case stats.hasErrors() || stats.hasWarnings():
+            resolve(stats.toString('minimal'));
+        }
+      });
+    } else {
+      compiler.run((err, stats) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(stats.toString('minimal'));
+      });
+    }
   });
 
-  if (watch) {
-    compiler.watch(watchOptions, (err, stats) => {
-      switch (true) {
-        case Boolean(err):
-          console.log(err);
-          break;
-        case stats.hasErrors() || stats.hasWarnings():
-          console.log(stats.toString('minimal'));
-      }
-    });
-  } else {
-    compiler.run((err, stats) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log(stats.toString('minimal'));
-    });
+(async () => {
+  for (const file of files) {
+    const name = path.basename(path.dirname(file));
+    const entry = `./${file.split('/lib/').pop()}`;
+    const outputPath = path.resolve(SRC_DIR, path.dirname(entry));
+    const configuration = {
+      ...baseConfig,
+      plugins: [
+        ...baseConfig.plugins,
+        ...(prod ? [] : [new ForkTSCheckerPlugin(forkCheckerOptions)]),
+      ],
+      output: {
+        ...baseConfig.output,
+        path: outputPath,
+      },
+      entry,
+      name,
+    };
+
+    if (watch) {
+      compile(configuration, watchOptions).then(console.log, console.error);
+    } else {
+      console.log(await compile(configuration));
+    }
   }
-}
+})();
