@@ -43,6 +43,7 @@ delegate-site-deletion
 delete-site-entry
 
 @macros
+custom-domain
 herschel666-arc-macros-remove-local-routes
 herschel666-arc-macros-custom-log-groups
 
