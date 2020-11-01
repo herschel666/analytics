@@ -1,4 +1,5 @@
 import nock from 'nock';
+import type { Scope } from 'nock';
 
 import { handler } from './get-index';
 
@@ -39,7 +40,7 @@ describe('get-index', () => {
     });
   });
 
-  describe('handling redirect from Github', () => {
+  describe('handling successful redirect from Github', () => {
     const username = 'the-username';
     const code = 'some-secret-auth-code';
     const accessToken = 'some-secret-access-token';
@@ -72,6 +73,51 @@ describe('get-index', () => {
       expect(statusCode).toBe(301);
       expect(first.isDone()).toBe(true);
       expect(second.isDone()).toBe(true);
+    });
+  });
+
+  describe('handling non-allowed user', () => {
+    const write = async () => '';
+    const username = 'ten-times-dev';
+    const code = 'valid-secret-auth-code';
+    let first: Scope;
+    let second: Scope;
+
+    beforeEach(() => {
+      const accessToken = 'valid-secret-access-token';
+      first = nock('https://github.com')
+        .post('/login/oauth/access_token', {
+          client_id: 'gh-client-id',
+          client_secret: 'gh-client-secret',
+          redirect_url: 'https://app.url/',
+          code,
+        })
+        .reply(200, {
+          access_token: accessToken,
+        });
+      second = nock('https://api.github.com', {
+        reqheaders: {
+          Authorization: `token ${accessToken}`,
+        },
+      })
+        .get('/user')
+        .reply(200, {
+          name: username,
+        });
+    });
+
+    it('should respond with FORBIDDEN', async () => {
+      const { statusCode } = await handler({ code, write });
+
+      expect(statusCode).toBe(403);
+      expect(first.isDone()).toBe(true);
+      expect(second.isDone()).toBe(true);
+    });
+
+    it('should render feedback', async () => {
+      const { body } = await handler({ code, write });
+
+      expect(body).toContain('Sorry, private beta only.');
     });
   });
 });
