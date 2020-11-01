@@ -9,6 +9,7 @@ import {
   GH_APP_CLIENT_ID,
   GH_APP_CLIENT_SECRET,
 } from '../shared/variables';
+import { truthy } from '../shared/util';
 import { pageIndex } from '../pages/page-index';
 
 interface Args {
@@ -21,8 +22,6 @@ const redirectURL = new URL('https://x');
 redirectURL.hostname = HOSTNAME;
 
 const isTestEnv = () => process.env.NODE_ENV === 'testing';
-
-const truthy = (x?: string): boolean => typeof x === 'string' && x.length > 0;
 
 // TODO: implement serious error handling
 const getGithubName = async (code: string): Promise<string> => {

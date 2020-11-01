@@ -1,6 +1,9 @@
 import { Buffer } from 'buffer';
 import type { UAParser } from 'ua-parser-js';
 
+export const truthy = (x?: string): boolean =>
+  typeof x === 'string' && x.length > 0;
+
 export const siteNameToHostname = (site: string): string =>
   site.split('_').join('.');
 
