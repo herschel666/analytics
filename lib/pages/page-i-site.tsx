@@ -31,7 +31,36 @@ interface Props {
 
 type AggregatedPageView = Pick<PageView, 'date' | 'pageViews'>;
 
-const getAggregatedPageViews = (pageViews: PageView[]) =>
+const dayInSeconds = 1000 * 60 * 60 * 24;
+
+const bridgeDateGaps = (
+  from: string,
+  to: string,
+  pageViews: AggregatedPageView[]
+): AggregatedPageView[] => {
+  const interval: AggregatedPageView[] = [];
+  const limit = new Date(to).getTime();
+  let nextDay = new Date(from);
+
+  do {
+    const date = nextDay.toISOString().split('T').shift();
+    const size = new Date(date).getTime();
+
+    if (size > limit) {
+      break;
+    }
+
+    const { pageViews: pageViewCount } = pageViews.find(
+      ({ date: d }) => d === date
+    ) || { pageViews: 0 };
+    interval.push({ pageViews: pageViewCount, date });
+    nextDay = new Date(nextDay.getTime() + dayInSeconds);
+  } while (true);
+
+  return interval;
+};
+
+const getAggregatedPageViews = (pageViews: PageView[]): AggregatedPageView[] =>
   pageViews
     .reduce((acc: AggregatedPageView[], { date, pageViews }: PageView) => {
       const lastIndex = acc.length - 1;
@@ -113,7 +142,6 @@ const Page: HC<Props> = ({
           </div>
         </fieldset>
       </form>
-      {/* TODO: pass in the date range separately */}
       {Boolean(dates.length && hits.length) && (
         <LineChart
           site={site}
@@ -138,7 +166,11 @@ export const pageSite = ({
   cursor,
   newCursor,
 }: Args): string => {
-  const aggregatedPageViews = getAggregatedPageViews(pageViews);
+  const aggregatedPageViews = bridgeDateGaps(
+    from,
+    to,
+    getAggregatedPageViews(pageViews)
+  );
   const dates = aggregatedPageViews.map(({ date }) => formatDate(date));
   const hits = aggregatedPageViews.map(({ pageViews }) => pageViews);
 
