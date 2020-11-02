@@ -16,7 +16,7 @@ export const handler = async ({
   owner,
   error,
 }: Args): Promise<AGWResult> => {
-  const { hash: id } = await getSite(data.analytics, site, owner);
+  const { hash: id } = (await getSite(data.analytics, site, owner)) || {};
   const body = pageSiteSettings({ site, id, error });
 
   return {

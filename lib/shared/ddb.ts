@@ -170,7 +170,7 @@ export const getSite = async (
   doc: ArcTableClient,
   site: string,
   owner: string
-): Promise<SiteEntry> => {
+): Promise<SiteEntry | undefined> => {
   const key = `SITE#${owner}#${site}`;
 
   try {
@@ -178,9 +178,9 @@ export const getSite = async (
       PK: key,
       SK: key,
     });
-    return resultToEntry<SiteEntry>(
-      ['CreatedAt', 'Site', 'Owner', 'Hash'],
-      result
+    return (
+      result &&
+      resultToEntry<SiteEntry>(['CreatedAt', 'Site', 'Owner', 'Hash'], result)
     );
   } catch (err) {
     console.log(err);
