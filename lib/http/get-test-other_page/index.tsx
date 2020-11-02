@@ -22,7 +22,7 @@ export const otherPage = (id: string): string => /* html */ `
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { owner } = await arc.http.session.read<{ owner: string }>(req);
   const doc = await arc.tables();
-  const { hash: id } = await getSite(doc.analytics, 'localhost', owner);
+  const { hash: id } = (await getSite(doc.analytics, 'localhost', owner)) || {};
 
   return {
     headers: {
