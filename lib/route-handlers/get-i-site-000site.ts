@@ -53,7 +53,6 @@ export const handler = async ({
     to,
     cursor
   );
-  // TODO: handle non-exisiting site
   const body = pageSite({
     newCursor,
     cursor,

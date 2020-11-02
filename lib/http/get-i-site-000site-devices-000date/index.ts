@@ -5,7 +5,7 @@ import type {
 } from '@architect/functions';
 
 import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-devices-000date';
-import { withOwner } from '../../shared/with-owner';
+import { withOwner } from '../../middlewares/with-owner';
 
 export const servePageSiteDevicesDate = async (
   req: AGWEvent

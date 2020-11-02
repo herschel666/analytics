@@ -4,7 +4,7 @@ import type {
   APIGatewayResult as AGWResult,
 } from '@architect/functions';
 
-import { withOwner } from '../../shared/with-owner';
+import { withOwner } from '../../middlewares/with-owner';
 import { handler as routeHandler } from '../../route-handlers/post-i-site-000site-settings';
 
 export const servePage = async (req: AGWEvent): Promise<AGWResult> => {
