@@ -52,6 +52,12 @@ describe('get-cctv_gif', () => {
       expect(contentType).toBe('image/gif');
     });
 
+    it('should handle referrer "undefined" gracefully', async () => {
+      const { statusCode } = await handler({ ...args, referrer: 'undefined' });
+
+      expect(statusCode).toBe(200);
+    });
+
     it('should not try to store a page view if ID & Resource are missing', async () => {
       await handler(args);
 

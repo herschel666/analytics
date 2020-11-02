@@ -46,7 +46,7 @@ export const handler = async ({
   const [owner, hostname] = getOwnerAndHostnameFromId(id);
   const site = hostnameToSite(hostname);
   const referrer =
-    maybeReferrer.length === 0
+    maybeReferrer.length === 0 || maybeReferrer === 'undefined'
       ? undefined
       : decodeURIComponent(maybeReferrer.trim());
 
