@@ -2,6 +2,7 @@ import type { Data, APIGatewayResult as AGWResult } from '@architect/functions';
 
 import { getUserAgentEntriesBySiteAndDate } from '../shared/ddb';
 import { isValidDate } from '../shared/util';
+import { pageNotFound } from '../pages/page-not-found';
 import { pageSiteDevicesDate } from '../pages/page-i-site-devices-date';
 
 interface Args {
@@ -24,8 +25,8 @@ export const handler = async ({
         'cache-control':
           'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
       },
-      statusCode: 404,
-      body: 'Wrong URL-parameter.',
+      statusCode: 400,
+      body: pageNotFound('Wrong URL-parameter.'),
     };
   }
 
