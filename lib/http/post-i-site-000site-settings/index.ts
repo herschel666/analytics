@@ -5,6 +5,7 @@ import type {
 } from '@architect/functions';
 
 import { withOwner } from '../../middlewares/with-owner';
+import { siteExists } from '../../middlewares/site-exists';
 import { handler as routeHandler } from '../../route-handlers/post-i-site-000site-settings';
 
 export const servePage = async (req: AGWEvent): Promise<AGWResult> => {
@@ -20,4 +21,4 @@ export const servePage = async (req: AGWEvent): Promise<AGWResult> => {
   });
 };
 
-export const handler = arc.http.async(withOwner, servePage);
+export const handler = arc.http.async(withOwner, siteExists, servePage);

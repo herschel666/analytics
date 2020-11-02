@@ -5,6 +5,7 @@ import type {
 } from '@architect/functions';
 
 import { withOwner } from '../../middlewares/with-owner';
+import { siteExists } from '../../middlewares/site-exists';
 import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-referrers-000host';
 
 export const servePageSiteReferrersHost = async (
@@ -17,4 +18,8 @@ export const servePageSiteReferrersHost = async (
   return routeHandler({ data, site, host, owner });
 };
 
-export const handler = arc.http.async(withOwner, servePageSiteReferrersHost);
+export const handler = arc.http.async(
+  withOwner,
+  siteExists,
+  servePageSiteReferrersHost
+);
