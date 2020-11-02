@@ -6,17 +6,20 @@ import { Layout } from '../components/layout';
 
 interface Props {
   message: string;
+  link: string;
 }
 
-const Page: HC<Props> = ({ message }) => (
+const Page: HC<Props> = ({ message, link }) => (
   <Layout loggedIn={false}>
     <div class="w-50 m-auto text-center">
       <h1>{message}</h1>
-      <a href="/i">Back to the start page</a>
+      <a href={link}>Back to the start page</a>
     </div>
   </Layout>
 );
 
-export const pageNotFound = (
-  message = 'Oops… this page does not exist.'
-): string => pageFrame(<Page message={message} />);
+export const pageNotFound = ({
+  message = 'Oops… this page does not exist.',
+  link = '/i',
+}: Partial<Props> = {}): string =>
+  pageFrame(<Page message={message} link={link} />);

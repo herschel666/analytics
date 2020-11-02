@@ -40,7 +40,7 @@ describe('get-i-site-000site-devices-000date', () => {
       expect(contentType).toBe('text/plain; charset=utf8');
       expect(body).toBe(message);
       expect(pageSiteDevicesDate).not.toHaveBeenCalled();
-      expect(pageNotFound).toHaveBeenCalledWith(message);
+      expect(pageNotFound).toHaveBeenCalledWith({ message });
     });
   });
 

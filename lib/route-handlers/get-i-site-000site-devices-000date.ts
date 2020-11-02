@@ -26,7 +26,7 @@ export const handler = async ({
           'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
       },
       statusCode: 400,
-      body: pageNotFound('Wrong URL-parameter.'),
+      body: pageNotFound({ message: 'Wrong URL-parameter.' }),
     };
   }
 
