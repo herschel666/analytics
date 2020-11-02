@@ -8,6 +8,7 @@ import { withOwner } from '../../middlewares/with-owner';
 import { siteExists } from '../../middlewares/site-exists';
 import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-referrers';
 
+// TODO: enable selecting per month (like on devices page)
 export const servePageSiteReferrers = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
