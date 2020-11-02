@@ -72,6 +72,9 @@
   "dependencies": {
     "chart.js": "2.9.4"
   },
+  "alias": {
+    "moment": "./lib/shims/moment"
+  },
   "jest": {
     "testPathIgnorePatterns": [
       "/node_modules/",
