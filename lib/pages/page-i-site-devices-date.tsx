@@ -60,6 +60,7 @@ const Page: HC<Props> = ({
       <TabNav site={site} current={TabItem.Devices} />
       <MonthNavigation
         site={site}
+        type="devices"
         currentYear={currentYear}
         currentMonth={currentMonth}
       />

@@ -6,10 +6,19 @@ import { siteNameToHostname, hostnameToSite } from '../shared/util';
 import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
 import { TabNav, TabItem } from '../components/tab-nav';
+import { MonthNavigation } from '../components/month-navigation';
 
 interface Props {
   site: string;
   referrers: ReferrerHostEntry[];
+  currentYear: number;
+  currentMonth: number;
+}
+
+interface Args {
+  referrers: ReferrerHostEntry[];
+  site: string;
+  date: string;
 }
 
 const countDescending = (
@@ -22,12 +31,18 @@ const countDescending = (
 const detailUrl = (site: string, referrer: string): string =>
   `/i/site/${hostnameToSite(site)}/referrers/host/${hostnameToSite(referrer)}`;
 
-const Page: HC<Props> = ({ site, referrers }) => {
+const Page: HC<Props> = ({ site, referrers, currentYear, currentMonth }) => {
   const hostname = siteNameToHostname(site);
 
   return (
     <Layout loggedIn={true} text={hostname}>
       <TabNav site={site} current={TabItem.Referrers} />
+      <MonthNavigation
+        type="referrers"
+        site={site}
+        currentYear={currentYear}
+        currentMonth={currentMonth}
+      />
       {Boolean(referrers.length) && (
         <table class="table mt-4">
           <thead>
@@ -56,5 +71,19 @@ const Page: HC<Props> = ({ site, referrers }) => {
   );
 };
 
-export const pageSiteReferrersDate = ({ referrers, site }: Props): string =>
-  pageFrame(<Page referrers={referrers.sort(countDescending)} site={site} />);
+export const pageSiteReferrersDate = ({
+  referrers,
+  site,
+  date,
+}: Args): string => {
+  const [currentYear, currentMonth] = date.split('-');
+
+  return pageFrame(
+    <Page
+      referrers={referrers.sort(countDescending)}
+      site={site}
+      currentYear={Number(currentYear)}
+      currentMonth={Number(currentMonth)}
+    />
+  );
+};
