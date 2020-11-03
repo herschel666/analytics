@@ -19,6 +19,7 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
           href="${arc.http.helpers.static('styles/main.css')}"
           rel="stylesheet"
         />
+        <link href="/favicon.ico" rel="shortcut icon" />
       </head>
       <body class="min-vh-100">
         ${body}

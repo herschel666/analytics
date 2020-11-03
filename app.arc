@@ -23,6 +23,7 @@ get /cctv.gif
 post /i
 post /i/site/:site/settings
 post /logout
+get /favicon.ico
 any /*
 
 get /test/some-page
