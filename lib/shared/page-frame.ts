@@ -8,6 +8,10 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
     <html lang="en-EN">
       <head>
         <meta charset="utf-8" />
+        <meta name="robots" content="noindex,noarchive" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="generator" content="FrontPage 4.0" />
+        <meta name="theme-color" content="#f8f9fa" />
         <title>${title}</title>
         <link
           rel="stylesheet"
