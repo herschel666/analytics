@@ -20,7 +20,7 @@ const countDescending = (
 };
 
 const detailUrl = (site: string, referrer: string): string =>
-  `/i/site/${hostnameToSite(site)}/referrers/${hostnameToSite(referrer)}`;
+  `/i/site/${hostnameToSite(site)}/referrers/host/${hostnameToSite(referrer)}`;
 
 const Page: HC<Props> = ({ site, referrers }) => {
   const hostname = siteNameToHostname(site);
@@ -56,5 +56,5 @@ const Page: HC<Props> = ({ site, referrers }) => {
   );
 };
 
-export const pageSiteReferrers = ({ referrers, site }: Props): string =>
+export const pageSiteReferrersDate = ({ referrers, site }: Props): string =>
   pageFrame(<Page referrers={referrers.sort(countDescending)} site={site} />);
