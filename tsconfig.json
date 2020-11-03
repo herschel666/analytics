@@ -22,5 +22,6 @@
     "types": ["node", "jest", "webpack"],
     "typeRoots": ["./node_modules/@types", "./lib/types"]
   },
-  "include": ["./lib", "!./lib/compile.ts", "client"]
+  "include": ["./lib/**/*.ts", "./lib/**/*.tsx", "client/scripts/**/*.ts"],
+  "exclude": ["./lib/compile.ts", "node_modules", "src", "dist"]
 }
