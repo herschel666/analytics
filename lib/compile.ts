@@ -63,6 +63,17 @@ const baseConfig: Configuration = {
           },
         ],
       },
+      {
+        test: /\.ico$/,
+        include: [LIB_DIR],
+        exclude: [/node_modules/, __filename],
+        use: {
+          loader: 'url-loader',
+          options: {
+            generator: (content) => content.toString('base64'),
+          },
+        },
+      },
     ],
   },
   externals: {
