@@ -131,6 +131,7 @@ const compile = async (
     }
   });
 
+let tsForkCheckerApplied = false;
 (async () => {
   for (const file of files) {
     const name = path.basename(path.dirname(file));
@@ -140,7 +141,9 @@ const compile = async (
       ...baseConfig,
       plugins: [
         ...baseConfig.plugins,
-        ...(prod ? [] : [new ForkTSCheckerPlugin(forkCheckerOptions)]),
+        ...(prod || tsForkCheckerApplied
+          ? []
+          : [new ForkTSCheckerPlugin(forkCheckerOptions)]),
       ],
       output: {
         ...baseConfig.output,
@@ -149,6 +152,7 @@ const compile = async (
       entry,
       name,
     };
+    tsForkCheckerApplied = true;
 
     if (watch) {
       compile(configuration, watchOptions).then(console.log, console.error);
