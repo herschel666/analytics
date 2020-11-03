@@ -6,16 +6,16 @@ import type {
 
 import { withOwner } from '../../middlewares/with-owner';
 import { siteExists } from '../../middlewares/site-exists';
-import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-referrers-host-000host';
+import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-referrers-000date-000host';
 
 export const servePageSiteReferrersHost = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
-  const { site, host } = req.pathParameters;
+  const { site, date, host } = req.pathParameters;
   const { owner } = req.session;
   const data = await arc.tables();
 
-  return routeHandler({ data, site, host, owner });
+  return routeHandler({ data, site, host, date, owner });
 };
 
 export const handler = arc.http.async(

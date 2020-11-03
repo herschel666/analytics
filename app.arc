@@ -16,7 +16,7 @@ get /i/site/:site
 get /i/site/:site/settings
 get /i/site/:site/referrers
 get /i/site/:site/referrers/:date
-get /i/site/:site/referrers/host/:host
+get /i/site/:site/referrers/:date/:host
 get /i/site/:site/devices
 get /i/site/:site/devices/:date
 get /i/site/:site/date/:date
