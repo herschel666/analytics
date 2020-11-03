@@ -43,6 +43,7 @@ export const init = (canvas: HTMLCanvasElement): void => {
       labels: dates,
       datasets: [
         {
+          // TODO: change label; it's not necessarily the last days, but an earlier interval
           label: `Page Views of the last ${dates.length} days`,
           data: hits,
           lineTension: 0,
