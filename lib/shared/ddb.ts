@@ -293,7 +293,6 @@ export const getReferrersBySite = async (
   date: string
 ): Promise<ReferrerHostEntry[]> => {
   const ownerSite = `${owner}#${site}`;
-  const [yyyy, mm, , month = `${yyyy}-${mm}`] = date.split('-');
 
   try {
     const { Items: items = [] } = await doc.query({
@@ -301,7 +300,7 @@ export const getReferrersBySite = async (
       ProjectionExpression: '#count, #hostname',
       ExpressionAttributeValues: {
         ':PK': `SITE#${ownerSite}`,
-        ':SK': `REFERRER_HOST#${ownerSite}#${month}`,
+        ':SK': `REFERRER_HOST#${ownerSite}#${date}`,
       },
       ExpressionAttributeNames: {
         '#count': 'Count',
@@ -320,15 +319,11 @@ export const getReferrersBySite = async (
 export const getReferrersBySiteAndHost = async (
   doc: ArcTableClient,
   site: string,
+  date: string,
   owner: string,
   host: string
 ): Promise<ReferrerEntry[]> => {
   const ownerSite = `${owner}#${site}`;
-  const [yyyy, mm, , month = `${yyyy}-${mm}`] = new Date()
-    .toISOString()
-    .split('T')
-    .shift()
-    .split('-');
 
   try {
     const { Items: items = [] } = await doc.query({
@@ -336,7 +331,7 @@ export const getReferrersBySiteAndHost = async (
       ProjectionExpression: '#count, #pathname',
       ExpressionAttributeValues: {
         ':PK': `SITE#${ownerSite}`,
-        ':SK': `REFERRER#${ownerSite}#${month}#${host}`,
+        ':SK': `REFERRER#${ownerSite}#${date}#${host}`,
       },
       ExpressionAttributeNames: {
         '#count': 'Count',

@@ -28,8 +28,15 @@ const countDescending = (
   return a > b ? -1 : 1;
 };
 
-const detailUrl = (site: string, referrer: string): string =>
-  `/i/site/${hostnameToSite(site)}/referrers/host/${hostnameToSite(referrer)}`;
+const detailUrl = (
+  site: string,
+  currentYear: number,
+  currentMonth: number,
+  referrer: string
+): string =>
+  `/i/site/${hostnameToSite(
+    site
+  )}/referrers/${currentYear}-${currentMonth}/${hostnameToSite(referrer)}`;
 
 const Page: HC<Props> = ({ site, referrers, currentYear, currentMonth }) => {
   const hostname = siteNameToHostname(site);
@@ -57,7 +64,14 @@ const Page: HC<Props> = ({ site, referrers, currentYear, currentMonth }) => {
               <tr>
                 <td class="text-secondary">{++i}</td>
                 <td>
-                  <a href={detailUrl(hostname, referrerHostname)}>
+                  <a
+                    href={detailUrl(
+                      hostname,
+                      currentYear,
+                      currentMonth,
+                      referrerHostname
+                    )}
+                  >
                     {referrerHostname}
                   </a>
                 </td>
