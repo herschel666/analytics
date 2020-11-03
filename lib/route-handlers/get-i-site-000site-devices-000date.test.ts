@@ -3,7 +3,6 @@ import type { Data } from '@architect/functions';
 import { getUserAgentEntriesBySiteAndDate } from '../shared/ddb';
 import { handler } from './get-i-site-000site-devices-000date';
 import { pageSiteDevicesDate } from '../pages/page-i-site-devices-date';
-import { pageNotFound } from '../pages/page-not-found';
 
 jest.mock('../shared/ddb', () => ({
   getUserAgentEntriesBySiteAndDate: jest
@@ -15,10 +14,6 @@ jest.mock('../pages/page-i-site-devices-date', () => ({
   pageSiteDevicesDate: jest.fn().mockReturnValue('some HTML...'),
 }));
 
-jest.mock('../pages/page-not-found', () => ({
-  pageNotFound: jest.fn().mockReturnValue('Wrong URL-parameter.'),
-}));
-
 describe('get-i-site-000site-devices-000date', () => {
   const data = ({ analytics: 'analytics' } as unknown) as Data;
   const devices = { type: 'devices' };
@@ -26,21 +21,18 @@ describe('get-i-site-000site-devices-000date', () => {
   const owner = 'somebody';
 
   describe('invalid date param', () => {
-    it('should respond with a 400', async () => {
-      const message = 'Wrong URL-parameter.';
-      const { statusCode, headers, body } = await handler({
+    it('should respond with a 301', async () => {
+      const { statusCode, headers } = await handler({
         data,
         owner,
         site,
         date: '2020-15',
       });
-      const { ['content-type']: contentType } = headers;
+      const { location } = headers;
 
-      expect(statusCode).toBe(400);
-      expect(contentType).toBe('text/plain; charset=utf8');
-      expect(body).toBe(message);
+      expect(statusCode).toBe(301);
       expect(pageSiteDevicesDate).not.toHaveBeenCalled();
-      expect(pageNotFound).toHaveBeenCalledWith({ message });
+      expect(location).toBe(`/i/site/${site}/devices`);
     });
   });
 

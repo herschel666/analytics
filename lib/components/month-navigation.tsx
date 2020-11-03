@@ -1,8 +1,11 @@
 import h from 'vhtml';
 import type { HC } from 'vhtml';
 
+type Type = 'devices' | 'referrers';
+
 interface Props {
   site: string;
+  type: Type;
   currentYear: number;
   currentMonth: number;
 }
@@ -27,12 +30,14 @@ const getLatestDate = (): [number, number] => {
   return [Number(latestYear), Number(latestMonth)];
 };
 
-const getUrlBase = (site: string): string => `/i/site/${site}/devices`;
+const getUrlBase = (site: string, type: Type): string =>
+  `/i/site/${site}/${type}`;
 
 const padLeft = (i: number): string => `0${i}`.slice(-2);
 
 const getPreviousMonthUrl = (
   site: string,
+  type: Type,
   currentYear: number,
   currentMonth: number
 ): string | undefined => {
@@ -44,11 +49,12 @@ const getPreviousMonthUrl = (
   }
 
   const month = isSameYear ? currentMonth - 1 : 12;
-  return `${getUrlBase(site)}/${year}-${padLeft(month)}`;
+  return `${getUrlBase(site, type)}/${year}-${padLeft(month)}`;
 };
 
 const getNextMonthUrl = (
   site: string,
+  type: Type,
   currentYear: number,
   currentMonth: number,
   latestYear: number,
@@ -60,18 +66,25 @@ const getNextMonthUrl = (
   const isSameYear = currentMonth < 12;
   const year = isSameYear ? currentYear : currentYear + 1;
   const month = isSameYear ? currentMonth + 1 : 1;
-  return `${getUrlBase(site)}/${year}-${padLeft(month)}`;
+  return `${getUrlBase(site, type)}/${year}-${padLeft(month)}`;
 };
 
 export const MonthNavigation: HC<Props> = ({
   site,
+  type,
   currentYear,
   currentMonth,
 }) => {
   const [latestYear, latestMonth] = getLatestDate();
-  const previousMonthUrl = getPreviousMonthUrl(site, currentYear, currentMonth);
+  const previousMonthUrl = getPreviousMonthUrl(
+    site,
+    type,
+    currentYear,
+    currentMonth
+  );
   const nextMonthUrl = getNextMonthUrl(
     site,
+    type,
     currentYear,
     currentMonth,
     latestYear,

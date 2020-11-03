@@ -1,7 +1,6 @@
 import type { Data } from '@architect/functions';
 
 import { getReferrersBySite } from '../shared/ddb';
-import { pageNotFound } from '../pages/page-not-found';
 import { pageSiteReferrersDate } from '../pages/page-i-site-referrers-date';
 import { handler } from './get-i-site-000site-referrers-000date';
 
@@ -13,10 +12,6 @@ jest.mock('../pages/page-i-site-referrers-date', () => ({
   pageSiteReferrersDate: jest.fn().mockReturnValue('some HTML...'),
 }));
 
-jest.mock('../pages/page-not-found', () => ({
-  pageNotFound: jest.fn().mockReturnValue('Wrong URL-parameter.'),
-}));
-
 describe('get-i-site-000site-referrers-000date', () => {
   const data = ({ analytics: 'analytics' } as unknown) as Data;
   const referrers = [{ type: 'referrers' }];
@@ -25,21 +20,18 @@ describe('get-i-site-000site-referrers-000date', () => {
   const date = '2020-11';
 
   describe('invalid date param', () => {
-    it('should respond with a 400', async () => {
-      const message = 'Wrong URL-parameter.';
-      const { statusCode, headers, body } = await handler({
+    it('should respond with a 301', async () => {
+      const { statusCode, headers } = await handler({
         data,
         owner,
         site,
         date: '2020-15',
       });
-      const { ['content-type']: contentType } = headers;
+      const { location } = headers;
 
-      expect(statusCode).toBe(400);
-      expect(contentType).toBe('text/plain; charset=utf8');
-      expect(body).toBe(message);
+      expect(statusCode).toBe(301);
       expect(pageSiteReferrersDate).not.toHaveBeenCalled();
-      expect(pageNotFound).toHaveBeenCalledWith({ message });
+      expect(location).toBe(`/i/site/${site}/referrers`);
     });
   });
 
@@ -81,6 +73,10 @@ describe('get-i-site-000site-referrers-000date', () => {
       date,
     });
 
-    expect(pageSiteReferrersDate).toHaveBeenCalledWith({ referrers, site });
+    expect(pageSiteReferrersDate).toHaveBeenCalledWith({
+      referrers,
+      site,
+      date,
+    });
   });
 });
