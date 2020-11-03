@@ -7,7 +7,7 @@ import type {
 import { siteExists } from '../../middlewares/site-exists';
 import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-xxx';
 
-export const servePageSiteDevices = async (
+export const servePageSiteReferrers = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site } = req.pathParameters;
@@ -15,4 +15,4 @@ export const servePageSiteDevices = async (
   return routeHandler({ site, type: 'referrers' });
 };
 
-export const handler = arc.http.async(siteExists, servePageSiteDevices);
+export const handler = arc.http.async(siteExists, servePageSiteReferrers);

@@ -8,7 +8,7 @@ import { withOwner } from '../../middlewares/with-owner';
 import { siteExists } from '../../middlewares/site-exists';
 import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-referrers-000date-000host';
 
-export const servePageSiteReferrersHost = async (
+export const servePageSiteReferrersDateHost = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site, date, host } = req.pathParameters;
@@ -21,5 +21,5 @@ export const servePageSiteReferrersHost = async (
 export const handler = arc.http.async(
   withOwner,
   siteExists,
-  servePageSiteReferrersHost
+  servePageSiteReferrersDateHost
 );
