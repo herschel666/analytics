@@ -1,4 +1,4 @@
-import { handler } from './get-i-site-000site-devices';
+import { handler } from './get-i-site-000site-xxx';
 
 const currentMonth = '2020-02';
 
@@ -8,7 +8,7 @@ class DateMock {
   }
 }
 
-describe('get-i-site-000site-devices', () => {
+describe('get-i-site-000site-xxx', () => {
   let globalDate;
 
   beforeAll(() => {
@@ -22,10 +22,11 @@ describe('get-i-site-000site-devices', () => {
 
   it('should redirect to the current month', async () => {
     const site = 'site_tld';
-    const { statusCode, headers } = await handler({ site });
+    const type = 'devices';
+    const { statusCode, headers } = await handler({ site, type });
     const { location } = headers;
 
     expect(statusCode).toBe(301);
-    expect(location).toBe(`/i/site/${site}/devices/${currentMonth}`);
+    expect(location).toBe(`/i/site/${site}/${type}/${currentMonth}`);
   });
 });

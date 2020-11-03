@@ -289,14 +289,11 @@ export const getPageViewsBySiteAndDate = async (
 export const getReferrersBySite = async (
   doc: ArcTableClient,
   site: string,
-  owner: string
+  owner: string,
+  date: string
 ): Promise<ReferrerHostEntry[]> => {
   const ownerSite = `${owner}#${site}`;
-  const [yyyy, mm, , month = `${yyyy}-${mm}`] = new Date()
-    .toISOString()
-    .split('T')
-    .shift()
-    .split('-');
+  const [yyyy, mm, , month = `${yyyy}-${mm}`] = date.split('-');
 
   try {
     const { Items: items = [] } = await doc.query({

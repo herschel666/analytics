@@ -3,7 +3,7 @@ import type { Data } from '@architect/functions';
 import { getReferrersBySiteAndHost } from '../shared/ddb';
 import { siteNameToHostname } from '../shared/util';
 import { pageSiteReferrersHost } from '../pages/page-i-site-referrers-host';
-import { handler } from './get-i-site-000site-referrers-000host';
+import { handler } from './get-i-site-000site-referrers-host-000host';
 
 jest.mock('../shared/ddb', () => ({
   getReferrersBySiteAndHost: jest

@@ -5,14 +5,14 @@ import type {
 } from '@architect/functions';
 
 import { siteExists } from '../../middlewares/site-exists';
-import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-devices';
+import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-xxx';
 
 export const servePageSiteDevices = async (
   req: AGWEvent
 ): Promise<AGWResult> => {
   const { site } = req.pathParameters;
 
-  return routeHandler({ site });
+  return routeHandler({ site, type: 'devices' });
 };
 
 export const handler = arc.http.async(siteExists, servePageSiteDevices);

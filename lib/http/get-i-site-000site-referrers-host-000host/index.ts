@@ -6,7 +6,7 @@ import type {
 
 import { withOwner } from '../../middlewares/with-owner';
 import { siteExists } from '../../middlewares/site-exists';
-import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-referrers-000host';
+import { handler as routeHandler } from '../../route-handlers/get-i-site-000site-referrers-host-000host';
 
 export const servePageSiteReferrersHost = async (
   req: AGWEvent
