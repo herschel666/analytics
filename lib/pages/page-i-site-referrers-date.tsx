@@ -38,6 +38,18 @@ const detailUrl = (
     site
   )}/referrers/${currentYear}-${currentMonth}/${hostnameToSite(referrer)}`;
 
+const WithFallback: HC<{ showFallback: boolean }> = ({
+  showFallback,
+  children,
+}) =>
+  showFallback ? (
+    <div class="row justify-content-center mt-5">
+      <h2 class="col-4 text-center">No data available. ;-(</h2>
+    </div>
+  ) : (
+    children
+  );
+
 const Page: HC<Props> = ({ site, referrers, currentYear, currentMonth }) => {
   const hostname = siteNameToHostname(site);
 
@@ -50,7 +62,7 @@ const Page: HC<Props> = ({ site, referrers, currentYear, currentMonth }) => {
         currentYear={currentYear}
         currentMonth={currentMonth}
       />
-      {Boolean(referrers.length) && (
+      <WithFallback showFallback={referrers.length === 0}>
         <table class="table mt-4">
           <thead>
             <tr>
@@ -80,7 +92,7 @@ const Page: HC<Props> = ({ site, referrers, currentYear, currentMonth }) => {
             ))}
           </tbody>
         </table>
-      )}
+      </WithFallback>
     </Layout>
   );
 };
