@@ -30,7 +30,7 @@
   "license": "MIT",
   "devDependencies": {
     "@architect/architect": "8.2.1",
-    "@architect/functions": "3.13.4",
+    "@architect/functions": "3.13.5",
     "@testing-library/dom": "7.26.5",
     "@types/aws-lambda": "8.10.64",
     "@types/chart.js": "2.9.27",
