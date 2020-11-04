@@ -45,6 +45,24 @@ const getAggregatedData = (
     return acc;
   }, {});
 
+const hasData = (devices: UserAgentEntries): boolean =>
+  ['browsers', 'os', 'devices'].reduce(
+    (a: boolean, k: keyof UserAgentEntries) => a && devices[k].length > 0,
+    true
+  );
+
+const WithFallback: HC<{ showFallback: boolean }> = ({
+  showFallback,
+  children,
+}) =>
+  showFallback ? (
+    <div class="row justify-content-center mt-5">
+      <h2 class="col-4 text-center">No data available. ;-(</h2>
+    </div>
+  ) : (
+    children
+  );
+
 const Page: HC<Props> = ({
   hostname,
   site,
@@ -65,111 +83,113 @@ const Page: HC<Props> = ({
         currentYear={currentYear}
         currentMonth={currentMonth}
       />
-      <div class="row">
-        <div class="col">
-          <h5>Browsers</h5>
-          {devices.browsers.length > 0 ? (
-            <Fragment>
-              <PieChart
-                numbers={Object.values(aggregatedBrowserData)}
-                labels={Object.keys(aggregatedBrowserData)}
-              />
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Version</th>
-                    <th scope="col">Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {devices.browsers
-                    .sort((a, b) => countDescending<UABrowser>(a, b))
-                    .map(({ name, version, count }, i) => (
-                      <tr>
-                        <td class="text-secondary">{++i}</td>
-                        <td>{name}</td>
-                        <td>{version}</td>
-                        <td>{count}</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </Fragment>
-          ) : (
-            <em class="text-secondary">No data available.</em>
-          )}
+      <WithFallback showFallback={!hasData(devices)}>
+        <div class="row">
+          <div class="col">
+            <h5>Browsers</h5>
+            {devices.browsers.length > 0 ? (
+              <Fragment>
+                <PieChart
+                  numbers={Object.values(aggregatedBrowserData)}
+                  labels={Object.keys(aggregatedBrowserData)}
+                />
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Version</th>
+                      <th scope="col">Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {devices.browsers
+                      .sort((a, b) => countDescending<UABrowser>(a, b))
+                      .map(({ name, version, count }, i) => (
+                        <tr>
+                          <td class="text-secondary">{++i}</td>
+                          <td>{name}</td>
+                          <td>{version}</td>
+                          <td>{count}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </Fragment>
+            ) : (
+              <em class="text-secondary">No data available.</em>
+            )}
+          </div>
+          <div class="col">
+            <h5>OS</h5>
+            {devices.os.length > 0 ? (
+              <Fragment>
+                <PieChart
+                  numbers={Object.values(aggregatedOsData)}
+                  labels={Object.keys(aggregatedOsData)}
+                />
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Version</th>
+                      <th scope="col">Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {devices.os
+                      .sort((a, b) => countDescending<UAOs>(a, b))
+                      .map(({ name, version, count }, i) => (
+                        <tr>
+                          <td class="text-secondary">{++i}</td>
+                          <td>{name}</td>
+                          <td>{version}</td>
+                          <td>{count}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </Fragment>
+            ) : (
+              <em class="text-secondary">No data available.</em>
+            )}
+          </div>
+          <div class="col">
+            <h5>Devices</h5>
+            {devices.devices.length > 0 ? (
+              <Fragment>
+                <PieChart
+                  numbers={Object.values(aggregatedDeviceData)}
+                  labels={Object.keys(aggregatedDeviceData)}
+                />
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {devices.devices
+                      .sort((a, b) => countDescending<UADevice>(a, b))
+                      .map(({ name, count }, i) => (
+                        <tr>
+                          <td class="text-secondary">{++i}</td>
+                          <td>{name}</td>
+                          <td>{count}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </Fragment>
+            ) : (
+              <em class="text-secondary">No data available.</em>
+            )}
+          </div>
         </div>
-        <div class="col">
-          <h5>OS</h5>
-          {devices.os.length > 0 ? (
-            <Fragment>
-              <PieChart
-                numbers={Object.values(aggregatedOsData)}
-                labels={Object.keys(aggregatedOsData)}
-              />
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Version</th>
-                    <th scope="col">Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {devices.os
-                    .sort((a, b) => countDescending<UAOs>(a, b))
-                    .map(({ name, version, count }, i) => (
-                      <tr>
-                        <td class="text-secondary">{++i}</td>
-                        <td>{name}</td>
-                        <td>{version}</td>
-                        <td>{count}</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </Fragment>
-          ) : (
-            <em class="text-secondary">No data available.</em>
-          )}
-        </div>
-        <div class="col">
-          <h5>Devices</h5>
-          {devices.devices.length > 0 ? (
-            <Fragment>
-              <PieChart
-                numbers={Object.values(aggregatedDeviceData)}
-                labels={Object.keys(aggregatedDeviceData)}
-              />
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {devices.devices
-                    .sort((a, b) => countDescending<UADevice>(a, b))
-                    .map(({ name, count }, i) => (
-                      <tr>
-                        <td class="text-secondary">{++i}</td>
-                        <td>{name}</td>
-                        <td>{count}</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </Fragment>
-          ) : (
-            <em class="text-secondary">No data available.</em>
-          )}
-        </div>
-      </div>
+      </WithFallback>
     </Layout>
   );
 };
