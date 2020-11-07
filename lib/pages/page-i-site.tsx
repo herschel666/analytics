@@ -98,7 +98,12 @@ const Page: HC<Props> = ({
   return (
     <Layout loggedIn={true} text={siteNameToHostname(site)}>
       <TabNav site={site} current={TabItem.PageViews} />
-      <form method="get" action={pagePath} class="my-4">
+      <form
+        method="get"
+        action={pagePath}
+        class="my-4"
+        id="form-page-views-date-range"
+      >
         <fieldset>
           <h5>Set time range</h5>
           <div class="row">
