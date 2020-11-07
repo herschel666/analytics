@@ -76,7 +76,7 @@
     "turbolinks": "5.2.0"
   },
   "alias": {
-    "moment": "./lib/shims/moment"
+    "moment": "./lib/stubs/moment"
   },
   "jest": {
     "testPathIgnorePatterns": [
@@ -94,7 +94,7 @@
         "preset": "ts-jest",
         "testEnvironment": "node",
         "moduleNameMapper": {
-          "cacheable-lookup": "<rootDir>/lib/shims/cacheable-lookup.ts"
+          "cacheable-lookup": "<rootDir>/lib/stubs/cacheable-lookup.ts"
         },
         "testMatch": [
           "<rootDir>/lib/route-handlers/**/*.test.ts"
