@@ -1,3 +1,5 @@
+import * as Turbolinks from 'turbolinks';
+
 const dateInputs = document.querySelectorAll('input[type="date"');
 const lineChart = document.getElementById('line-chart');
 const pieCharts = Array.from(
@@ -22,3 +24,5 @@ if (pieCharts.length) {
 if (deleteSiteButton && deleteSiteButton instanceof HTMLButtonElement) {
   import('./modules/delete-site').then(({ init }) => init(deleteSiteButton));
 }
+
+Turbolinks.start();
