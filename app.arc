@@ -25,11 +25,14 @@ post /i
 post /i/site/:site/settings
 post /logout
 get /favicon.ico
-any /*
+
+get /api/sites
 
 get /test/some-page
 get /test/other-page
 get /test/populate
+
+any /*
 
 @tables
 analytics
