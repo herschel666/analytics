@@ -1,6 +1,8 @@
 import * as Turbolinks from 'turbolinks';
 
 const initSite = (): void => {
+  const visit = (uri: string): void => Turbolinks.visit(uri);
+
   const dateInputs = document.querySelectorAll('input[type="date"');
   const lineChart = document.getElementById('line-chart');
   const pieCharts = Array.from(
@@ -16,7 +18,7 @@ const initSite = (): void => {
   }
 
   if (lineChart && lineChart instanceof HTMLCanvasElement) {
-    import('./modules/line-chart').then(({ init }) => init(lineChart));
+    import('./modules/line-chart').then(({ init }) => init(lineChart, visit));
   }
 
   if (pieCharts.length) {
@@ -31,7 +33,7 @@ const initSite = (): void => {
 
   if (formPageViewsDateRange instanceof HTMLFormElement) {
     import('./modules/form-page-views-date-range').then(({ init }) =>
-      init(formPageViewsDateRange, (uri: string): void => Turbolinks.visit(uri))
+      init(formPageViewsDateRange, visit)
     );
   }
 };
