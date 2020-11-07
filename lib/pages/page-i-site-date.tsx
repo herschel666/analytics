@@ -2,12 +2,13 @@ import h from 'vhtml';
 import type { HC } from 'vhtml';
 
 import type { PageView } from '../shared/ddb';
-import { hostnameToSite, siteNameToHostname } from '../shared/util';
+import { siteNameToHostname } from '../shared/util';
 import { pageFrame } from '../shared/page-frame';
 import { Layout } from '../components/layout';
+import { TabNav, TabItem } from '../components/tab-nav';
 
 interface Props {
-  hostname: string;
+  site: string;
   date: string;
   pageViews: PageView[];
   from?: string;
@@ -40,14 +41,13 @@ const getRange = (from?: string, to?: string): string => {
   return `?from=${from}&to=${to}`;
 };
 
-const Page: HC<Props> = ({ hostname, date, pageViews, from, to }) => (
-  <Layout loggedIn={true} text={hostname}>
+const Page: HC<Props> = ({ site, date, pageViews, from, to }) => (
+  <Layout loggedIn={true} text={siteNameToHostname(site)}>
+    <TabNav site={site} current={TabItem.PageViews} />
     {Boolean(pageViews.length) && (
       <div>
         <div class="my-4">
-          <a href={`/i/site/${hostnameToSite(hostname)}${getRange(from, to)}`}>
-            Back to overview
-          </a>
+          <a href={`/i/site/${site}${getRange(from, to)}`}>Back to overview</a>
         </div>
         <h2 class="mb-4">Page Views for {date}</h2>
         <table class="table">
@@ -82,7 +82,7 @@ export const pageSiteDate = ({
 }: Args): string =>
   pageFrame(
     <Page
-      hostname={siteNameToHostname(site)}
+      site={site}
       date={date}
       pageViews={pageViews.sort(sortPageViewsPerDate)}
       from={from}
