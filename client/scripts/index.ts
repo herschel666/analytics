@@ -12,6 +12,7 @@ const initSite = (): void => {
   const formPageViewsDateRange = document.getElementById(
     'form-page-views-date-range'
   );
+  const sitesSelector = document.getElementById('sites-selector');
 
   if (dateInputs.length) {
     import('./modules/date-input-polyfill').then(({ init }) => init());
@@ -36,6 +37,17 @@ const initSite = (): void => {
       init(formPageViewsDateRange, visit)
     );
   }
+
+  if (sitesSelector instanceof HTMLElement) {
+    import('./modules/sites-selector').then(({ init }) => init(sitesSelector));
+  }
+
+  const tooltipTriggerList = [].slice.call(
+    document.querySelectorAll('[data-toggle="tooltip"]')
+  );
+  tooltipTriggerList.map(
+    (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
+  );
 };
 
 document.addEventListener('turbolinks:load', initSite);

@@ -9,41 +9,64 @@ export interface Props {
   text?: string;
 }
 
-export const MainHeader: HC<Props> = ({ loggedIn, sites, text }) => {
+const sitesSelectorBaseClasses = [
+  'navbar-nav',
+  'd-flex',
+  'flex-grow-1',
+  'justify-content-end',
+  'mr-4',
+];
+
+export const MainHeader: HC<Props> = ({ loggedIn, sites = [], text }) => {
+  const sitesSelectorClasses = [
+    ...sitesSelectorBaseClasses,
+    ...(sites.length ? [] : ['invisible']),
+  ];
+  const navbarBrandProps = text
+    ? {
+        href: '/i',
+        'data-toggle': 'tooltip',
+        'data-placement': 'bottom',
+        title: 'Back to overview',
+      }
+    : {};
+  const NavbarBrand = text ? 'a' : 'span';
+
   return (
     <header class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/i">
-          ek|analytics
-        </a>
-        {Boolean(sites && sites.length) && (
-          <nav class="navbar-nav d-flex flex-grow-1 justify-content-end mr-4">
-            <span class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                id="navbarDropdownMenuLink"
-                role="button"
-                data-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Choose a site…
-              </a>
-              <div
-                class="dropdown-menu"
-                aria-labelledby="navbarDropdownMenuLink"
-              >
-                {sites.map((site) => (
-                  <span>
-                    <a class="dropdown-item" href={`/i/site/${site}`}>
-                      {siteNameToHostname(site)}
-                    </a>
-                  </span>
-                ))}
-              </div>
-            </span>
-          </nav>
-        )}
-        {Boolean(text) && <span class="navbar-text">{text}</span>}
+        <NavbarBrand class="navbar-brand" {...navbarBrandProps}>
+          {text || 'ek|analytics'}
+        </NavbarBrand>
+        <nav
+          class={sitesSelectorClasses.join(' ')}
+          id="sites-selector"
+          data-turbolinks-permanent={true}
+        >
+          <div class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              id="navbarDropdownMenuLink"
+              role="button"
+              data-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Choose a site…
+            </a>
+            <div
+              class="dropdown-menu js-dropdown-menu"
+              aria-labelledby="navbarDropdownMenuLink"
+            >
+              {sites.map((site) => (
+                <span>
+                  <a class="dropdown-item" href={`/i/site/${site}`}>
+                    {siteNameToHostname(site)}
+                  </a>
+                </span>
+              ))}
+            </div>
+          </div>
+        </nav>
         {loggedIn && (
           <form action="/logout" method="post">
             <button class="btn btn-outline-dark btn-sm">Logout</button>
