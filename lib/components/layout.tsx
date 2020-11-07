@@ -15,14 +15,14 @@ export const Layout: HC<Props> = ({ loggedIn, sites, text, children }) => (
       <a
         class="px-4"
         href="https://github.com/herschel666/analytics"
-        targt="_blank"
+        target="_blank"
         rel="noopener noreferrer"
       >
         Github
       </a>
       <a
         href="https://twitter.com/herschel_r"
-        targt="_blank"
+        target="_blank"
         rel="noopener noreferrer"
       >
         twitter
