@@ -27,7 +27,10 @@ const niceMonthToNumber = (month: string): number | never => {
 
 const padLeft = (i: number): string => `0${i}`.slice(-2);
 
-export const init = (canvas: HTMLCanvasElement): void => {
+export const init = (
+  canvas: HTMLCanvasElement,
+  visit: (uri: string) => void
+): void => {
   const ctx = canvas.getContext('2d');
   const site = canvas.dataset.site;
   const dates = JSON.parse(canvas.dataset.dates) as string[];
@@ -80,7 +83,7 @@ export const init = (canvas: HTMLCanvasElement): void => {
             ? `?range=${encodeURIComponent(btoa(JSON.stringify({ from, to })))}`
             : '';
 
-        location.href = `/i/site/${site}/date/${date}${params}`;
+        visit(`/i/site/${site}/date/${date}${params}`);
       },
     },
   });
