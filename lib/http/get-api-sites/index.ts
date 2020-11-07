@@ -5,6 +5,7 @@ import type {
 } from '@architect/functions';
 
 import { withOwner } from '../../middlewares/with-owner';
+import { forbiddenJson } from '../../middlewares/with-owner/responses/json';
 import { handler as routeHandler } from '../../route-handlers/get-api-sites';
 
 export const serveApiSites = async (req: AGWEvent): Promise<AGWResult> => {
@@ -14,4 +15,4 @@ export const serveApiSites = async (req: AGWEvent): Promise<AGWResult> => {
   return routeHandler({ data, owner });
 };
 
-export const handler = arc.http.async(withOwner, serveApiSites);
+export const handler = arc.http.async(withOwner(forbiddenJson), serveApiSites);

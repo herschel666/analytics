@@ -5,6 +5,7 @@ import type {
 } from '@architect/functions';
 
 import { withOwner } from '../../middlewares/with-owner';
+import { forbiddenHtml } from '../../middlewares/with-owner/responses/html';
 import { handler as routeHandler } from '../../route-handlers/get-i';
 
 export const servePage = async (req: AGWEvent): Promise<AGWResult> => {
@@ -15,4 +16,4 @@ export const servePage = async (req: AGWEvent): Promise<AGWResult> => {
   return routeHandler({ data, owner, debug });
 };
 
-export const handler = arc.http.async(withOwner, servePage);
+export const handler = arc.http.async(withOwner(forbiddenHtml), servePage);
