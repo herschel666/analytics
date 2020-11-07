@@ -12,6 +12,8 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="generator" content="FrontPage 4.0" />
         <meta name="theme-color" content="#f8f9fa" />
+        <meta name="turbolinks-cache-control" content="no-cache" />
+        <meta name="turbolinks-root" content="/i" />
         <title>${title}</title>
         <link
           rel="stylesheet"
@@ -24,15 +26,19 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
           rel="stylesheet"
         />
         <link href="/favicon.ico" rel="shortcut icon" />
-      </head>
-      <body class="min-vh-100">
-        ${body}
         <script
           src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"
           integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
           crossorigin="anonymous"
+          defer
         ></script>
-        <script src="${arc.http.helpers.static('scripts/index.js')}"></script>
+        <script
+          src="${arc.http.helpers.static('scripts/index.js')}"
+          defer
+        ></script>
+      </head>
+      <body class="min-vh-100">
+        ${body}
       </body>
     </html>
   `.trim();
