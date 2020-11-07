@@ -46,8 +46,7 @@ export const init = (
       labels: dates,
       datasets: [
         {
-          // TODO: change label; it's not necessarily the last days, but an earlier interval
-          label: `Page Views of the last ${dates.length} days`,
+          label: `Page Views from ${from} to ${to}`,
           data: hits,
           lineTension: 0,
           backgroundColor: 'transparent',
