@@ -64,14 +64,14 @@ export const init = (
       },
       onHover: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
         const className = 'cursor-pointer';
-        if (element) {
+        if (element && hits[element._index] > 0) {
           canvas.classList.add(className);
         } else {
           canvas.classList.remove(className);
         }
       },
       onClick: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
-        if (!element) {
+        if (!element || hits[element._index] === 0) {
           return;
         }
         const [day, month, year] = dates[element._index]
