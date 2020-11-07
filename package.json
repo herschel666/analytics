@@ -23,7 +23,7 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "type-check": "tsc --noEmit",
-    "jest": "jest",
+    "jest": "jest --forceExit",
     "test": "npm-run-all lint type-check jest"
   },
   "author": "Emanuel Kluge (https://emanuel-kluge.de/)",
@@ -93,6 +93,9 @@
         "displayName": "http",
         "preset": "ts-jest",
         "testEnvironment": "node",
+        "moduleNameMapper": {
+          "cacheable-lookup": "<rootDir>/lib/shims/cacheable-lookup.ts"
+        },
         "testMatch": [
           "<rootDir>/lib/route-handlers/**/*.test.ts"
         ],
