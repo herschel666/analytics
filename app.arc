@@ -32,7 +32,7 @@ get /test/some-page
 get /test/other-page
 get /test/populate
 
-any /*
+get /*
 
 @tables
 analytics
