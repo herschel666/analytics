@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@architect/functions": "3.13.5",
+    "@architect/functions": "3.13.6",
     "vhtml": "2.2.0"
   }
 }
