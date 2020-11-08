@@ -47,6 +47,7 @@ analytics
 @queues
 delegate-site-deletion
 delete-site-entry
+track-page-view
 
 @macros
 custom-domain

@@ -1,13 +1,11 @@
-import type { APIGatewayResult as AGWResult, Data } from '@architect/functions';
+import type {
+  APIGatewayResult as AGWResult,
+  ArcQueues,
+} from '@architect/functions';
 import type { APIGatewayEvent as AGWEvent } from 'aws-lambda';
-import { UAParser } from 'ua-parser-js';
-
-import { decrypt } from '../shared/crypto';
-import { hostnameToSite, getUserAgent } from '../shared/util';
-import { addPageView } from '../shared/ddb';
 
 interface Args {
-  data: Data;
+  queues: ArcQueues;
   id?: string;
   resource?: string;
   headers: AGWEvent['headers'];
@@ -16,20 +14,6 @@ interface Args {
 
 const body = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-const parser = new UAParser();
-
-const getOwnerAndHostnameFromId = (id?: string): string[] => {
-  if (!id) {
-    return [];
-  }
-  try {
-    return decrypt(id).split('#');
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
-};
-
 const getUserAgentString = (headers: AGWEvent['headers']): string | undefined =>
   (
     Object.entries(headers).find(([k]) => k.toLowerCase() === 'user-agent') ||
@@ -37,35 +21,22 @@ const getUserAgentString = (headers: AGWEvent['headers']): string | undefined =>
   ).pop();
 
 export const handler = async ({
-  data,
+  queues,
   id,
   resource,
   headers,
   referrer: maybeReferrer = '',
 }: Args): Promise<AGWResult> => {
-  const [owner, hostname] = getOwnerAndHostnameFromId(id);
-  const site = hostnameToSite(hostname);
-  const referrer =
-    maybeReferrer.length === 0 || maybeReferrer === 'undefined'
-      ? undefined
-      : decodeURIComponent(maybeReferrer.trim());
-
-  if (owner && site && resource) {
-    const { pathname, search } = new URL(resource, 'http://example.com');
-    const userAgent = getUserAgent(parser, getUserAgentString(headers));
-
-    try {
-      await addPageView(
-        data,
-        site,
-        owner,
-        `${pathname}${search}`,
-        userAgent,
-        referrer
-      );
-    } catch (err) {
-      console.log(err);
-    }
+  if (id && resource) {
+    const referrer =
+      maybeReferrer.length === 0 || maybeReferrer === 'undefined'
+        ? undefined
+        : decodeURIComponent(maybeReferrer.trim());
+    const userAgent = getUserAgentString(headers);
+    await queues.publish({
+      name: 'track-page-view',
+      payload: { id, resource, referrer, userAgent },
+    });
   }
 
   return {
