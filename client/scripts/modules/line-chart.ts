@@ -29,6 +29,7 @@ const padLeft = (i: number): string => `0${i}`.slice(-2);
 
 export const init = (
   canvas: HTMLCanvasElement,
+  prefetchSinglePage: (uri: string | null) => void,
   visit: (uri: string) => void
 ): void => {
   const ctx = canvas.getContext('2d');
@@ -39,6 +40,16 @@ export const init = (
   const to = canvas.dataset.to;
   const min = Math.max(0, [...hits].sort().shift() - 1);
   const max = [...hits].sort().pop() + 1;
+
+  const getUriByIndex = (index: number): string => {
+    const [day, month, year] = dates[index].replace('.', '').split(/\s+/);
+    const date = `${year}-${padLeft(niceMonthToNumber(month))}-${day}`;
+    const params =
+      Boolean(from) && Boolean(to)
+        ? `?range=${encodeURIComponent(btoa(JSON.stringify({ from, to })))}`
+        : '';
+    return `/i/site/${site}/date/${date}${params}`;
+  };
 
   new Chart(ctx, {
     type: 'line',
@@ -64,6 +75,7 @@ export const init = (
       onHover: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
         const className = 'cursor-pointer';
         if (element && hits[element._index] > 0) {
+          prefetchSinglePage(getUriByIndex(element._index));
           canvas.classList.add(className);
         } else {
           canvas.classList.remove(className);
@@ -73,16 +85,7 @@ export const init = (
         if (!element || hits[element._index] === 0) {
           return;
         }
-        const [day, month, year] = dates[element._index]
-          .replace('.', '')
-          .split(/\s+/);
-        const date = `${year}-${padLeft(niceMonthToNumber(month))}-${day}`;
-        const params =
-          Boolean(from) && Boolean(to)
-            ? `?range=${encodeURIComponent(btoa(JSON.stringify({ from, to })))}`
-            : '';
-
-        visit(`/i/site/${site}/date/${date}${params}`);
+        visit(getUriByIndex(element._index));
       },
     },
   });
