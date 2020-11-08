@@ -1,5 +1,9 @@
 import * as Turbolinks from 'turbolinks';
 
+import { prefetchPages } from './modules/prefetch-pages';
+
+let removePrefetchPagesMouseenterListeners: ReturnType<typeof prefetchPages>;
+
 const initSite = (): void => {
   const visit = (uri: string): void => Turbolinks.visit(uri);
 
@@ -48,7 +52,19 @@ const initSite = (): void => {
   tooltipTriggerList.map(
     (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
   );
+
+  const internalPages = Array.from(document.links).filter(
+    ({ hostname }) => hostname === location.hostname
+  );
+  removePrefetchPagesMouseenterListeners = prefetchPages(internalPages);
+};
+
+const cleanPage = (): void => {
+  if (typeof removePrefetchPagesMouseenterListeners === 'function') {
+    removePrefetchPagesMouseenterListeners();
+  }
 };
 
 document.addEventListener('turbolinks:load', initSite);
+document.addEventListener('turbolinks:click', cleanPage);
 Turbolinks.start();
