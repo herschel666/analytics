@@ -6,11 +6,10 @@ import { handler as routeHandler } from '../../route-handlers/get-cctv_gif';
 
 export const handler = async (req: AGWEvent): Promise<AGWResult> => {
   const { id, resource, referrer } = req.queryStringParameters || {};
-  const data = await arc.tables();
 
   return routeHandler({
     headers: req.headers,
-    data,
+    queues: arc.queues,
     id,
     resource,
     referrer,
