@@ -1,6 +1,6 @@
 import * as Turbolinks from 'turbolinks';
 
-import { prefetchPages } from './modules/prefetch-pages';
+import { prefetchPages, prefetchSinglePage } from './modules/prefetch-pages';
 
 let removePrefetchPagesMouseenterListeners: ReturnType<typeof prefetchPages>;
 
@@ -22,8 +22,10 @@ const initSite = (): void => {
     import('./modules/date-input-polyfill').then(({ init }) => init());
   }
 
-  if (lineChart && lineChart instanceof HTMLCanvasElement) {
-    import('./modules/line-chart').then(({ init }) => init(lineChart, visit));
+  if (lineChart instanceof HTMLCanvasElement) {
+    import('./modules/line-chart').then(({ init }) =>
+      init(lineChart, prefetchSinglePage, visit)
+    );
   }
 
   if (pieCharts.length) {
