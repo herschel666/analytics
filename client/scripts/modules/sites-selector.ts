@@ -1,3 +1,5 @@
+import type { PrefetchPages } from './prefetch-pages';
+
 const html = String.raw;
 
 const siteNameToHostname = (site: string): string => site.replace(/_+/g, '.');
@@ -10,7 +12,10 @@ const createMenuItem = (site: string): string => html`
   </span>
 `;
 
-export const init = async (nav: HTMLElement): Promise<void> => {
+export const init = async (
+  nav: HTMLElement,
+  prefetchPages: PrefetchPages
+): Promise<void> => {
   const menu = nav.querySelector('.js-dropdown-menu');
 
   if (!(menu instanceof HTMLDivElement)) {
@@ -30,5 +35,6 @@ export const init = async (nav: HTMLElement): Promise<void> => {
   const sites = await response.json();
 
   menu.innerHTML = sites.map(createMenuItem).join('');
+  prefetchPages(Array.from(menu.querySelectorAll('a')));
   nav.classList.remove('invisible');
 };

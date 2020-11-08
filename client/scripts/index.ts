@@ -1,8 +1,10 @@
 import * as Turbolinks from 'turbolinks';
 
-import { prefetchPages, prefetchSinglePage } from './modules/prefetch-pages';
-
-let removePrefetchPagesMouseenterListeners: ReturnType<typeof prefetchPages>;
+import {
+  prefetchPages,
+  clearPrefetchListeners,
+  prefetchSinglePage,
+} from './modules/prefetch-pages';
 
 const initSite = (): void => {
   const visit = (uri: string): void => Turbolinks.visit(uri);
@@ -45,7 +47,9 @@ const initSite = (): void => {
   }
 
   if (sitesSelector instanceof HTMLElement) {
-    import('./modules/sites-selector').then(({ init }) => init(sitesSelector));
+    import('./modules/sites-selector').then(({ init }) =>
+      init(sitesSelector, prefetchPages)
+    );
   }
 
   const tooltipTriggerList = [].slice.call(
@@ -58,13 +62,11 @@ const initSite = (): void => {
   const internalPages = Array.from(document.links).filter(
     ({ hostname }) => hostname === location.hostname
   );
-  removePrefetchPagesMouseenterListeners = prefetchPages(internalPages);
+  prefetchPages(internalPages);
 };
 
 const cleanPage = (): void => {
-  if (typeof removePrefetchPagesMouseenterListeners === 'function') {
-    removePrefetchPagesMouseenterListeners();
-  }
+  clearPrefetchListeners();
 };
 
 document.addEventListener('turbolinks:load', initSite);
