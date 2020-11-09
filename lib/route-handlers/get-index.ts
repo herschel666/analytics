@@ -19,6 +19,11 @@ interface Args {
   write: Session['write'];
 }
 
+type ApiResponse = { login: string } & Record<
+  string,
+  string | number | boolean | null
+>;
+
 class UserNotAllowedError extends Error {
   constructor() {
     super('The given is not alllowed.');
@@ -32,7 +37,9 @@ const isTestEnv = () => process.env.NODE_ENV === 'testing';
 
 // TODO: implement serious error handling
 const getGithubName = async (code: string): Promise<string> => {
-  const { body } = await got.post<{ access_token: string }>(
+  const {
+    body: { access_token: accessToken },
+  } = await got.post<{ access_token: string }>(
     'https://github.com/login/oauth/access_token',
     {
       json: {
@@ -45,10 +52,10 @@ const getGithubName = async (code: string): Promise<string> => {
     }
   );
   const {
-    body: { name },
-  } = await got<{ name: string }>('https://api.github.com/user', {
+    body: { login: name },
+  } = await got<ApiResponse>('https://api.github.com/user', {
     headers: {
-      Authorization: `token ${body.access_token}`,
+      Authorization: `token ${accessToken}`,
     },
     responseType: 'json',
   });
