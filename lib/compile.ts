@@ -19,8 +19,8 @@ const watch =
   !prod;
 const nodeEnv = prod ? 'production' : 'development';
 
-const filesHttp = globby(path.join(HTTP_DIR, '**/index.{ts,tsx}'));
-const filesQueues = globby(path.join(QUEUES_DIR, '**/index.ts'));
+const filesHttp = globby(path.join(HTTP_DIR, '*/index.{ts,tsx}'));
+const filesQueues = globby(path.join(QUEUES_DIR, '*/index.ts'));
 const files = [...filesHttp, ...filesQueues];
 
 if (prod) {
