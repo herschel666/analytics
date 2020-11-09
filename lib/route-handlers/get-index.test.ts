@@ -61,7 +61,7 @@ describe('get-index', () => {
     })
       .get('/user')
       .reply(200, {
-        name: username,
+        login: username,
       });
     const write = async ({ owner }: { owner: string }): Promise<string> =>
       `owner=${owner}`;
@@ -102,7 +102,7 @@ describe('get-index', () => {
       })
         .get('/user')
         .reply(200, {
-          name: username,
+          login: username,
         });
     });
 
