@@ -507,17 +507,17 @@ export const addPageView = async (
         SK: `UA#${ownerSite}#${month}#${deviceType}`,
       },
       UpdateExpression:
-        'SET #count = if_not_exists(#count, :zero) + :incr, #date = :date, #type = :type, #device = :device',
+        'SET #count = if_not_exists(#count, :zero) + :incr, #month = :month, #type = :type, #device = :device',
       ExpressionAttributeValues: {
         ':zero': 0,
         ':incr': 1,
-        ':date': month,
+        ':month': month,
         ':type': 'DEVICE',
         ':device': deviceType,
       },
       ExpressionAttributeNames: {
         '#count': 'Count',
-        '#date': 'Date',
+        '#month': 'Month',
         '#type': 'Type',
         '#device': 'Device',
       },
