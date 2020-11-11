@@ -31,7 +31,7 @@ const createWidget = (region: string, lambdas: string[]) => [
             lambdas.map((lambda, i) => [
               ...(i === 0
                 ? ['AWS/Lambda', 'Duration', 'FunctionName']
-                : ['...']),
+                : ['.', '.', '.']),
               ['${', lambda, '}'].join(''),
             ]),
           ],
