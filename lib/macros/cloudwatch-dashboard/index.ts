@@ -15,7 +15,7 @@ interface CFN {
   Resources: Resources;
 }
 
-const createWidget = (region: string, lambdas: string[]) => [
+const createWidget = (lambdas: string[]) => [
   JSON.stringify({
     widgets: [
       {
@@ -31,22 +31,24 @@ const createWidget = (region: string, lambdas: string[]) => [
             lambdas.map((lambda, i) => [
               ...(i === 0
                 ? ['AWS/Lambda', 'Duration', 'FunctionName']
-                : ['.', '.', '.']),
+                : ['...']),
               ['${', lambda, '}'].join(''),
             ]),
           ],
           period: 300,
-          region,
+          region: '${AWS::Region}',
         },
       },
     ],
   }),
   lambdas.reduce(
-    (acc, lambda) => ({
-      ...acc,
-      [lambda]: { Ref: lambda },
-    }),
-    {}
+    (acc, lambda) =>
+      acc.concat([
+        {
+          [lambda]: { Ref: lambda },
+        },
+      ]),
+    []
   ),
 ];
 
@@ -55,10 +57,6 @@ module.exports = (
   cfn: CFN,
   stage: 'staging' | 'production'
 ): CFN => {
-  if (!process.env.AWS_REGION) {
-    throw new Error('Please set the AWS region.');
-  }
-
   const stageName = stage.replace(/^[a-z]/, (c) => c.toUpperCase());
   const lambdas = Object.entries(cfn.Resources)
     .filter(([, { Type: type }]) => type === 'AWS::Serverless::Function')
@@ -69,10 +67,12 @@ module.exports = (
     Properties: {
       DashboardName: `${stageName}AnalyticsDashboard`,
       DashboardBody: {
-        'Fn::Sub': createWidget(process.env.AWS_REGION, lambdas),
+        'Fn::Sub': createWidget(lambdas),
       },
     },
   };
+
+  console.log(JSON.stringify(cfn, null, 2));
 
   return cfn;
 };
