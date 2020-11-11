@@ -42,12 +42,10 @@ const createWidget = (lambdas: string[]) => [
     ],
   }),
   lambdas.reduce(
-    (acc, lambda) =>
-      acc.concat([
-        {
-          [lambda]: { Ref: lambda },
-        },
-      ]),
+    (acc, lambda) => ({
+      ...acc,
+      [lambda]: { Ref: lambda },
+    }),
     []
   ),
 ];
@@ -71,8 +69,6 @@ module.exports = (
       },
     },
   };
-
-  console.log(JSON.stringify(cfn, null, 2));
 
   return cfn;
 };
