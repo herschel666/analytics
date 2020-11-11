@@ -51,6 +51,7 @@ track-page-view
 
 @macros
 custom-domain
+cloudwatch-dashboard
 herschel666-arc-macros-remove-local-routes
 herschel666-arc-macros-custom-log-groups
 
