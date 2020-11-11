@@ -17,20 +17,29 @@ interface CFN {
 
 const createWidget = (region: string, lambdas: string[]) => [
   JSON.stringify({
-    widgets: lambdas.map((lambda) => ({
-      view: 'timeSeries',
-      stacked: false,
-      metrics: [
-        [
-          'AWS/Lambda',
-          'Duration',
-          'FunctionName',
-          ['${', lambda, '}'].join(''),
-        ],
-      ],
-      period: 300,
-      region,
-    })),
+    widgets: [
+      {
+        type: 'metric',
+        x: 0,
+        y: 0,
+        width: 18,
+        height: 3,
+        properties: {
+          view: 'timeSeries',
+          stacked: false,
+          metrics: [
+            lambdas.map((lambda, i) => [
+              ...(i === 0
+                ? ['AWS/Lambda', 'Duration', 'FunctionName']
+                : ['...']),
+              ['${', lambda, '}'].join(''),
+            ]),
+          ],
+          period: 300,
+          region,
+        },
+      },
+    ],
   }),
   lambdas.reduce(
     (acc, lambda) => ({
