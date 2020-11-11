@@ -28,10 +28,10 @@ const createWidget = (lambdas: string[]) => [
           view: 'timeSeries',
           stacked: false,
           metrics: [
-            lambdas.map((lambda, i) => [
-              ...(i === 0
-                ? ['AWS/Lambda', 'Duration', 'FunctionName']
-                : ['...']),
+            lambdas.map((lambda) => [
+              'AWS/Lambda',
+              'Duration',
+              'FunctionName',
               ['${', lambda, '}'].join(''),
             ]),
           ],
