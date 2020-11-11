@@ -16,8 +16,8 @@ interface CFN {
 }
 
 const createWidget = (region: string, lambdas: string[]) => [
-  JSON.stringify(
-    lambdas.map((lambda) => ({
+  JSON.stringify({
+    widgets: lambdas.map((lambda) => ({
       view: 'timeSeries',
       stacked: false,
       metrics: [
@@ -30,8 +30,8 @@ const createWidget = (region: string, lambdas: string[]) => [
       ],
       period: 300,
       region,
-    }))
-  ),
+    })),
+  }),
   lambdas.reduce(
     (acc, lambda) => ({
       ...acc,
