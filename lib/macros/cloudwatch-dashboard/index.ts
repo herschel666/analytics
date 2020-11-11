@@ -1,7 +1,3 @@
-interface Resources {
-  [x: string]: { Type: string };
-}
-
 interface AnalyticsDashboard {
   Type: 'AWS::CloudWatch::Dashboard';
   Properties: {
@@ -10,9 +6,13 @@ interface AnalyticsDashboard {
   };
 }
 
+interface Resources {
+  AnalyticsDashboard?: AnalyticsDashboard;
+  [x: string]: { Type: string };
+}
+
 interface CFN {
   Resources: Resources;
-  AnalyticsDashboard?: AnalyticsDashboard;
 }
 
 const createWidget = (region: string, lambdas: string[]) => [
@@ -55,7 +55,7 @@ module.exports = (
     .filter(([, { Type: type }]) => type === 'AWS::Serverless::Function')
     .map(([lambda]) => lambda);
 
-  cfn.AnalyticsDashboard = {
+  cfn.Resources.AnalyticsDashboard = {
     Type: 'AWS::CloudWatch::Dashboard',
     Properties: {
       DashboardName: `${stageName}AnalyticsDashboard`,
