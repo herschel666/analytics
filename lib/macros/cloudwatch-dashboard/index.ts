@@ -60,7 +60,7 @@ module.exports = (
     Properties: {
       DashboardName: `${stageName}AnalyticsDashboard`,
       DashboardBody: {
-        'Fn:Sub': createWidget(process.env.AWS_REGION, lambdas),
+        'Fn::Sub': createWidget(process.env.AWS_REGION, lambdas),
       },
     },
   };
