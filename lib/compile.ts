@@ -7,9 +7,6 @@ import ForkTSCheckerPlugin from 'fork-ts-checker-webpack-plugin';
 const ROOT_DIR = path.resolve(__dirname, '..');
 const LIB_DIR = path.join(ROOT_DIR, 'lib');
 const SRC_DIR = path.join(ROOT_DIR, 'src');
-const HTTP_DIR = path.join(LIB_DIR, 'http');
-const MACROS_DIR = path.join(LIB_DIR, 'macros');
-const QUEUES_DIR = path.join(LIB_DIR, 'queues');
 
 const prod = Boolean(
   process.argv.find((flag) => flag === '-p' || flag === '--production')
@@ -19,14 +16,11 @@ const watch =
   !prod;
 const nodeEnv = prod ? 'production' : 'development';
 
-const filesHttp = globby(path.join(HTTP_DIR, '*/index.{ts,tsx}'));
-const filesQueues = globby(path.join(QUEUES_DIR, '*/index.ts'));
-const files = [...filesHttp, ...filesQueues];
-
+let folders = 'http,queues';
 if (prod) {
-  const filesMacros = globby(path.join(MACROS_DIR, '*/index.ts'));
-  files.push(...filesMacros);
+  folders += ',macros';
 }
+const files = globby(path.join(LIB_DIR, `{${folders}}/*/index.{ts,tsx}`));
 
 const baseConfig: Configuration = {
   cache: watch || {
