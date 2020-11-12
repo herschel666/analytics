@@ -27,14 +27,12 @@ const createWidget = (lambdas: string[]) => [
         properties: {
           view: 'timeSeries',
           stacked: false,
-          metrics: [
-            lambdas.map((lambda) => [
-              'AWS/Lambda',
-              'Duration',
-              'FunctionName',
-              ['${', lambda, '}'].join(''),
-            ]),
-          ],
+          metrics: lambdas.map((lambda) => [
+            'AWS/Lambda',
+            'Duration',
+            'FunctionName',
+            ['${', lambda, '}'].join(''),
+          ]),
           period: 300,
           region: '${AWS::Region}',
         },
