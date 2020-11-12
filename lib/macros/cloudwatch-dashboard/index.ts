@@ -33,7 +33,7 @@ const createWidget = (lambdas: string[]) => [
             'FunctionName',
             ['${', lambda, '}'].join(''),
           ]),
-          period: 1000,
+          period: 300,
           region: '${AWS::Region}',
         },
       },
