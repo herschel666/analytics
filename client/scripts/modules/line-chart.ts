@@ -25,6 +25,8 @@ const niceMonthToNumber = (month: string): number | never => {
   return abbreviations[month];
 };
 
+const asc = (a, b) => a - b;
+
 const padLeft = (i: number): string => `0${i}`.slice(-2);
 
 export const init = (
@@ -38,8 +40,8 @@ export const init = (
   const hits = JSON.parse(canvas.dataset.hits) as number[];
   const from = canvas.dataset.from;
   const to = canvas.dataset.to;
-  const min = Math.max(0, [...hits].sort().shift() - 1);
-  const max = [...hits].sort().pop() + 1;
+  const min = Math.max(0, [...hits].sort(asc).shift() - 1);
+  const max = [...hits].sort(asc).pop() + 1;
 
   const getUriByIndex = (index: number): string => {
     const [day, month, year] = dates[index].replace('.', '').split(/\s+/);
