@@ -20,11 +20,14 @@
     "deploy": "npx arc deploy",
     "deploy:staging": "npm run deploy -- --staging",
     "deploy:production": "npm run deploy -- --production",
+    "fmt": "prettier --config ./.prettierrc --ignore-path ./.prettierignore \"**/**.{js,jsx,ts,tsx,css,json,md}\"",
+    "fmt:write": "npm run fmt -- --write",
+    "fmt:check": "npm run fmt -- --check",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "type-check": "tsc --noEmit",
     "jest": "jest --forceExit",
-    "test": "npm-run-all lint type-check jest"
+    "test": "npm-run-all fmt:check lint type-check jest"
   },
   "author": "Emanuel Kluge (https://emanuel-kluge.de/)",
   "license": "MIT",
