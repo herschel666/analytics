@@ -70,7 +70,7 @@
     "ua-parser-js": "0.7.23",
     "url-loader": "4.1.1",
     "vhtml": "2.2.0",
-    "webpack": "5.11.0",
+    "webpack": "5.11.1",
     "webpack-cli": "4.3.0"
   },
   "dependencies": {
