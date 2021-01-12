@@ -36,7 +36,7 @@
     "@architect/functions": "3.13.8",
     "@babel/core": "7.12.10",
     "@babel/plugin-transform-runtime": "7.12.10",
-    "@testing-library/dom": "7.29.2",
+    "@testing-library/dom": "7.29.4",
     "@types/aws-lambda": "8.10.70",
     "@types/chart.js": "2.9.29",
     "@types/faker": "5.1.5",
