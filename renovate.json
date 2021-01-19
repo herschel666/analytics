@@ -9,6 +9,10 @@
     {
       "groupName": "definitelyTyped",
       "packagePatterns": ["^@types/"]
+    },
+    {
+      "groupName": "architect",
+      "packagePatterns": ["^@architect/"]
     }
   ]
 }
