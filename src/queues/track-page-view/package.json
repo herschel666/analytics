@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@architect/functions": "3.13.8",
+    "@architect/functions": "3.13.9",
     "ua-parser-js": "0.7.23"
   }
 }
