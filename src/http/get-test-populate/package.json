@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@architect/functions": "3.13.9",
-    "faker": "5.1.0",
+    "faker": "5.2.0",
     "ua-parser-js": "0.7.23"
   }
 }
