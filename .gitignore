@@ -16,7 +16,6 @@ yarn-error.log*
 .cache
 .env
 .arc-env
-src/**/*.js
-src/**/*.css
+src
 dist
 sam.*

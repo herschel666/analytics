@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@architect/functions": "3.13.9",
-    "got": "11.8.1",
-    "vhtml": "2.2.0"
-  }
-}
