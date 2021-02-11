@@ -37,7 +37,7 @@
     "@babel/core": "7.12.13",
     "@babel/plugin-transform-runtime": "7.12.15",
     "@testing-library/dom": "7.29.4",
-    "@types/aws-lambda": "8.10.71",
+    "@types/aws-lambda": "8.10.72",
     "@types/chart.js": "2.9.30",
     "@types/faker": "5.1.6",
     "@types/jest": "26.0.20",
