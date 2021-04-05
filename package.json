@@ -45,7 +45,7 @@
     "@types/parcel-bundler": "1.12.3",
     "@types/turbolinks": "5.2.0",
     "@types/ua-parser-js": "0.7.35",
-    "@types/webpack": "4.41.27",
+    "@types/webpack": "5.28.0",
     "@typescript-eslint/eslint-plugin": "4.21.0",
     "@typescript-eslint/parser": "4.21.0",
     "aws-sdk": "2.834.0",
