@@ -79,9 +79,6 @@
     "chart.js": "3.0.2",
     "turbolinks": "5.2.0"
   },
-  "alias": {
-    "moment": "./lib/stubs/moment"
-  },
   "jest": {
     "testPathIgnorePatterns": [
       "/node_modules/",
