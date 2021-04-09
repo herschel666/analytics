@@ -1,8 +1,4 @@
-import Chart from 'chart.js';
-
-interface PseudoChartElement {
-  _index: number;
-}
+import { Chart } from './chart';
 
 const niceMonthToNumber = (month: string): number | never => {
   const abbreviations = {
@@ -61,7 +57,7 @@ export const init = (
         {
           label: `Page Views from ${from} to ${to}`,
           data: hits,
-          lineTension: 0,
+          tension: 0,
           backgroundColor: 'transparent',
           borderColor: 'rgba(13, 110, 253)',
           pointBorderColor: 'rgba(13, 110, 253, 0.7)',
@@ -72,22 +68,22 @@ export const init = (
     },
     options: {
       scales: {
-        yAxes: [{ ticks: { min, max, stepSize: 1 } }],
+        y: { min, max, ticks: { stepSize: 1 } },
       },
-      onHover: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
+      onHover: (_, [element]) => {
         const className = 'cursor-pointer';
-        if (element && hits[element._index] > 0) {
-          prefetchSinglePage(getUriByIndex(element._index));
+        if (element && hits[element.index] > 0) {
+          prefetchSinglePage(getUriByIndex(element.index));
           canvas.classList.add(className);
         } else {
           canvas.classList.remove(className);
         }
       },
-      onClick: (_: PointerEvent, [element]: PseudoChartElement[]): void => {
-        if (!element || hits[element._index] === 0) {
+      onClick: (_, [element]) => {
+        if (!element || hits[element.index] === 0) {
           return;
         }
-        visit(getUriByIndex(element._index));
+        visit(getUriByIndex(element.index));
       },
     },
   });
