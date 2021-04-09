@@ -20,18 +20,18 @@ const dates = Array.from({ length: DAYS }, (_, i: number) =>
 const referrers = Array.from({ length: 12 }, () => faker.internet.url());
 
 const getPathname = () =>
-  Array.from({ length: faker.random.number(2) + 1 }, () => faker.lorem.slug())
+  Array.from({ length: faker.datatype.number(2) + 1 }, () => faker.lorem.slug())
     .concat([''])
     .reverse()
     .join('/');
 
 const getReferrer = (): string | undefined => {
-  const i = faker.random.number(referrers.length);
+  const i = faker.datatype.number(referrers.length);
   if (i === 0) {
     return undefined;
   }
   const pathname = faker.lorem
-    .words(faker.random.number(3))
+    .words(faker.datatype.number(3))
     .split(' ')
     .join('/');
   return new URL(pathname, referrers[i - 1]).toString();
@@ -47,7 +47,7 @@ const createPageViewsForSite = (
       acc.concat(
         pathnames
           .map((pathname) =>
-            Array.from({ length: faker.random.number(5) }, () =>
+            Array.from({ length: faker.datatype.number(5) }, () =>
               addPageView(
                 doc,
                 site,
@@ -68,7 +68,7 @@ export const handler = async (): Promise<AGWResult> => {
   const doc = await arc.tables();
   const sitesPathnames: [string, string[]][] = sites.map((site) => [
     site,
-    Array.from({ length: Math.max(5, faker.random.number(10)) }, () =>
+    Array.from({ length: Math.max(5, faker.datatype.number(10)) }, () =>
       getPathname()
     ),
   ]);
