@@ -39,7 +39,13 @@ const getHostedZoneId = async (hostname: string): Promise<string | null> => {
 
   try {
     const { HostedZones: zones } = await r53.listHostedZones().promise();
+
+    console.log('Retrieved %s zones', zones.length);
+
     const { Id: id } = zones.find(({ Name: n }) => n === `${domain}.`) || {};
+
+    console.log('Retrieved hosted zone ID: %s', typeof id === 'string');
+
     return typeof id === 'string' ? id.replace('/hostedzone/', '') : null;
   } catch (err) {
     console.log(
@@ -60,6 +66,9 @@ const getCertificateArn = async (hostname: string): Promise<string | null> => {
     } = await acm.listCertificates().promise();
     const { CertificateArn: arn } =
       list.find(({ DomainName: n }) => n === `*.${domain}`) || {};
+
+    console.log('Retrieved certificate arn: %s', typeof arn === 'string');
+
     return arn || null;
   } catch (err) {
     console.log(
