@@ -56,9 +56,12 @@ const getHostedZoneId = async (hostname: string): Promise<string | null> => {
   }
 };
 
-const getCertificateArn = async (hostname: string): Promise<string | null> => {
+const getCertificateArn = async (
+  region: string,
+  hostname: string
+): Promise<string | null> => {
   const domain = getDomainFromHostname(hostname);
-  const acm = new ACM();
+  const acm = new ACM({ region });
 
   try {
     const {
@@ -89,7 +92,7 @@ module.exports = async (_: unknown, cfn: CFN): Promise<CFN> | never => {
 
   const [hostedZoneId, certificateArn] = await Promise.all([
     getHostedZoneId(process.env.HOSTNAME),
-    getCertificateArn(process.env.HOSTNAME),
+    getCertificateArn(process.env.AWS_REGION, process.env.HOSTNAME),
   ]);
 
   if (!hostedZoneId || !certificateArn) {
