@@ -14,7 +14,7 @@ jest.mock('../pages/page-i', () => ({
 }));
 
 describe('get-i', () => {
-  const data = ({ analytics: 'analytics' } as unknown) as Data;
+  const data = { analytics: 'analytics' } as unknown as Data;
   const owner = 'some-user';
 
   describe(`returning the user's start page`, () => {

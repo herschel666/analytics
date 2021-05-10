@@ -21,7 +21,7 @@ jest.mock('../pages/page-not-found', () => ({
 }));
 
 describe('get-i-site-000site-referrers-000date-000host', () => {
-  const data = ({ analytics: 'analytics' } as unknown) as Data;
+  const data = { analytics: 'analytics' } as unknown as Data;
   const referrers = [{ type: 'referrers-by-host' }];
   const site = 'site_tld';
   const host = 'some-other-site_com';

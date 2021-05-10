@@ -13,7 +13,7 @@ jest.mock('../pages/page-i-site-settings', () => ({
 }));
 
 describe('get-i-site-000site-settings', () => {
-  const data = ({ analytics: 'analytics' } as unknown) as Data;
+  const data = { analytics: 'analytics' } as unknown as Data;
   const site = 'site_tld';
   const owner = 'some-user';
 

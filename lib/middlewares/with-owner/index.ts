@@ -3,14 +3,14 @@ import type {
   APIGatewayResult as AGWResult,
 } from '@architect/functions';
 
-export const withOwner = (forbidden: () => AGWResult) => async (
-  req: AGWEvent
-): Promise<AGWEvent | AGWResult> => {
-  const { owner } = req.session;
+export const withOwner =
+  (forbidden: () => AGWResult) =>
+  async (req: AGWEvent): Promise<AGWEvent | AGWResult> => {
+    const { owner } = req.session;
 
-  if (typeof owner === 'string' && owner.length) {
-    return req;
-  }
+    if (typeof owner === 'string' && owner.length) {
+      return req;
+    }
 
-  return forbidden();
-};
+    return forbidden();
+  };
