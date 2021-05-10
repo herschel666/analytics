@@ -195,17 +195,15 @@ export const getAllSiteRelatedEntries = async (
 ): Promise<SiteRelatedEntry> => {
   const primaryKey = `SITE#${owner}#${site}`;
   const exclusiveStartKey = getExclusiveStartKey(primaryKey, cursor);
-  const {
-    Items: items = [],
-    LastEvaluatedKey: lastEvaluatedKey,
-  } = await doc.query({
-    KeyConditionExpression: 'PK = :PK',
-    ProjectionExpression: 'PK, SK',
-    ExpressionAttributeValues: {
-      ':PK': primaryKey,
-    },
-    ...exclusiveStartKey,
-  });
+  const { Items: items = [], LastEvaluatedKey: lastEvaluatedKey } =
+    await doc.query({
+      KeyConditionExpression: 'PK = :PK',
+      ProjectionExpression: 'PK, SK',
+      ExpressionAttributeValues: {
+        ':PK': primaryKey,
+      },
+      ...exclusiveStartKey,
+    });
   const newCursor =
     typeof lastEvaluatedKey === 'object' && lastEvaluatedKey !== null
       ? btoa(lastEvaluatedKey.SK)
@@ -226,25 +224,23 @@ export const getPageViewsBySite = async (
   const ownerSite = `${owner}#${site}`;
   const primaryKey = `SITE#${ownerSite}`;
   const exclusiveStartKey = getExclusiveStartKey(primaryKey, cursor);
-  const {
-    Items: items = [],
-    LastEvaluatedKey: lastEvaluatedKey,
-  } = await doc.query({
-    KeyConditionExpression: 'PK = :PK AND SK BETWEEN :from AND :to',
-    ProjectionExpression: '#page_views, #date, #pathname',
-    ExpressionAttributeValues: {
-      ':PK': primaryKey,
-      ':from': `PAGEVIEW#${ownerSite}#${from}`,
-      ':to': `PAGEVIEW#${ownerSite}#${increaseByOneDay(to)}`,
-    },
-    ExpressionAttributeNames: {
-      '#page_views': 'PageViews',
-      '#date': 'Date',
-      '#pathname': 'Pathname',
-    },
-    ScanIndexForward: false,
-    ...exclusiveStartKey,
-  });
+  const { Items: items = [], LastEvaluatedKey: lastEvaluatedKey } =
+    await doc.query({
+      KeyConditionExpression: 'PK = :PK AND SK BETWEEN :from AND :to',
+      ProjectionExpression: '#page_views, #date, #pathname',
+      ExpressionAttributeValues: {
+        ':PK': primaryKey,
+        ':from': `PAGEVIEW#${ownerSite}#${from}`,
+        ':to': `PAGEVIEW#${ownerSite}#${increaseByOneDay(to)}`,
+      },
+      ExpressionAttributeNames: {
+        '#page_views': 'PageViews',
+        '#date': 'Date',
+        '#pathname': 'Pathname',
+      },
+      ScanIndexForward: false,
+      ...exclusiveStartKey,
+    });
   const newCursor =
     typeof lastEvaluatedKey === 'object' && lastEvaluatedKey !== null
       ? btoa(lastEvaluatedKey.SK)

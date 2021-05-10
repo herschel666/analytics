@@ -13,7 +13,7 @@ jest.mock('../pages/page-i-site-referrers-date', () => ({
 }));
 
 describe('get-i-site-000site-referrers-000date', () => {
-  const data = ({ analytics: 'analytics' } as unknown) as Data;
+  const data = { analytics: 'analytics' } as unknown as Data;
   const referrers = [{ type: 'referrers' }];
   const site = 'site_tld';
   const owner = 'some-user';

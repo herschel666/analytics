@@ -15,13 +15,13 @@ describe('post-i-site-000site-settings', () => {
     Owner: owner,
     Hash: '123abc',
   };
-  const data = ({
+  const data = {
     analytics: {
       delete: jest.fn(),
       get: jest.fn().mockResolvedValue(sitedata),
     },
-  } as unknown) as Data;
-  const queues = ({ publish: jest.fn() } as unknown) as ArcQueues;
+  } as unknown as Data;
+  const queues = { publish: jest.fn() } as unknown as ArcQueues;
 
   describe('Successful deletion', () => {
     it('should have the corect response properties', async () => {

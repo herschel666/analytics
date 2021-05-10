@@ -7,7 +7,7 @@ jest.mock('../shared/ddb.ts', () => ({
 }));
 
 describe('get-api-sites', () => {
-  const data = ({ analytics: 'analytics' } as unknown) as Data;
+  const data = { analytics: 'analytics' } as unknown as Data;
   const owner = 'test-user';
 
   it('should return a list of pages', async () => {

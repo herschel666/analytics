@@ -64,9 +64,9 @@ const getCertificateArn = async (
   const acm = new ACM({ region });
 
   try {
-    const {
-      CertificateSummaryList: list,
-    } = await acm.listCertificates().promise();
+    const { CertificateSummaryList: list } = await acm
+      .listCertificates()
+      .promise();
     const { CertificateArn: arn } =
       list.find(({ DomainName: n }) => n === `*.${domain}`) || {};
 

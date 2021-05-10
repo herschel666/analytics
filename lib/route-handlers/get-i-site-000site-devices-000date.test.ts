@@ -15,7 +15,7 @@ jest.mock('../pages/page-i-site-devices-date', () => ({
 }));
 
 describe('get-i-site-000site-devices-000date', () => {
-  const data = ({ analytics: 'analytics' } as unknown) as Data;
+  const data = { analytics: 'analytics' } as unknown as Data;
   const devices = { type: 'devices' };
   const site = 'site_tdl';
   const owner = 'somebody';
