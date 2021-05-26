@@ -33,7 +33,7 @@
   "license": "MIT",
   "devDependencies": {
     "@architect/architect": "8.6.0",
-    "@architect/functions": "3.14.0",
+    "@architect/functions": "3.14.1",
     "@babel/core": "7.14.3",
     "@babel/plugin-transform-runtime": "7.14.3",
     "@testing-library/dom": "7.31.0",
