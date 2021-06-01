@@ -38,7 +38,7 @@
     "@babel/plugin-transform-runtime": "7.14.3",
     "@testing-library/dom": "7.31.0",
     "@types/aws-lambda": "8.10.76",
-    "@types/faker": "5.5.5",
+    "@types/faker": "5.5.6",
     "@types/jest": "26.0.23",
     "@types/node": "14.17.1",
     "@types/parcel-bundler": "1.12.3",
