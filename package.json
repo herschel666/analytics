@@ -34,7 +34,7 @@
   "devDependencies": {
     "@architect/architect": "8.6.1",
     "@architect/functions": "3.14.1",
-    "@babel/core": "7.14.5",
+    "@babel/core": "7.14.6",
     "@babel/plugin-transform-runtime": "7.14.5",
     "@testing-library/dom": "7.31.2",
     "@types/aws-lambda": "8.10.77",
