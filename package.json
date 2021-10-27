@@ -69,7 +69,7 @@
     "ts-loader": "9.2.6",
     "ts-node": "10.4.0",
     "typescript": "4.4.4",
-    "ua-parser-js": "0.8.1",
+    "ua-parser-js": "1.0.2",
     "url-loader": "4.1.1",
     "vhtml": "2.2.0",
     "webpack": "5.62.2",
