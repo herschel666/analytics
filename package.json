@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "private": true,
+  "browserslist": "> 10%, last 2 versions",
   "scripts": {
     "postinstall": "arc hydrate",
     "ddb": "java -Djava.library.path=./.db/DynamoDBLocal_lib -jar ./.db/DynamoDBLocal.jar -sharedDb -dbPath ./.db -port 4444",
@@ -36,6 +37,8 @@
     "@architect/functions": "4.0.0",
     "@babel/core": "7.16.0",
     "@babel/plugin-transform-runtime": "7.16.4",
+    "@parcel/config-default": "2.0.1",
+    "@parcel/transformer-typescript-tsc": "2.0.1",
     "@testing-library/dom": "8.11.1",
     "@types/aws-lambda": "8.10.85",
     "@types/faker": "5.5.9",
@@ -62,7 +65,7 @@
     "jest": "27.3.1",
     "nock": "13.2.1",
     "npm-run-all": "4.1.5",
-    "parcel-bundler": "1.12.5",
+    "parcel": "2.0.1",
     "preact": "10.5.15",
     "prettier": "2.4.1",
     "ts-jest": "27.0.7",
@@ -82,7 +85,7 @@
   "jest": {
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "<rootDir>/.cache/",
+      "<rootDir>/.parcel-cache/",
       "<rootDir>/.db/",
       "<rootDir>/.github/",
       "<rootDir>/src/",
