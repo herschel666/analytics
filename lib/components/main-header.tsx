@@ -26,8 +26,8 @@ export const MainHeader: HC<Props> = ({ loggedIn, sites = [], text }) => {
   const navbarBrandProps = text
     ? {
         href: '/i',
-        'data-toggle': 'tooltip',
-        'data-placement': 'bottom',
+        'data-bs-toggle': 'tooltip',
+        'data-bs-placement': 'right',
         title: 'Back to overview',
       }
     : {};
@@ -46,12 +46,12 @@ export const MainHeader: HC<Props> = ({ loggedIn, sites = [], text }) => {
               id="sites-selector"
               data-turbolinks-permanent={true}
             >
-              <div class="nav-item dropdown">
+              <div class="nav-item dropdown me-4">
                 <a
                   class="nav-link dropdown-toggle"
                   id="navbarDropdownMenuLink"
                   role="button"
-                  data-toggle="dropdown"
+                  data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   Choose a site…
