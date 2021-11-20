@@ -15,7 +15,7 @@ interface Props {
 
 const getHostname = () =>
   process.env.NODE_ENV === 'testing'
-    ? `localhost:${process.env.PORT}`
+    ? `localhost:${process.env.PORT || 3333}`
     : HOSTNAME;
 const trackingPixelUrl = new URL('/cctv.gif', `https://${getHostname()}`);
 
