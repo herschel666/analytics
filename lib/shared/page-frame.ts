@@ -36,6 +36,7 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
           src="${arc.http.helpers.static('scripts/index.js')}"
           defer
         ></script>
+        <script src="${arc.http.helpers.static('index.js')}" defer></script>
       </head>
       <body class="min-vh-100">
         ${body}

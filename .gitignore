@@ -13,7 +13,7 @@ yarn-debug.log*
 yarn-error.log*
 
 .db
-.cache
+.parcel-cache
 .env
 .arc-env
 src
