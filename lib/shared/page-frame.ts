@@ -21,10 +21,11 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
           integrity="sha384-CuOF+2SnTUfTwSZjCXf01h7uYhfOBuxIhGKPbfEJ3+FqH/s6cIFN9bGr1HmAg4fQ"
           crossorigin="anonymous"
         />
-        <link
-          href="${arc.http.helpers.static('styles/main.css')}"
-          rel="stylesheet"
-        />
+        <style>
+          .cursor-pointer {
+            cursor: pointer;
+          }
+        </style>
         <link href="/favicon.ico" rel="shortcut icon" />
         <script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/js/bootstrap.bundle.min.js"
