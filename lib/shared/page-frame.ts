@@ -17,8 +17,8 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
         <title>${title}</title>
         <link
           rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/css/bootstrap.min.css"
-          integrity="sha384-CuOF+2SnTUfTwSZjCXf01h7uYhfOBuxIhGKPbfEJ3+FqH/s6cIFN9bGr1HmAg4fQ"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          integrity="sha256-YvdLHPgkqJ8DVUxjjnGVlMMJtNimJ6dYkowFFvp4kKs="
           crossorigin="anonymous"
         />
         <style>
@@ -28,13 +28,13 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
         </style>
         <link href="/favicon.ico" rel="shortcut icon" />
         <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-popRpmFF9JQgExhfw5tZT4I9/CI5e2QcuUZPOVXb1m7qUmeR2b50u+YFEYe1wgzy"
-          crossorigin="anonymous"
+          src="https://unpkg.com/@popperjs/core@2.10.2/dist/umd/popper.min.js"
           defer
         ></script>
         <script
-          src="${arc.http.helpers.static('scripts/index.js')}"
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+          integrity="sha256-cMPWkL3FzjuaFSfEYESYmjF25hCIL6mfRSPnW8OVvM4="
+          crossorigin="anonymous"
           defer
         ></script>
         <script src="${arc.http.helpers.static('index.js')}" defer></script>

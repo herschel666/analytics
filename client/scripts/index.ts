@@ -53,10 +53,13 @@ const initSite = (): void => {
   }
 
   const tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-toggle="tooltip"]')
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
   );
   tooltipTriggerList.map(
-    (tooltipTriggerEl) => new window.bootstrap.Tooltip(tooltipTriggerEl)
+    (tooltipTriggerEl) =>
+      new window.bootstrap.Tooltip(tooltipTriggerEl, {
+        container: 'body',
+      })
   );
 
   const internalPages = Array.from(document.links).filter(
