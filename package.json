@@ -57,7 +57,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.27.1",
     "faker": "5.5.3",
-    "fork-ts-checker-webpack-plugin": "6.4.1",
+    "fork-ts-checker-webpack-plugin": "6.4.2",
     "globby": "11.0.4",
     "got": "11.8.3",
     "herschel666-arc-macros-custom-log-groups": "0.1.3",
