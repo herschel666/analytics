@@ -39,7 +39,7 @@
     "@babel/plugin-transform-runtime": "7.16.8",
     "@parcel/config-default": "2.2.0",
     "@parcel/transformer-typescript-tsc": "2.2.0",
-    "@testing-library/dom": "8.11.1",
+    "@testing-library/dom": "8.11.2",
     "@types/aws-lambda": "8.10.89",
     "@types/faker": "5.5.9",
     "@types/jest": "27.4.0",
