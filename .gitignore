@@ -15,7 +15,7 @@ yarn-error.log*
 .db
 .parcel-cache
 .env
-.arc-env
+prefs.arc
 src
 dist
 sam.*
