@@ -5,7 +5,6 @@
   "private": true,
   "browserslist": "> 10%, last 2 versions",
   "scripts": {
-    "postinstall": "arc hydrate",
     "ddb": "java -Djava.library.path=./.db/DynamoDBLocal_lib -jar ./.db/DynamoDBLocal.jar -sharedDb -dbPath ./.db -port 4444",
     "ddb:inmemory": "npm run ddb -- -inMemory",
     "watch:browser": "parcel watch --no-hmr client/scripts/index.ts",
