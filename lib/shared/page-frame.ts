@@ -37,7 +37,7 @@ export const pageFrame = (body: string, title = 'ek|analytics'): string =>
           crossorigin="anonymous"
           defer
         ></script>
-        <script src="${arc.http.helpers.static('index.js')}" defer></script>
+        <script src="${arc.static('index.js')}" defer></script>
       </head>
       <body class="min-vh-100">
         ${body}

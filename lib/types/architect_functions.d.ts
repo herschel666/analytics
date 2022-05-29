@@ -1,3 +1,4 @@
+// TODO: switch to @types/architect__functions when it's not just a bunch of anys anymore
 declare module '@architect/functions' {
   import type { DocumentClient } from 'aws-sdk/clients/dynamodb';
   import type {
@@ -78,7 +79,6 @@ declare module '@architect/functions' {
     session: Session;
     async: Async;
     helpers: {
-      static(filename: string): string;
       url(pathname: string): string;
       bodyParser<T = Record<string, unknown>>(req: OrigAPIGatewayEvent): T;
     };
@@ -87,4 +87,5 @@ declare module '@architect/functions' {
   export const http: Http;
   export const queues: ArcQueues;
   export const tables: () => Promise<Data>;
+  export const static: (filename: string) => string;
 }
