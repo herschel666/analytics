@@ -22,17 +22,28 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-npm-${{ env.cache-name }}-${{ hashFiles('package-lock.json', '**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-npm-${{ env.cache-name }}-
+            ${{ runner.os }}-npm-
 
-      - name: Cache Build artifacts
+      - name: Cache Node Build artifacts
         uses: actions/cache@v3
         with:
           path: ./.cache
-          key: ${{ runner.os }}-node-${{ hashFiles('**/*') }}
+          key: ${{ runner.os }}-node-${{ env.cache-name }}-${{ hashFiles('lib/**/*', 'package-lock.json', '**/package-lock.json') }}
           restore-keys: |
+            ${{ runner.os }}-node-${{ env.cache-name }}-
             ${{ runner.os }}-node-
+
+      - name: Cache Browser Build artifacts
+        uses: actions/cache@v3
+        with:
+          path: ./.parcel-cache
+          key: ${{ runner.os }}-browser-${{ env.cache-name }}-${{ hashFiles('client/**/*', 'package-lock.json', '**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-browser-${{ env.cache-name }}-
+            ${{ runner.os }}-browser-
 
       - name: Install dependencies
         run: npm ci
