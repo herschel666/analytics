@@ -40,7 +40,7 @@ analytics
   PK *String
   SK **String
 
-@table-indexes
+@tables-indexes
 analytics
   GSI1PK *String
   GSI1SK **String
