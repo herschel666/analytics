@@ -3,7 +3,7 @@ analytics
 
 @aws
 region eu-central-1
-runtime nodejs14.x
+runtime nodejs16.x
 profile ek-analytics
 bucket ek-geloets-installationen-ftw
 
