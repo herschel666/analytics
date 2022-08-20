@@ -79,7 +79,7 @@
     "webpack-cli": "4.10.0"
   },
   "dependencies": {
-    "chart.js": "3.8.2",
+    "chart.js": "3.9.1",
     "turbolinks": "5.2.0"
   },
   "jest": {
