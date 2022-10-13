@@ -32,7 +32,7 @@
   "author": "Emanuel Kluge (https://emanuel-kluge.de/)",
   "license": "MIT",
   "devDependencies": {
-    "@architect/architect": "10.7.0",
+    "@architect/architect": "10.7.1",
     "@architect/functions": "5.2.2",
     "@babel/core": "7.19.3",
     "@babel/plugin-transform-runtime": "7.19.1",
