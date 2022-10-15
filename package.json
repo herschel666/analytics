@@ -42,7 +42,7 @@
     "@types/aws-lambda": "8.10.107",
     "@types/faker": "6.6.8",
     "@types/jest": "29.1.2",
-    "@types/node": "16.11.65",
+    "@types/node": "16.11.66",
     "@types/parcel-bundler": "1.12.5",
     "@types/turbolinks": "5.2.0",
     "@types/ua-parser-js": "0.7.36",
