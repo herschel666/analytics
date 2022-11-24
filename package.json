@@ -33,7 +33,7 @@
   "license": "MIT",
   "devDependencies": {
     "@architect/architect": "10.7.3",
-    "@architect/functions": "5.2.3",
+    "@architect/functions": "5.3.0",
     "@babel/core": "7.20.2",
     "@babel/plugin-transform-runtime": "7.19.6",
     "@parcel/config-default": "2.8.0",
