@@ -49,7 +49,7 @@
     "@types/webpack": "5.28.0",
     "@typescript-eslint/eslint-plugin": "5.47.0",
     "@typescript-eslint/parser": "5.47.0",
-    "aws-sdk": "2.1278.0",
+    "aws-sdk": "2.1279.0",
     "concurrently": "7.6.0",
     "eslint": "8.30.0",
     "eslint-config-prettier": "8.5.0",
