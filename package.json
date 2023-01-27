@@ -39,7 +39,7 @@
     "@parcel/config-default": "2.8.3",
     "@parcel/transformer-typescript-tsc": "2.8.3",
     "@testing-library/dom": "8.20.0",
-    "@types/aws-lambda": "8.10.109",
+    "@types/aws-lambda": "8.10.110",
     "@types/faker": "6.6.8",
     "@types/jest": "29.4.0",
     "@types/node": "16.18.11",
