@@ -34,8 +34,8 @@
   "devDependencies": {
     "@architect/architect": "10.10.2",
     "@architect/functions": "5.3.4",
-    "@babel/core": "7.20.12",
-    "@babel/plugin-transform-runtime": "7.19.6",
+    "@babel/core": "7.21.0",
+    "@babel/plugin-transform-runtime": "7.21.0",
     "@parcel/config-default": "2.8.3",
     "@parcel/transformer-typescript-tsc": "2.8.3",
     "@testing-library/dom": "8.20.0",
