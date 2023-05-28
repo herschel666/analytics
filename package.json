@@ -32,8 +32,8 @@
   "author": "Emanuel Kluge (https://emanuel-kluge.de/)",
   "license": "MIT",
   "devDependencies": {
-    "@architect/architect": "10.10.3",
-    "@architect/functions": "5.4.0",
+    "@architect/architect": "10.12.5",
+    "@architect/functions": "5.4.1",
     "@babel/core": "7.21.3",
     "@babel/plugin-transform-runtime": "7.21.0",
     "@parcel/config-default": "2.8.3",
