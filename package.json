@@ -52,7 +52,7 @@
     "aws-sdk": "2.1692.0",
     "concurrently": "7.6.0",
     "eslint": "8.57.1",
-    "eslint-config-prettier": "8.10.0",
+    "eslint-config-prettier": "8.10.2",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.37.2",
     "faker": "5.5.3",
