@@ -19,7 +19,7 @@ jobs:
           node-version: '16.x'
 
       - name: Cache Node dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-npm-${{ env.cache-name }}-${{ hashFiles('package-lock.json', '**/package-lock.json') }}
@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-npm-
 
       - name: Cache Node Build artifacts
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ./.cache
           key: ${{ runner.os }}-node-${{ env.cache-name }}-${{ hashFiles('lib/**/*', 'package-lock.json', '**/package-lock.json') }}
@@ -37,7 +37,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Cache Browser Build artifacts
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ./.parcel-cache
           key: ${{ runner.os }}-browser-${{ env.cache-name }}-${{ hashFiles('client/**/*', 'package-lock.json', '**/package-lock.json') }}
